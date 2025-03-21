@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import NotesList from "@/components/NotesList";
@@ -20,6 +20,10 @@ export interface Note {
 }
 
 const NotesPage = () => {
+  useEffect(() => {
+    console.log("NotesPage component mounted");
+  }, []);
+
   const [activeTab, setActiveTab] = useState("list");
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
