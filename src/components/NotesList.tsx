@@ -1,0 +1,68 @@
+
+import { Note } from "@/pages/NotesPage";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+
+interface NotesListProps {
+  notes: Note[];
+  selectedNote: Note | null;
+  onSelectNote: (note: Note) => void;
+}
+
+const NotesList = ({ notes, selectedNote, onSelectNote }: NotesListProps) => {
+  // Group notes by category
+  const groupedNotes = notes.reduce((acc, note) => {
+    const category = note.category || "Uncategorized";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(note);
+    return acc;
+  }, {} as Record<string, Note[]>);
+
+  // Sort categories to ensure Today, Yesterday, This Week order
+  const categoryOrder = ["Today", "Yesterday", "This Week", "Uncategorized"];
+  const sortedCategories = Object.keys(groupedNotes).sort(
+    (a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b)
+  );
+
+  return (
+    <div className="divide-y">
+      {sortedCategories.map((category) => (
+        <div key={category} className="pb-4">
+          <h3 className="text-sm font-medium text-gray-500 px-4 py-2">{category}</h3>
+          <div className="space-y-1">
+            {groupedNotes[category].map((note) => (
+              <div
+                key={note.id}
+                onClick={() => onSelectNote(note)}
+                className={cn(
+                  "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors",
+                  selectedNote?.id === note.id ? "bg-blue-50 border-l-4 border-blue-600" : ""
+                )}
+              >
+                <div className="flex justify-between items-start">
+                  <h4 className="font-medium text-gray-900">{note.title}</h4>
+                  <span className="text-xs text-gray-500">{note.timestamp}</span>
+                </div>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{note.content}</p>
+                
+                {note.tags && note.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {note.tags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default NotesList;
