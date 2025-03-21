@@ -8,6 +8,7 @@ import { Plus, Calendar, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 
 export interface Note {
   id: string;
@@ -68,16 +69,28 @@ const NotesPage = () => {
   ]);
 
   const createNote = () => {
-    const newNote = {
-      id: Date.now().toString(),
-      title: "New Note",
-      content: "",
-      tags: [],
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      category: "Today"
-    };
-    setNotes([newNote, ...notes]);
-    setSelectedNote(newNote);
+    // First clear the selected note
+    setSelectedNote(null);
+    
+    // Small delay to ensure the clearing animation is visible
+    setTimeout(() => {
+      const newNote = {
+        id: Date.now().toString(),
+        title: "New Note",
+        content: "",
+        tags: [],
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        category: "Today"
+      };
+      
+      setNotes([newNote, ...notes]);
+      setSelectedNote(newNote);
+      
+      toast({
+        title: "Note Created",
+        description: "A new note has been created",
+      });
+    }, 50);
   };
 
   const filteredNotes = searchQuery 
