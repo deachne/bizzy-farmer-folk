@@ -4,7 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import NotesList from "@/components/NotesList";
 import NoteDetail from "@/components/NoteDetail";
-import { Plus, Calendar, Tag } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -91,6 +91,12 @@ const NotesPage = () => {
         description: "A new note has been created",
       });
     }, 50);
+  };
+
+  const deleteNote = (id: string) => {
+    const updatedNotes = notes.filter(note => note.id !== id);
+    setNotes(updatedNotes);
+    setSelectedNote(null);
   };
 
   const filteredNotes = searchQuery 
@@ -180,10 +186,13 @@ const NotesPage = () => {
                     ));
                     setSelectedNote(updatedNote);
                   }}
+                  onDeleteNote={deleteNote}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                  <p className="mb-4">Select a note or create a new one</p>
+                  <FileText className="h-16 w-16 text-gray-300 mb-4" />
+                  <p className="text-xl font-medium mb-2">No note selected</p>
+                  <p className="text-sm text-gray-400 mb-6">Select a note or create a new one</p>
                   <Button 
                     className="bg-blue-600 hover:bg-blue-700 text-white" 
                     onClick={createNote}

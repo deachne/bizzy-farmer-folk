@@ -2,6 +2,7 @@
 import { Note } from "@/pages/NotesPage";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { FileText, FolderOpen } from "lucide-react";
 
 interface NotesListProps {
   notes: Note[];
@@ -28,45 +29,47 @@ const NotesList = ({ notes, selectedNote, onSelectNote }: NotesListProps) => {
 
   return (
     <div className="divide-y">
-      {sortedCategories.map((category) => (
-        <div key={category} className="pb-4">
-          <h3 className="text-sm font-medium text-gray-500 px-4 py-2">{category}</h3>
-          <div className="space-y-2 px-3">
-            {groupedNotes[category].map((note) => (
-              <div
-                key={note.id}
-                onClick={() => onSelectNote(note)}
-                className={cn(
-                  "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded-lg border border-gray-300",
-                  selectedNote?.id === note.id 
-                    ? "bg-blue-50 border-l-4 border-blue-600 shadow-sm" 
-                    : "hover:shadow-sm"
-                )}
-              >
-                <div className="flex justify-between items-start">
-                  <h4 className="font-semibold text-gray-900">{note.title}</h4>
-                  <span className="text-xs text-gray-500 ml-2">{note.timestamp}</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{note.content}</p>
-                
-                {note.tags && note.tags.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {note.tags.map((tag, index) => (
-                      <Badge key={index} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs px-2 py-0.5">
-                        {tag}
-                      </Badge>
-                    ))}
+      {sortedCategories.length > 0 ? (
+        sortedCategories.map((category) => (
+          <div key={category} className="pb-4">
+            <h3 className="text-sm font-medium text-gray-500 px-4 py-2">{category}</h3>
+            <div className="space-y-2 px-3">
+              {groupedNotes[category].map((note) => (
+                <div
+                  key={note.id}
+                  onClick={() => onSelectNote(note)}
+                  className={cn(
+                    "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded-lg border border-gray-300",
+                    selectedNote?.id === note.id 
+                      ? "bg-blue-50 border-l-4 border-blue-600 shadow-sm" 
+                      : "hover:shadow-sm"
+                  )}
+                >
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-semibold text-gray-900">{note.title}</h4>
+                    <span className="text-xs text-gray-500 ml-2">{note.timestamp}</span>
                   </div>
-                )}
-              </div>
-            ))}
+                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">{note.content}</p>
+                  
+                  {note.tags && note.tags.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {note.tags.map((tag, index) => (
+                        <Badge key={index} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs px-2 py-0.5">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
-      
-      {sortedCategories.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-          <p>No notes found</p>
+        ))
+      ) : (
+        <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <FolderOpen className="h-16 w-16 text-gray-300 mb-4" />
+          <p className="text-xl font-medium mb-2">No notes found</p>
+          <p className="text-sm text-gray-400">Create your first note to get started</p>
         </div>
       )}
     </div>

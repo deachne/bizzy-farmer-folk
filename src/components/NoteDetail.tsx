@@ -4,14 +4,23 @@ import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, X, Tag } from "lucide-react";
+import { Plus, X, Tag, Trash2, Archive, Share, Bold, Italic, Underline, List } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
 
 interface NoteDetailProps {
   note: Note;
   onUpdateNote: (note: Note) => void;
+  onDeleteNote?: (id: string) => void;
 }
 
-const NoteDetail = ({ note, onUpdateNote }: NoteDetailProps) => {
+const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const [tagInput, setTagInput] = useState("");
@@ -61,14 +70,78 @@ const NoteDetail = ({ note, onUpdateNote }: NoteDetailProps) => {
     }
   };
 
+  const handleDeleteNote = () => {
+    if (onDeleteNote) {
+      onDeleteNote(note.id);
+      toast({
+        title: "Note deleted",
+        description: "Your note has been deleted"
+      });
+    }
+  };
+
+  const handleArchiveNote = () => {
+    toast({
+      title: "Note archived",
+      description: "Your note has been archived"
+    });
+  };
+
+  const handleShareNote = () => {
+    toast({
+      title: "Share link copied",
+      description: "Share link has been copied to clipboard"
+    });
+  };
+
+  // Simple text formatting functions (for rich text demo)
+  const applyFormatting = (format: string) => {
+    toast({
+      title: "Text formatting",
+      description: `${format} formatting applied`
+    });
+  };
+
   return (
     <div className="h-full flex flex-col p-6 bg-white">
-      <Input
-        value={title}
-        onChange={handleTitleChange}
-        className="text-2xl font-semibold border-none px-0 focus-visible:ring-0 mb-6"
-        placeholder="Note title"
-      />
+      <div className="flex justify-between items-center mb-6">
+        <Input
+          value={title}
+          onChange={handleTitleChange}
+          className="text-2xl font-semibold border-none px-0 focus-visible:ring-0 flex-1 mr-4"
+          placeholder="Note title"
+        />
+        
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleShareNote}
+            title="Share note"
+          >
+            <Share className="h-4 w-4" />
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleArchiveNote}
+            title="Archive note"
+          >
+            <Archive className="h-4 w-4" />
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleDeleteNote}
+            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+            title="Delete note"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
       
       <div className="mb-6 flex flex-wrap gap-2 items-center">
         <div className="flex items-center mr-2">
@@ -112,7 +185,42 @@ const NoteDetail = ({ note, onUpdateNote }: NoteDetailProps) => {
         </div>
       </div>
       
-      <textarea
+      <div className="mb-4 border-b pb-2 flex">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="rounded-md h-8"
+          onClick={() => applyFormatting("Bold")}
+        >
+          <Bold className="h-4 w-4" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="rounded-md h-8"
+          onClick={() => applyFormatting("Italic")}
+        >
+          <Italic className="h-4 w-4" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="rounded-md h-8"
+          onClick={() => applyFormatting("Underline")}
+        >
+          <Underline className="h-4 w-4" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="rounded-md h-8"
+          onClick={() => applyFormatting("List")}
+        >
+          <List className="h-4 w-4" />
+        </Button>
+      </div>
+      
+      <Textarea
         value={content}
         onChange={handleContentChange}
         className="flex-1 resize-none border-none focus:outline-none text-gray-700 text-base p-1 bg-gray-50 rounded-md"
