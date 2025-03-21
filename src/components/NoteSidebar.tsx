@@ -1,4 +1,3 @@
-
 import { 
   FileText, 
   FileIcon, 
@@ -6,7 +5,7 @@ import {
   MessageSquare, 
   LayoutDashboard, 
   Users, 
-  Extension, 
+  Package, 
   Settings, 
   BarChart,
   Plus
@@ -26,7 +25,7 @@ const NoteSidebar = () => {
   const adminItems = [
     { icon: LayoutDashboard, label: "Dashboard" },
     { icon: Users, label: "Users" },
-    { icon: Extension, label: "Extensions" },
+    { icon: Package, label: "Extensions" },
     { icon: Settings, label: "System" },
     { icon: Settings, label: "Configuration" },
     { icon: BarChart, label: "Analytics" },
