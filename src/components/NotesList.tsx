@@ -37,7 +37,7 @@ const NotesList = ({ notes, selectedNote, onSelectNote }: NotesListProps) => {
                 key={note.id}
                 onClick={() => onSelectNote(note)}
                 className={cn(
-                  "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded-lg border border-gray-100",
+                  "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors rounded-lg border border-gray-300",
                   selectedNote?.id === note.id 
                     ? "bg-blue-50 border-l-4 border-blue-600 shadow-sm" 
                     : "hover:shadow-sm"
