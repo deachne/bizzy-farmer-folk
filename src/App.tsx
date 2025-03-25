@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import NotesPage from "./pages/NotesPage";
+import ChatPage from "./pages/ChatPage";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Navigate to="/notes" replace />} />
           <Route path="/notes" element={<NotesPage />} />
+          <Route path="/chat" element={<ChatPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,3 +1,4 @@
+
 import { 
   FileText, 
   FileIcon, 
@@ -12,31 +13,35 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router-dom";
 
 const NoteSidebar = () => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+  
   // Define menu sections and items
   const coreItems = [
-    { icon: FileText, label: "Notes", active: true },
-    { icon: FileIcon, label: "Documents" },
-    { icon: ClipboardList, label: "Tasks" },
-    { icon: MessageSquare, label: "Chat" },
+    { icon: FileText, label: "Notes", path: "/notes", active: currentPath.includes("/notes") },
+    { icon: FileIcon, label: "Documents", path: "/documents" },
+    { icon: ClipboardList, label: "Tasks", path: "/tasks" },
+    { icon: MessageSquare, label: "Chat", path: "/chat", active: currentPath.includes("/chat") },
   ];
   
   const adminItems = [
-    { icon: LayoutDashboard, label: "Dashboard" },
-    { icon: Users, label: "Users" },
-    { icon: Package, label: "Extensions" },
-    { icon: Settings, label: "System" },
-    { icon: Settings, label: "Configuration" },
-    { icon: BarChart, label: "Analytics" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: Users, label: "Users", path: "/users" },
+    { icon: Package, label: "Extensions", path: "/extensions" },
+    { icon: Settings, label: "System", path: "/system" },
+    { icon: Settings, label: "Configuration", path: "/configuration" },
+    { icon: BarChart, label: "Analytics", path: "/analytics" },
   ];
 
-  const renderMenuItem = (item: { icon: any, label: string, active?: boolean }) => {
+  const renderMenuItem = (item: { icon: any, label: string, path: string, active?: boolean }) => {
     const Icon = item.icon;
     return (
-      <a 
+      <Link 
         key={item.label}
-        href="#"
+        to={item.path}
         className={cn(
           "flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors",
           item.active 
@@ -46,7 +51,7 @@ const NoteSidebar = () => {
       >
         <Icon className="h-5 w-5 mr-3" />
         {item.label}
-      </a>
+      </Link>
     );
   };
 
