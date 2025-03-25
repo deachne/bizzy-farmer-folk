@@ -1,4 +1,3 @@
-
 import { RefObject, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Message } from "@/pages/ChatPage";
@@ -82,7 +81,7 @@ const ChatMessages = ({
 
   return (
     <ScrollArea className="h-full pr-4">
-      <div className="space-y-6">
+      <div className="space-y-6 pb-6">
         {messages.map(message => (
           <div 
             key={message.id} 
@@ -219,7 +218,6 @@ const ChatMessages = ({
                   )}
                 </Collapsible>
                 
-                {/* File Upload Progress */}
                 {Object.keys(uploadProgress).length > 0 && message.sender === "user" && message.status === "sending" && (
                   <div className="mt-3">
                     {Object.entries(uploadProgress).map(([id, progress]) => (
@@ -235,7 +233,6 @@ const ChatMessages = ({
                 )}
               </div>
               
-              {/* Actions */}
               <div className="flex-shrink-0 ml-4 flex flex-col space-y-2">
                 <Button 
                   variant="ghost" 
@@ -274,7 +271,6 @@ const ChatMessages = ({
           </div>
         ))}
         
-        {/* AI typing indicator */}
         {isAiTyping && (
           <div className="rounded-lg p-4 bg-white border border-blue-100 animate-pulse">
             <div className="flex items-start">
@@ -302,7 +298,6 @@ const ChatMessages = ({
           </div>
         )}
         
-        {/* Scroll anchor */}
         <div ref={messagesEndRef} />
       </div>
     </ScrollArea>

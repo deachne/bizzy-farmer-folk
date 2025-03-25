@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -433,7 +434,7 @@ const ChatPage = () => {
       <SidebarProvider>
         <NoteSidebar />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
           <ChatHeader 
             activeChatSession={activeChatSession}
             availableSessions={availableSessions}
@@ -443,11 +444,11 @@ const ChatPage = () => {
             showContextPanel={showContextPanel}
           />
           
-          <div className="flex flex-1 overflow-hidden">
-            <div className={`${showContextPanel ? "w-full md:w-2/3" : "w-full"} flex flex-col border-r transition-all duration-300`}>
+          <div className="flex flex-1 overflow-hidden relative">
+            <div className={`${showContextPanel ? "w-full md:w-2/3" : "w-full"} flex flex-col border-r transition-all duration-300 overflow-hidden`}>
               <div 
                 ref={messagesContainerRef}
-                className="flex-1 overflow-y-auto p-4 scroll-smooth"
+                className="flex-1 overflow-y-auto p-4 pb-20 scroll-smooth"
               >
                 <ChatMessages 
                   messages={messages}
@@ -458,7 +459,7 @@ const ChatPage = () => {
                 />
               </div>
               
-              <div className="border-t p-4">
+              <div className="sticky bottom-0 left-0 right-0 border-t p-4 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-10">
                 <ChatInputBar 
                   onSendMessage={sendMessage}
                   connectionStatus={connectionStatus}
