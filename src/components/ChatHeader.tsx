@@ -7,21 +7,28 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { ChatSession } from "@/pages/ChatPage";
-import { ChevronDown, PlusCircle } from "lucide-react";
+import { ChevronDown, PlusCircle, Sidebar } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChatHeaderProps {
   activeChatSession: ChatSession;
   availableSessions: ChatSession[];
   onCreateNewChat: () => void;
   onSwitchSession: (sessionId: string) => void;
+  onToggleContextPanel: () => void;
+  showContextPanel: boolean;
 }
 
 const ChatHeader = ({ 
   activeChatSession,
   availableSessions,
   onCreateNewChat,
-  onSwitchSession
+  onSwitchSession,
+  onToggleContextPanel,
+  showContextPanel
 }: ChatHeaderProps) => {
+  const isMobile = useIsMobile();
+
   return (
     <div className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center">
@@ -66,6 +73,16 @@ const ChatHeader = ({
             <DropdownMenuItem>Claude 3 Opus</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        
+        {/* Context Panel Toggle (Always visible) */}
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 border-gray-300"
+          onClick={onToggleContextPanel}
+        >
+          <Sidebar className="h-4 w-4" />
+          {!isMobile && (showContextPanel ? "Hide Context" : "Show Context")}
+        </Button>
         
         {/* New Chat Button */}
         <Button 

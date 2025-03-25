@@ -1,6 +1,7 @@
 
 import { useState, useRef, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea"; 
 import { Input } from "@/components/ui/input";
 import { 
   Tooltip,
@@ -22,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChatInputBarProps {
   onSendMessage: (content: string, attachments?: File[]) => void;
@@ -34,16 +36,32 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
   const [isRecording, setIsRecording] = useState(false);
   const [isPasteMenuOpen, setIsPasteMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isMobile = useIsMobile();
+  
+  // Auto-resize the textarea based on content
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
+    }
+  };
   
   const handleSend = () => {
     if (message.trim() || attachments.length > 0) {
       onSendMessage(message, attachments);
       setMessage("");
       setAttachments([]);
+      
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
     }
   };
   
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -123,6 +141,9 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
     
     // In a real app, we would stop recording and process the audio here
     setMessage(prev => prev + " [Voice transcription: I need help with crop rotation planning.]");
+    
+    // Adjust textarea height after adding transcription
+    setTimeout(adjustTextareaHeight, 0);
   };
   
   const openCamera = () => {
@@ -182,24 +203,26 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
           onChange={handleFileUpload}
         />
         
-        {/* Paste button */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-500 hover:text-gray-700"
-                onClick={() => setIsPasteMenuOpen(!isPasteMenuOpen)}
-              >
-                <Clipboard className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Paste from clipboard</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {/* Paste button - hide on mobile */}
+        {!isMobile && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-500 hover:text-gray-700"
+                  onClick={() => setIsPasteMenuOpen(!isPasteMenuOpen)}
+                >
+                  <Clipboard className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Paste from clipboard</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         
         {isPasteMenuOpen && (
           <div className="absolute bottom-16 left-0 w-48 bg-white border border-gray-200 rounded-md shadow-md p-2 z-10">
@@ -222,77 +245,89 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
           </div>
         )}
         
-        {/* Input field */}
-        <Input
+        {/* Input field - Using Textarea instead of Input for multiline support */}
+        <Textarea
+          ref={textareaRef}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            adjustTextareaHeight();
+          }}
           onKeyDown={handleKeyPress}
           placeholder="Type your message here..."
-          className="flex-1 border-0 shadow-none focus-visible:ring-0"
+          className="flex-1 border-0 shadow-none focus-visible:ring-0 min-h-[40px] max-h-[150px] overflow-y-auto resize-none py-2"
+          rows={1}
         />
         
-        {/* File upload button */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-500 hover:text-gray-700"
-                onClick={triggerFileInput}
-              >
-                <Paperclip className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Attach files</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        
-        {/* Voice input button */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "text-gray-500 hover:text-gray-700",
-                  isRecording && "bg-red-100 text-red-600"
-                )}
-                onClick={isRecording ? stopRecording : startRecording}
-              >
-                <Mic className="h-5 w-5" />
-                {isRecording && (
-                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-pulse" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{isRecording ? "Stop recording" : "Voice input"}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        
-        {/* Camera button */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-500 hover:text-gray-700"
-                onClick={openCamera}
-              >
-                <Camera className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Camera</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {/* Attachment buttons - For mobile, only show essential buttons */}
+        <div className="flex items-center space-x-1">
+          {/* File upload button */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-500 hover:text-gray-700"
+                  onClick={triggerFileInput}
+                >
+                  <Paperclip className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Attach files</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          {/* Voice input button */}
+          {!isMobile && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "text-gray-500 hover:text-gray-700",
+                      isRecording && "bg-red-100 text-red-600"
+                    )}
+                    onClick={isRecording ? stopRecording : startRecording}
+                  >
+                    <Mic className="h-5 w-5" />
+                    {isRecording && (
+                      <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-pulse" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isRecording ? "Stop recording" : "Voice input"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          
+          {/* Camera button */}
+          {!isMobile && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={openCamera}
+                  >
+                    <Camera className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Camera</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         
         {/* Connection status */}
         <TooltipProvider>
