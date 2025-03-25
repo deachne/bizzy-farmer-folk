@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -68,6 +67,141 @@ const ChatPage = () => {
           }
         }
       ]
+    },
+    {
+      id: "4",
+      content: "Thanks for the information. How often should I apply the copper fungicide?",
+      sender: "user",
+      timestamp: "9:35 AM",
+      status: "delivered"
+    },
+    {
+      id: "5",
+      content: "For copper fungicide, you should typically apply it every 7-10 days during dry weather, and more frequently (every 5-7 days) during wet weather. Always follow the specific product instructions for exact timing and concentration. Make sure to cover both sides of the leaves thoroughly.",
+      sender: "ai",
+      timestamp: "9:36 AM",
+      status: "delivered"
+    },
+    {
+      id: "6",
+      content: "Should I remove the affected leaves before applying the treatment?",
+      sender: "user",
+      timestamp: "9:38 AM",
+      status: "delivered"
+    },
+    {
+      id: "7",
+      content: "Yes, removing affected leaves is recommended before applying fungicide. This helps reduce the spread of the disease. Be sure to:\n\n1. Cut off affected leaves with clean, sterilized scissors or pruners\n2. Dispose of infected material in the trash (not compost)\n3. Wash your hands and sterilize tools after handling infected plants\n4. Apply the fungicide after removing the affected foliage",
+      sender: "ai",
+      timestamp: "9:40 AM",
+      status: "delivered"
+    },
+    {
+      id: "8",
+      content: "What's the best time of day to apply fungicide?",
+      sender: "user",
+      timestamp: "9:42 AM",
+      status: "delivered"
+    },
+    {
+      id: "9",
+      content: "The best time to apply fungicide is in the early morning or late evening when temperatures are cooler. This timing provides several benefits:\n\n- Avoids peak sun hours that could cause leaf burn\n- Allows better absorption as the product dries slowly\n- Reduces the risk of evaporation before the product is effective\n- Minimizes exposure to beneficial insects that are most active midday\n\nAvoid application when rain is forecast within 24 hours for best results.",
+      sender: "ai",
+      timestamp: "9:44 AM",
+      status: "delivered"
+    },
+    {
+      id: "10",
+      content: "Are there any preventative measures I can take to avoid this issue next season?",
+      sender: "user",
+      timestamp: "9:47 AM",
+      status: "delivered"
+    },
+    {
+      id: "11",
+      content: "Absolutely! Here are some preventative measures for next season to minimize early blight risk:",
+      sender: "ai",
+      timestamp: "9:49 AM",
+      status: "delivered",
+      artifacts: [
+        {
+          id: "a2",
+          type: "table",
+          title: "PREVENTATIVE MEASURES",
+          content: {
+            headers: ["", ""],
+            rows: [
+              ["Crop Rotation", "Avoid planting tomatoes in the same location for 2-3 years"],
+              ["Plant Spacing", "Ensure adequate spacing for good air circulation"],
+              ["Mulching", "Apply mulch to prevent soil splash onto lower leaves"],
+              ["Watering", "Use drip irrigation or soaker hoses to keep foliage dry"],
+              ["Resistant Varieties", "Choose tomato varieties with early blight resistance"],
+              ["Staking/Trellising", "Keep plants off the ground to reduce disease exposure"],
+              ["Fall Cleanup", "Remove and destroy all plant debris after harvest"]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      id: "12",
+      content: "This is very helpful information. Do you know any resistant tomato varieties I could try next year?",
+      sender: "user",
+      timestamp: "9:52 AM",
+      status: "delivered"
+    },
+    {
+      id: "13",
+      content: "Here are some tomato varieties with good resistance to early blight that you might consider for next season:\n\n1. Iron Lady - Highly resistant to early blight, late blight, and septoria leaf spot\n2. Jasper - Cherry tomato with excellent disease resistance\n3. Mountain Magic - Campari-type with resistance to early and late blight\n4. Defiant PhR - Medium-sized slicing tomato with good disease resistance\n5. Mountain Merit - Large slicing tomato with multiple disease resistances\n6. Plum Regal - Roma/paste type with good blight resistance\n7. Valentine - Red grape tomato with improved disease resistance\n\nWhen purchasing seeds or plants, look for varieties labeled with 'EB' for early blight resistance in their disease resistance codes.",
+      sender: "ai",
+      timestamp: "9:55 AM",
+      status: "delivered"
+    },
+    {
+      id: "14",
+      content: "I've been considering switching to drip irrigation. Is that something you'd recommend?",
+      sender: "user",
+      timestamp: "10:00 AM",
+      status: "delivered"
+    },
+    {
+      id: "15",
+      content: "Yes, I highly recommend switching to drip irrigation for your tomatoes and other vegetables. It offers several significant advantages:",
+      sender: "ai",
+      timestamp: "10:03 AM",
+      status: "delivered",
+      artifacts: [
+        {
+          id: "a3",
+          type: "table",
+          title: "DRIP IRRIGATION BENEFITS",
+          content: {
+            headers: ["Benefit", "Description"],
+            rows: [
+              ["Disease Prevention", "Keeps foliage dry, significantly reducing fungal disease risk"],
+              ["Water Conservation", "Reduces water usage by 30-50% compared to sprinkler irrigation"],
+              ["Fertilizer Efficiency", "Allows precise fertigation (fertilizer application through irrigation)"],
+              ["Weed Reduction", "Waters only the crop root zone, not surrounding areas where weeds grow"],
+              ["Soil Structure", "Prevents soil compaction and erosion from water impact"],
+              ["Convenience", "Can be automated with timers for consistent watering"]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      id: "16",
+      content: "Thanks for all this information. One last question - what's the expected crop yield loss from early blight if I treat it promptly?",
+      sender: "user",
+      timestamp: "10:10 AM",
+      status: "delivered"
+    },
+    {
+      id: "17",
+      content: "With prompt treatment of early blight, you can expect to minimize yield losses significantly. Here's what you might expect:\n\n- Prompt treatment (at first signs): Typically limits yield loss to 5-15%\n- Delayed treatment (disease well-established): May result in 20-40% yield loss\n- No treatment: Can lead to 50-80% yield reduction in severe cases\n\nFactors affecting the impact include:\n- Weather conditions (wet, humid conditions worsen spread)\n- Variety susceptibility\n- Plant vigor and overall health\n- Treatment effectiveness\n- Thoroughness of affected leaf removal\n\nBy implementing the preventative measures we discussed and treating promptly at the first signs of disease, you should be able to maintain good productivity despite the current infection.",
+      sender: "ai",
+      timestamp: "10:13 AM",
+      status: "delivered"
     }
   ]);
 
@@ -102,7 +236,6 @@ const ChatPage = () => {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
-  // Effect to handle context panel visibility based on screen size
   useEffect(() => {
     if (isMobile) {
       setShowContextPanel(false);
@@ -111,22 +244,18 @@ const ChatPage = () => {
     }
   }, [isMobile]);
 
-  // Effect to scroll to bottom on new messages
   useEffect(() => {
     if (messages.some(msg => msg.isNew)) {
       scrollToBottom();
     }
   }, [messages]);
 
-  // Scroll to bottom function
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Preserve scroll position when switching chats
   const [scrollPositions, setScrollPositions] = useState<Record<string, number>>({});
 
-  // Save scroll position before switching chats
   useEffect(() => {
     if (messagesContainerRef.current && activeChatSession) {
       return () => {
@@ -138,7 +267,6 @@ const ChatPage = () => {
     }
   }, [activeChatSession]);
 
-  // Restore scroll position when chat is loaded
   useEffect(() => {
     if (messagesContainerRef.current && scrollPositions[activeChatSession.id]) {
       messagesContainerRef.current.scrollTop = scrollPositions[activeChatSession.id];
@@ -148,7 +276,6 @@ const ChatPage = () => {
   }, [activeChatSession.id, scrollPositions]);
 
   const sendMessage = (content: string, attachments?: File[]) => {
-    // Process attachments if any
     const fileUploads: Promise<void>[] = [];
     const uploadIds: string[] = [];
     
@@ -157,13 +284,11 @@ const ChatPage = () => {
         const uploadId = Date.now().toString() + file.name;
         uploadIds.push(uploadId);
         
-        // Initialize progress for this upload
         setUploadProgress(prev => ({
           ...prev,
           [uploadId]: 0
         }));
         
-        // Simulate file upload with progress
         const uploadPromise = new Promise<void>((resolve) => {
           let progress = 0;
           const interval = setInterval(() => {
@@ -184,7 +309,6 @@ const ChatPage = () => {
       });
     }
     
-    // Add user message immediately with "sending" status
     const newUserMessage: Message = {
       id: Date.now().toString() + "-user",
       content,
@@ -196,7 +320,6 @@ const ChatPage = () => {
     
     setMessages(prev => [...prev, newUserMessage]);
     
-    // After all files are uploaded, update message status to "sent"
     Promise.all(fileUploads).then(() => {
       setMessages(prev => 
         prev.map(msg => 
@@ -206,7 +329,6 @@ const ChatPage = () => {
         )
       );
       
-      // Clear upload progress
       uploadIds.forEach(id => {
         setUploadProgress(prev => {
           const newProgress = { ...prev };
@@ -215,10 +337,8 @@ const ChatPage = () => {
         });
       });
       
-      // Simulate AI typing
       setIsAiTyping(true);
       
-      // Simulate AI response after a short delay
       setTimeout(() => {
         const newAiMessage: Message = {
           id: Date.now().toString() + "-ai",
@@ -231,7 +351,6 @@ const ChatPage = () => {
         
         setMessages(prev => [...prev, newAiMessage]);
         
-        // Update AI message status to "delivered" after a short delay
         setTimeout(() => {
           setMessages(prev => 
             prev.map(msg => 
@@ -242,7 +361,6 @@ const ChatPage = () => {
           );
           setIsAiTyping(false);
           
-          // Show notification for new message
           toast({
             title: "New message received",
             description: "Claude has responded to your message",
@@ -254,7 +372,6 @@ const ChatPage = () => {
   };
 
   const generateAiResponse = (userMessage: string): string => {
-    // Simple response generation for demo purposes
     if (userMessage.toLowerCase().includes("tomato")) {
       return "Tomato plants are susceptible to several diseases. Based on your description, it could be early blight or septoria leaf spot. I recommend examining the affected leaves more closely.";
     } else if (userMessage.toLowerCase().includes("soil")) {
@@ -278,7 +395,6 @@ const ChatPage = () => {
   };
 
   const createNewChat = () => {
-    // Reset messages and scroll position for new chat
     setMessages([]);
     scrollToBottom();
     
@@ -292,7 +408,6 @@ const ChatPage = () => {
   const switchChatSession = (sessionId: string) => {
     const session = availableSessions.find(s => s.id === sessionId);
     if (session) {
-      // Save current scroll position before switching
       if (messagesContainerRef.current) {
         setScrollPositions(prev => ({
           ...prev,
@@ -301,7 +416,6 @@ const ChatPage = () => {
       }
       
       setActiveChatSession(session);
-      // In a real app, we would load messages for this session
       toast({
         title: "Chat Session Changed",
         description: `Switched to ${session.name}`,
@@ -320,7 +434,6 @@ const ChatPage = () => {
         <NoteSidebar />
         
         <div className="flex-1 flex flex-col">
-          {/* Top Bar */}
           <ChatHeader 
             activeChatSession={activeChatSession}
             availableSessions={availableSessions}
@@ -331,7 +444,6 @@ const ChatPage = () => {
           />
           
           <div className="flex flex-1 overflow-hidden">
-            {/* Chat Messages Area */}
             <div className={`${showContextPanel ? "w-full md:w-2/3" : "w-full"} flex flex-col border-r transition-all duration-300`}>
               <div 
                 ref={messagesContainerRef}
@@ -346,7 +458,6 @@ const ChatPage = () => {
                 />
               </div>
               
-              {/* Chat Input Area */}
               <div className="border-t p-4">
                 <ChatInputBar 
                   onSendMessage={sendMessage}
@@ -355,7 +466,6 @@ const ChatPage = () => {
               </div>
             </div>
             
-            {/* Context Panel */}
             {showContextPanel && (
               <div className="hidden md:block md:w-1/3 transition-all duration-300">
                 <ChatContextPanel />
@@ -363,7 +473,6 @@ const ChatPage = () => {
             )}
           </div>
           
-          {/* Action Log Footer */}
           <div className="border-t p-2 text-sm text-gray-500 flex justify-end">
             <div>
               <span className="font-medium">Action Log:</span> 
