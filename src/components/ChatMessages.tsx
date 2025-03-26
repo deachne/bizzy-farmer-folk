@@ -1,3 +1,4 @@
+
 import { RefObject, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Message } from "@/pages/ChatPage";
@@ -30,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ArtifactTrigger from "./ArtifactTrigger";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -37,6 +39,7 @@ interface ChatMessagesProps {
   onSaveAsNote: (messageId: string) => void;
   messagesEndRef: RefObject<HTMLDivElement>;
   uploadProgress?: Record<string, number>;
+  onViewArtifact: (messageId: string, artifactIndex: number) => void;
 }
 
 const ChatMessages = ({ 
@@ -44,7 +47,8 @@ const ChatMessages = ({
   isAiTyping, 
   onSaveAsNote, 
   messagesEndRef,
-  uploadProgress = {}
+  uploadProgress = {},
+  onViewArtifact
 }: ChatMessagesProps) => {
   const [expandedMessages, setExpandedMessages] = useState<Record<string, boolean>>({});
   
@@ -129,68 +133,10 @@ const ChatMessages = ({
                   
                   <CollapsibleContent>
                     {message.artifacts && message.artifacts.length > 0 && (
-                      <div className="mt-4 space-y-4">
-                        {message.artifacts.map(artifact => (
-                          <div key={artifact.id} className="border rounded-md overflow-hidden">
-                            {artifact.type === "table" && (
-                              <div>
-                                {artifact.title && (
-                                  <div className="bg-gray-50 p-3 font-medium text-gray-700 border-b">
-                                    {artifact.title}
-                                  </div>
-                                )}
-                                <div className="overflow-x-auto">
-                                  <table className="w-full">
-                                    <tbody>
-                                      {artifact.content.rows.map((row: string[], i: number) => (
-                                        <tr key={i} className="border-b">
-                                          {row.map((cell, j) => (
-                                            <td 
-                                              key={`${i}-${j}`} 
-                                              className={cn(
-                                                "p-3",
-                                                j === 0 && "font-medium bg-gray-50"
-                                              )}
-                                            >
-                                              {cell}
-                                            </td>
-                                          ))}
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div className="bg-gray-50 p-2 flex justify-end border-t">
-                                  <Button variant="ghost" size="sm">
-                                    <ExternalLink className="h-4 w-4 mr-2" />
-                                    Open in Notes
-                                  </Button>
-                                </div>
-                              </div>
-                            )}
-                            
-                            {artifact.type === "chart" && (
-                              <div className="p-4">
-                                <div className="text-center font-medium mb-2">{artifact.title}</div>
-                                <div className="bg-gray-100 h-40 flex items-center justify-center">
-                                  [Chart Visualization]
-                                </div>
-                              </div>
-                            )}
-                            
-                            {artifact.type === "image" && (
-                              <div>
-                                <div className="text-center font-medium mb-2">{artifact.title}</div>
-                                <img 
-                                  src={typeof artifact.content === 'string' ? artifact.content : ''}
-                                  alt={artifact.title || "Image"} 
-                                  className="max-w-full"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                      <ArtifactTrigger 
+                        artifacts={message.artifacts}
+                        onViewInPanel={(artifactIndex) => onViewArtifact(message.id, artifactIndex)}
+                      />
                     )}
                   </CollapsibleContent>
                   

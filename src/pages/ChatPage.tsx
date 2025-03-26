@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -6,6 +5,7 @@ import ChatMessages from "@/components/ChatMessages";
 import ChatInputBar from "@/components/ChatInputBar";
 import ChatHeader from "@/components/ChatHeader";
 import ChatContextPanel from "@/components/ChatContextPanel";
+import ArtifactPanel from "@/components/ArtifactPanel";
 import { toast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -232,6 +232,9 @@ const ChatPage = () => {
   const [connectionStatus, setConnectionStatus] = useState<"connected" | "connecting" | "disconnected">("connected");
   const [showContextPanel, setShowContextPanel] = useState(true);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
+  const [artifactPanelOpen, setArtifactPanelOpen] = useState(false);
+  const [currentMessageArtifacts, setCurrentMessageArtifacts] = useState<Artifact[]>([]);
+  const [initialArtifactIndex, setInitialArtifactIndex] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -429,8 +432,36 @@ const ChatPage = () => {
     setShowContextPanel(prev => !prev);
   };
 
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isAtTop = scrollTop === 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+    
+    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+      return; // Let event propagate to parent
+    }
+    
+    e.stopPropagation();
+  };
+
+  const handleViewArtifact = (messageId: string, artifactIndex: number) => {
+    const message = messages.find(msg => msg.id === messageId);
+    if (message?.artifacts) {
+      setCurrentMessageArtifacts(message.artifacts);
+      setInitialArtifactIndex(artifactIndex);
+      setArtifactPanelOpen(true);
+    }
+  };
+
+  const closeArtifactPanel = () => {
+    setArtifactPanelOpen(false);
+  };
+
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen max-h-screen overflow-hidden bg-white">
       <SidebarProvider>
         <NoteSidebar />
         
@@ -449,6 +480,7 @@ const ChatPage = () => {
               <div 
                 ref={messagesContainerRef}
                 className="flex-1 overflow-y-auto p-4 pb-20 scroll-smooth"
+                onWheel={handleWheel}
               >
                 <ChatMessages 
                   messages={messages}
@@ -456,6 +488,7 @@ const ChatPage = () => {
                   onSaveAsNote={saveMessageAsNote}
                   messagesEndRef={messagesEndRef}
                   uploadProgress={uploadProgress}
+                  onViewArtifact={handleViewArtifact}
                 />
               </div>
               
@@ -468,7 +501,7 @@ const ChatPage = () => {
             </div>
             
             {showContextPanel && (
-              <div className="hidden md:block md:w-1/3 transition-all duration-300">
+              <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
                 <ChatContextPanel />
               </div>
             )}
@@ -482,6 +515,13 @@ const ChatPage = () => {
           </div>
         </div>
       </SidebarProvider>
+      
+      <ArtifactPanel 
+        isOpen={artifactPanelOpen}
+        onClose={closeArtifactPanel}
+        artifacts={currentMessageArtifacts}
+        initialArtifactIndex={initialArtifactIndex}
+      />
     </div>
   );
 };
