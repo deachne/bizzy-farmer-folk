@@ -23,6 +23,11 @@ const ArtifactTrigger = ({
     return null;
   }
 
+  const handleViewArtifact = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event bubbling
+    onViewInPanel(index);
+  };
+
   return (
     <div className="mt-4">
       <div className="flex items-center">
@@ -51,10 +56,7 @@ const ArtifactTrigger = ({
             <div 
               key={artifact.id} 
               className="border rounded-md p-3 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent event bubbling
-                onViewInPanel(index);
-              }}
+              onClick={(e) => handleViewArtifact(index, e)}
             >
               <div className="flex justify-between items-center">
                 <div className="font-medium">
@@ -64,10 +66,7 @@ const ArtifactTrigger = ({
                   variant="ghost" 
                   size="sm" 
                   className="h-7 px-2"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent event bubbling
-                    onViewInPanel(index);
-                  }}
+                  onClick={(e) => handleViewArtifact(index, e)}
                 >
                   View
                 </Button>

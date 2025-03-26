@@ -482,9 +482,10 @@ const ChatPage = () => {
           
           <div className="flex flex-1 overflow-hidden relative">
             <div className={cn(
-              "flex flex-col border-r transition-all duration-300 overflow-hidden",
-              showContextPanel ? "w-full md:w-2/3" : "w-full",
-              artifactPanelOpen && !isMobile ? "w-[60%]" : ""
+              "flex flex-col transition-all duration-300 overflow-hidden",
+              isMobile ? "w-full" : 
+                artifactPanelOpen ? "w-[60%]" : 
+                  showContextPanel ? "w-2/3 border-r" : "w-full"
             )}>
               <div 
                 ref={messagesContainerRef}

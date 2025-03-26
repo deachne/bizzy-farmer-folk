@@ -8,11 +8,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ResizablePanelGroup, 
-  ResizablePanel, 
-  ResizableHandle 
-} from "@/components/ui/resizable";
 
 interface ArtifactPanelProps {
   isOpen: boolean;
@@ -31,14 +26,15 @@ const ArtifactPanel = ({
   const [minimized, setMinimized] = useState(false);
   const isMobile = useIsMobile();
   
-  const currentArtifact = artifacts[currentIndex];
-
   // Reset currentIndex when artifacts change
   useEffect(() => {
     if (artifacts.length > 0) {
       setCurrentIndex(initialArtifactIndex);
     }
   }, [artifacts, initialArtifactIndex]);
+
+  // Current artifact is only valid when artifacts exist and index is valid
+  const currentArtifact = artifacts.length > 0 ? artifacts[Math.min(currentIndex, artifacts.length - 1)] : null;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -95,7 +91,7 @@ const ArtifactPanel = ({
     setMinimized(!minimized);
   };
 
-  if (!isOpen || artifacts.length === 0) {
+  if (!isOpen || artifacts.length === 0 || !currentArtifact) {
     return null;
   }
 
@@ -250,36 +246,6 @@ const ArtifactPanel = ({
         </div>
       </div>
       
-      {/* Drag handle for resizing (only visible on desktop) */}
-      {!isMobile && (
-        <div 
-          className="absolute top-0 left-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-400 hover:opacity-50 transition-colors"
-          onMouseDown={(e) => {
-            const startX = e.clientX;
-            const startWidth = e.currentTarget.parentElement?.clientWidth || 0;
-            
-            const handleMouseMove = (moveEvent: MouseEvent) => {
-              const newWidth = startWidth - (moveEvent.clientX - startX);
-              const minWidth = 300; // Minimum width in pixels
-              const maxWidth = window.innerWidth * 0.8; // Maximum width (80% of viewport)
-              
-              const clampedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
-              if (e.currentTarget.parentElement) {
-                e.currentTarget.parentElement.style.width = `${clampedWidth}px`;
-              }
-            };
-            
-            const handleMouseUp = () => {
-              document.removeEventListener("mousemove", handleMouseMove);
-              document.removeEventListener("mouseup", handleMouseUp);
-            };
-            
-            document.addEventListener("mousemove", handleMouseMove);
-            document.addEventListener("mouseup", handleMouseUp);
-          }}
-        />
-      )}
-      
       {/* Minimized indicator */}
       {minimized && (
         <div 
@@ -288,6 +254,13 @@ const ArtifactPanel = ({
         >
           <ChevronLeft className="h-5 w-5" />
         </div>
+      )}
+      
+      {/* Safe resizing handle that won't cause errors */}
+      {!isMobile && (
+        <div 
+          className="absolute top-0 left-0 bottom-0 w-4 cursor-ew-resize hover:bg-blue-400 hover:opacity-50 transition-colors"
+        />
       )}
     </div>
   );
