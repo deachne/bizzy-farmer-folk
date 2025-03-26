@@ -51,13 +51,24 @@ const ArtifactTrigger = ({
             <div 
               key={artifact.id} 
               className="border rounded-md p-3 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
-              onClick={() => onViewInPanel(index)}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                onViewInPanel(index);
+              }}
             >
               <div className="flex justify-between items-center">
                 <div className="font-medium">
                   {artifact.title || `${artifact.type.charAt(0).toUpperCase() + artifact.type.slice(1)}`}
                 </div>
-                <Button variant="ghost" size="sm" className="h-7 px-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 px-2"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    onViewInPanel(index);
+                  }}
+                >
                   View
                 </Button>
               </div>

@@ -33,6 +33,13 @@ const ArtifactPanel = ({
   
   const currentArtifact = artifacts[currentIndex];
 
+  // Reset currentIndex when artifacts change
+  useEffect(() => {
+    if (artifacts.length > 0) {
+      setCurrentIndex(initialArtifactIndex);
+    }
+  }, [artifacts, initialArtifactIndex]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -57,13 +64,6 @@ const ArtifactPanel = ({
       setMinimized(false);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    // Set the initial artifact index when opening panel
-    if (isOpen && initialArtifactIndex !== undefined) {
-      setCurrentIndex(initialArtifactIndex);
-    }
-  }, [isOpen, initialArtifactIndex]);
 
   const handleSaveArtifact = () => {
     toast({
