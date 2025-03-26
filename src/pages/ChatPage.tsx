@@ -453,6 +453,10 @@ const ChatPage = () => {
       setCurrentMessageArtifacts(message.artifacts);
       setInitialArtifactIndex(artifactIndex);
       setArtifactPanelOpen(true);
+      
+      if (isMobile && showContextPanel) {
+        setShowContextPanel(false);
+      }
     }
   };
 
@@ -476,7 +480,11 @@ const ChatPage = () => {
           />
           
           <div className="flex flex-1 overflow-hidden relative">
-            <div className={`${showContextPanel ? "w-full md:w-2/3" : "w-full"} flex flex-col border-r transition-all duration-300 overflow-hidden`}>
+            <div className={cn(
+              "flex flex-col border-r transition-all duration-300 overflow-hidden",
+              showContextPanel ? "w-full md:w-2/3" : "w-full",
+              artifactPanelOpen && !isMobile ? "w-[60%]" : ""
+            )}>
               <div 
                 ref={messagesContainerRef}
                 className="flex-1 overflow-y-auto p-4 pb-20 scroll-smooth"
@@ -500,7 +508,7 @@ const ChatPage = () => {
               </div>
             </div>
             
-            {showContextPanel && (
+            {showContextPanel && !(isMobile && artifactPanelOpen) && (
               <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
                 <ChatContextPanel />
               </div>

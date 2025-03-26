@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { X, ChevronLeft, ChevronRight, Save, Copy, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { 
+  ResizablePanelGroup, 
+  ResizablePanel, 
+  ResizableHandle 
+} from "@/components/ui/resizable";
 
 interface ArtifactPanelProps {
   isOpen: boolean;
@@ -94,38 +100,15 @@ const ArtifactPanel = ({
   }
 
   return (
-    <>
-      {/* Semi-transparent overlay for non-mobile */}
-      {!isMobile && !minimized && (
-        <div 
-          className="fixed inset-0 bg-black/30 z-40"
-          onClick={onClose}
-          aria-hidden="true"
-        />
+    <div 
+      className={cn(
+        "fixed inset-y-0 right-0 z-50 h-full bg-transparent transition-all duration-300 ease-in-out",
+        minimized ? "translate-x-full" : "translate-x-0"
       )}
-      
-      {/* Minimized indicator */}
-      {minimized && (
-        <div 
-          className="fixed right-0 bottom-20 bg-primary text-white p-2 rounded-l-md cursor-pointer z-50 animate-slide-in-right"
-          onClick={toggleMinimize}
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </div>
-      )}
-      
-      {/* Artifact panel */}
-      <div 
-        className={cn(
-          "fixed z-50 bg-white border-l shadow-xl transition-all duration-300 ease-in-out",
-          minimized 
-            ? "right-[-100%]" 
-            : "right-0",
-          isMobile 
-            ? "inset-y-0 w-full" 
-            : "inset-y-0 w-[400px]"
-        )}
-      >
+      style={{ width: isMobile ? "100%" : "40%" }}
+    >
+      {/* Artifact panel container */}
+      <div className="h-full flex flex-col bg-white border-l shadow-xl">
         {/* Header */}
         <div className="h-16 border-b flex items-center justify-between px-4">
           <div className="flex items-center space-x-2">
@@ -184,7 +167,7 @@ const ArtifactPanel = ({
         )}
         
         {/* Content */}
-        <ScrollArea className="h-[calc(100vh-12rem)]">
+        <ScrollArea className="flex-1 overflow-auto">
           <div className="p-4">
             {currentArtifact?.type === "table" && (
               <div className="border rounded-md overflow-hidden">
@@ -247,7 +230,7 @@ const ArtifactPanel = ({
         </ScrollArea>
         
         {/* Actions footer */}
-        <div className="absolute bottom-0 left-0 right-0 border-t p-4 bg-white">
+        <div className="border-t p-4 bg-white">
           <div className="flex justify-between">
             <Button variant="outline" size="sm" onClick={handleSaveArtifact}>
               <Save className="h-4 w-4 mr-2" />
@@ -266,7 +249,47 @@ const ArtifactPanel = ({
           </div>
         </div>
       </div>
-    </>
+      
+      {/* Drag handle for resizing (only visible on desktop) */}
+      {!isMobile && (
+        <div 
+          className="absolute top-0 left-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-400 hover:opacity-50 transition-colors"
+          onMouseDown={(e) => {
+            const startX = e.clientX;
+            const startWidth = e.currentTarget.parentElement?.clientWidth || 0;
+            
+            const handleMouseMove = (moveEvent: MouseEvent) => {
+              const newWidth = startWidth - (moveEvent.clientX - startX);
+              const minWidth = 300; // Minimum width in pixels
+              const maxWidth = window.innerWidth * 0.8; // Maximum width (80% of viewport)
+              
+              const clampedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
+              if (e.currentTarget.parentElement) {
+                e.currentTarget.parentElement.style.width = `${clampedWidth}px`;
+              }
+            };
+            
+            const handleMouseUp = () => {
+              document.removeEventListener("mousemove", handleMouseMove);
+              document.removeEventListener("mouseup", handleMouseUp);
+            };
+            
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+          }}
+        />
+      )}
+      
+      {/* Minimized indicator */}
+      {minimized && (
+        <div 
+          className="fixed right-0 bottom-20 bg-primary text-white p-2 rounded-l-md cursor-pointer z-50 animate-slide-in-right"
+          onClick={toggleMinimize}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </div>
+      )}
+    </div>
   );
 };
 
