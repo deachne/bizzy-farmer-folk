@@ -4,7 +4,6 @@ import { FileBox, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Artifact } from "@/pages/ChatPage";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 interface ArtifactTriggerProps {
   artifacts: Artifact[];

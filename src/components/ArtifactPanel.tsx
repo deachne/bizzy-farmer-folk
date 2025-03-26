@@ -33,6 +33,13 @@ const ArtifactPanel = ({
     }
   }, [artifacts, initialArtifactIndex]);
 
+  // Reset minimized state when isOpen changes
+  useEffect(() => {
+    if (!isOpen) {
+      setMinimized(false);
+    }
+  }, [isOpen]);
+
   // Current artifact is only valid when artifacts exist and index is valid
   const currentArtifact = artifacts.length > 0 ? artifacts[Math.min(currentIndex, artifacts.length - 1)] : null;
 
@@ -53,13 +60,6 @@ const ArtifactPanel = ({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose, currentIndex, artifacts.length]);
-
-  useEffect(() => {
-    // When artifacts change, reset minimized state
-    if (isOpen) {
-      setMinimized(false);
-    }
-  }, [isOpen]);
 
   const handleSaveArtifact = () => {
     toast({
@@ -89,6 +89,11 @@ const ArtifactPanel = ({
 
   const toggleMinimize = () => {
     setMinimized(!minimized);
+  };
+
+  const handleClose = () => {
+    setMinimized(false);
+    onClose();
   };
 
   if (!isOpen || artifacts.length === 0 || !currentArtifact) {
@@ -131,7 +136,7 @@ const ArtifactPanel = ({
               variant="ghost" 
               size="icon" 
               className="h-8 w-8" 
-              onClick={onClose}
+              onClick={handleClose}
             >
               <X className="h-4 w-4" />
             </Button>
