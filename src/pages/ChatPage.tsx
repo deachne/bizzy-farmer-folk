@@ -8,6 +8,7 @@ import ChatContextPanel from "@/components/ChatContextPanel";
 import ArtifactPanel from "@/components/ArtifactPanel";
 import { toast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export interface Message {
   id: string;
