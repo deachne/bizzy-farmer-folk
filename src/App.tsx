@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import NotesPage from "./pages/NotesPage";
 import ChatPage from "./pages/ChatPage";
-import React from "react"; // Import React explicitly
+import TasksPage from "./pages/TasksPage";
+import React from "react"; 
 
 // Create the query client outside of the component
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => {
               <Route path="/" element={<Navigate to="/notes" replace />} />
               <Route path="/notes" element={<NotesPage />} />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="/tasks" element={<TasksPage />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

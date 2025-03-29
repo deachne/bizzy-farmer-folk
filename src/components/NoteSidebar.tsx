@@ -1,4 +1,3 @@
-
 import { 
   FileText, 
   FileIcon, 
@@ -23,7 +22,7 @@ const NoteSidebar = () => {
   const coreItems = [
     { icon: FileText, label: "Notes", path: "/notes", active: currentPath.includes("/notes") },
     { icon: FileIcon, label: "Documents", path: "/documents" },
-    { icon: ClipboardList, label: "Tasks", path: "/tasks" },
+    { icon: ClipboardList, label: "Tasks", path: "/tasks", active: currentPath.includes("/tasks") },
     { icon: MessageSquare, label: "Chat", path: "/chat", active: currentPath.includes("/chat") },
   ];
   
