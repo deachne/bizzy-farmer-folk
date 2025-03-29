@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import TasksList from "@/components/TasksList";
+import TasksBoard from "@/components/TasksBoard";
 import TaskDetail from "@/components/TaskDetail";
 import { Plus, Filter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -201,7 +202,7 @@ const TasksPage = () => {
                 <h2 className="text-xl font-semibold mb-4">Tasks</h2>
                 
                 <div className="flex items-center justify-between mb-4">
-                  <Tabs defaultValue="list" className="w-full" onValueChange={setActiveTab}>
+                  <Tabs defaultValue={activeTab} value={activeTab} className="w-full" onValueChange={setActiveTab}>
                     <TabsList className="grid w-full grid-cols-2">
                       <TabsTrigger value="list">List</TabsTrigger>
                       <TabsTrigger value="board">Board</TabsTrigger>
@@ -261,30 +262,42 @@ const TasksPage = () => {
               </div>
               
               <div className="flex-1 overflow-y-auto px-4 pb-4">
-                {/* Upcoming Tasks */}
-                {upcomingTasks.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-base font-semibold mb-2 text-gray-700">Upcoming</h3>
-                    <TasksList 
-                      tasks={upcomingTasks} 
-                      selectedTask={selectedTask} 
-                      onSelectTask={setSelectedTask}
-                      onCompleteTask={completeTask}
-                    />
-                  </div>
-                )}
-                
-                {/* Completed Tasks */}
-                {completedTasks.length > 0 && (
-                  <div>
-                    <h3 className="text-base font-semibold mb-2 text-gray-700">Recently Completed</h3>
-                    <TasksList 
-                      tasks={completedTasks} 
-                      selectedTask={selectedTask} 
-                      onSelectTask={setSelectedTask}
-                      onCompleteTask={completeTask}
-                    />
-                  </div>
+                {activeTab === "list" ? (
+                  <>
+                    {/* Upcoming Tasks */}
+                    {upcomingTasks.length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="text-base font-semibold mb-2 text-gray-700">Upcoming</h3>
+                        <TasksList 
+                          tasks={upcomingTasks} 
+                          selectedTask={selectedTask} 
+                          onSelectTask={setSelectedTask}
+                          onCompleteTask={completeTask}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Completed Tasks */}
+                    {completedTasks.length > 0 && (
+                      <div>
+                        <h3 className="text-base font-semibold mb-2 text-gray-700">Recently Completed</h3>
+                        <TasksList 
+                          tasks={completedTasks} 
+                          selectedTask={selectedTask} 
+                          onSelectTask={setSelectedTask}
+                          onCompleteTask={completeTask}
+                        />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <TasksBoard
+                    tasks={filteredTasks}
+                    selectedTask={selectedTask}
+                    onSelectTask={setSelectedTask}
+                    onCompleteTask={completeTask}
+                    createTask={createTask}
+                  />
                 )}
               </div>
             </div>
