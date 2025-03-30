@@ -1,11 +1,13 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, X, Tag, Trash2, Archive, Share, Bold, Italic, Underline, List } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +15,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 interface NoteDetailProps {
   note: Note;
@@ -24,6 +27,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const [tagInput, setTagInput] = useState("");
+  const [isPreview, setIsPreview] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -94,8 +99,62 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     });
   };
 
-  // Simple text formatting functions (for rich text demo)
+  // Apply formatting to selected text
   const applyFormatting = (format: string) => {
+    if (!textareaRef.current) return;
+    
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+    
+    let formattedText = '';
+    let cursorPosition = 0;
+    
+    switch (format) {
+      case "Bold":
+        formattedText = `**${selectedText}**`;
+        cursorPosition = start + 2;
+        break;
+      case "Italic":
+        formattedText = `*${selectedText}*`;
+        cursorPosition = start + 1;
+        break;
+      case "Underline":
+        // Using HTML since Markdown doesn't have native underline
+        formattedText = `<u>${selectedText}</u>`;
+        cursorPosition = start + 3;
+        break;
+      case "List":
+        // Split by lines and add bullet points
+        formattedText = selectedText
+          .split('\n')
+          .map(line => `- ${line}`)
+          .join('\n');
+        cursorPosition = start + 2;
+        break;
+      default:
+        return;
+    }
+    
+    const newContent = content.substring(0, start) + formattedText + content.substring(end);
+    setContent(newContent);
+    onUpdateNote({
+      ...note,
+      content: newContent,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+    
+    // Set cursor position after formatting
+    setTimeout(() => {
+      textarea.focus();
+      if (selectedText) {
+        textarea.setSelectionRange(start, start + formattedText.length);
+      } else {
+        textarea.setSelectionRange(cursorPosition, cursorPosition);
+      }
+    }, 0);
+    
     toast({
       title: "Text formatting",
       description: `${format} formatting applied`
@@ -185,47 +244,67 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         </div>
       </div>
       
-      <div className="mb-4 border-b pb-2 flex">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="rounded-md h-8"
-          onClick={() => applyFormatting("Bold")}
+      <div className="mb-4 border-b pb-2 flex justify-between">
+        <div className="flex">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="rounded-md h-8"
+            onClick={() => applyFormatting("Bold")}
+          >
+            <Bold className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="rounded-md h-8"
+            onClick={() => applyFormatting("Italic")}
+          >
+            <Italic className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="rounded-md h-8"
+            onClick={() => applyFormatting("Underline")}
+          >
+            <Underline className="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="rounded-md h-8"
+            onClick={() => applyFormatting("List")}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsPreview(!isPreview)}
+          className="text-xs"
         >
-          <Bold className="h-4 w-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="rounded-md h-8"
-          onClick={() => applyFormatting("Italic")}
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="rounded-md h-8"
-          onClick={() => applyFormatting("Underline")}
-        >
-          <Underline className="h-4 w-4" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="rounded-md h-8"
-          onClick={() => applyFormatting("List")}
-        >
-          <List className="h-4 w-4" />
+          {isPreview ? "Edit" : "Preview"}
         </Button>
       </div>
       
-      <Textarea
-        value={content}
-        onChange={handleContentChange}
-        className="flex-1 resize-none border-none focus:outline-none text-gray-700 text-base p-1 bg-gray-50 rounded-md"
-        placeholder="Start writing your note here..."
-      />
+      {isPreview ? (
+        <div className="flex-1 overflow-y-auto p-4 prose prose-sm max-w-none bg-gray-50 rounded-md">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} className="break-words">
+            {content}
+          </ReactMarkdown>
+        </div>
+      ) : (
+        <Textarea
+          ref={textareaRef}
+          value={content}
+          onChange={handleContentChange}
+          className="flex-1 resize-none border-none focus:outline-none text-gray-700 text-base p-1 bg-gray-50 rounded-md font-mono"
+          placeholder="Start writing your note here..."
+        />
+      )}
       
       <div className="mt-4 text-sm text-gray-500 text-right flex items-center justify-end">
         <span className="bg-gray-100 px-2 py-1 rounded text-xs">
