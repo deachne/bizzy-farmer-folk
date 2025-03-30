@@ -1,10 +1,33 @@
-# Welcome to your Lovable project
+# BizzyPerson Knowledge Management System
 
-## Project info
+A frictionless knowledge management system with universal capture and AI-powered organization, focused on agricultural use cases.
+
+## Project Vision
+
+BizzyPerson transforms knowledge management by creating a frictionless system where capturing and retrieving information becomes effortless. Starting with a powerful personal core and expanding to specialized domains like farming, our AI-powered platform eliminates the cognitive burden of organizing information, allowing users to focus on ideas and insights rather than managing their digital knowledge.
+
+## Core Objectives
+- Build a personal knowledge core with seamless capture and retrieval
+- Implement universal capture for collecting thoughts, references, and observations
+- Use AI to automatically organize, tag, and connect information
+- Create an extensible foundation for specialized domain modules, starting with farming
+
+## Documentation
+
+This repository includes detailed planning and architecture documentation in the `docs` folder:
+
+- **Planning**: `/docs/planning` - Technical architecture, implementation plans, and feature comparisons
+- **Knowledge**: `/docs/knowledge` - Domain-specific knowledge and research
+
+For detailed information about the project architecture and implementation plan, check the planning documents.
+
+## Development and Tools
+
+### Project info
 
 **URL**: https://lovable.dev/projects/8f2b89ea-e6b0-4a7a-af76-a2120cbd1a1b
 
-## How can I edit this code?
+### How can I edit this code?
 
 There are several ways of editing your application.
 
@@ -50,15 +73,17 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## What technologies are used for this project?
+## Tech Stack
 
-This project is built with .
+This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Frontend**: Vite, React, TypeScript, shadcn-ui, Tailwind CSS
+- **Backend**: Node.js, Fastify, Prisma
+- **Databases**: Supabase PostgreSQL, LanceDB
+- **Authentication**: Supabase Auth
+- **AI/ML**: OpenAI APIs, Anthropic APIs, vector embeddings
+
+See the complete tech stack in `docs/planning/Tech-Stack.md`.
 
 ## How can I deploy this project?
 
