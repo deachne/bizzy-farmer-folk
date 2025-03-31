@@ -1,8 +1,7 @@
-
 import { Task } from "@/pages/TasksPage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Flag, Plus, X } from "lucide-react";
+import { Check, Flag, Plus, X, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TasksBoardProps {
@@ -97,13 +96,6 @@ const TasksBoard = ({
     onCompleteTask(taskId);
   };
 
-  // Handle task deletion
-  const handleDeleteTask = (taskId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent selection of the task
-    // We need to pass this event up to the parent component
-    // First we need to add this to props
-  };
-
   // Render a task card for the board
   const renderTaskCard = (task: Task) => {
     const priorityColors = getPriorityColor(task.priority);
@@ -179,16 +171,33 @@ const TasksBoard = ({
           </div>
           
           <div className="flex items-center gap-1">
-            {!isCompleted && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-6 w-6 p-0"
-                onClick={(e) => handleCompleteTask(task.id, e)}
-              >
-                <Check className="h-3 w-3" />
-              </Button>
-            )}
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn(
+                "h-6 w-6 rounded-md",
+                isCompleted 
+                  ? "bg-green-500 border-green-500 text-white" 
+                  : "border-gray-300"
+              )}
+              onClick={(e) => handleCompleteTask(task.id, e)}
+              aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
+            >
+              {isCompleted && <Check className="h-3 w-3" />}
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 text-gray-400 hover:text-red-500 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Not implemented yet
+              }}
+              aria-label="Delete task"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
           </div>
         </div>
       </div>

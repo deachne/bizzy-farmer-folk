@@ -310,7 +310,7 @@ const TasksPage = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-8 p-0 rounded-full"
+                    className="h-8 w-8 p-0 rounded-full bg-white"
                     onClick={handleCloseDetail}
                   >
                     <X className="h-4 w-4" />
