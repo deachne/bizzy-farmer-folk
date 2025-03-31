@@ -12,7 +12,9 @@ import {
   ShoppingBag, 
   Store,
   Home,
-  ShoppingCart
+  ShoppingCart,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import QuickAddParts from "./tasks/QuickAddParts";
 import { 
@@ -21,6 +23,7 @@ import {
   AccordionItem,
   AccordionTrigger 
 } from "@/components/ui/accordion";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 interface TasksPartsViewProps {
   tasks: Task[];
@@ -46,6 +49,7 @@ const TasksPartsView = ({
   onAddSimplePart 
 }: TasksPartsViewProps) => {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   
   // Collect all vendor parts and category parts
   const vendorParts: { vendor: string; parts: { part: Part; task: Task }[] }[] = [];
@@ -76,18 +80,24 @@ const TasksPartsView = ({
     });
   });
 
-  // Render parts in a card
-  const renderPartsCard = (
+  // Toggle category expanded state
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
+  // Render vendor parts in a card
+  const renderVendorPartsCard = (
     title: string, 
-    parts: { part: Part; task: Task }[], 
-    icon?: React.ReactNode, 
-    isSimpleParts: boolean = false
+    parts: { part: Part; task: Task }[]
   ) => (
     <Card key={title} className="shadow-sm hover:shadow">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center justify-between">
           <span className="flex items-center">
-            {icon || <ShoppingBag className="h-5 w-5 mr-2 text-blue-500" />}
+            <ShoppingBag className="h-5 w-5 mr-2 text-blue-500" />
             {title}
           </span>
           <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -113,17 +123,15 @@ const TasksPartsView = ({
                         </span>
                       )}
                       
-                      {!isSimpleParts && (
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="p-0 h-auto text-xs text-blue-600 ml-2 flex items-center"
-                          onClick={() => onSelectTask(task)}
-                        >
-                          <ExternalLink className="h-3 w-3 mr-1" /> 
-                          {task.title}
-                        </Button>
-                      )}
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="p-0 h-auto text-xs text-blue-600 ml-2 flex items-center"
+                        onClick={() => onSelectTask(task)}
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" /> 
+                        {task.title}
+                      </Button>
                     </div>
                     
                     <div className="flex items-center space-x-2">
@@ -152,8 +160,93 @@ const TasksPartsView = ({
     </Card>
   );
 
-  // Prepare the categorized parts for rendering
-  const allCategoryParts = categoryParts.flatMap(group => group.parts);
+  // Render simple parts card with collapsible categories
+  const renderSimplePartsCard = () => (
+    <Card className="shadow-sm hover:shadow h-full">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg flex items-center justify-between">
+          <span className="flex items-center">
+            <Package className="h-5 w-5 mr-2 text-indigo-500" />
+            Simple Parts
+          </span>
+          <Badge variant="outline" className="bg-indigo-50 text-indigo-700">
+            {categoryParts.reduce((sum, group) => sum + group.parts.length, 0)} items
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {categoryParts.map(group => (
+            <Collapsible 
+              key={group.category} 
+              open={expandedCategories[group.category] !== false} 
+              className="border rounded-md"
+            >
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-t-md cursor-pointer"
+                   onClick={() => toggleCategory(group.category)}>
+                <div className="flex items-center">
+                  {getCategoryIcon(group.category)}
+                  <span className="font-medium">{group.category}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="outline" className="bg-gray-100">
+                    {group.parts.length} {group.parts.length === 1 ? 'item' : 'items'}
+                  </Badge>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                      {expandedCategories[group.category] !== false ? 
+                        <ChevronUp className="h-4 w-4" /> : 
+                        <ChevronDown className="h-4 w-4" />
+                      }
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+              </div>
+              <CollapsibleContent>
+                <ul className="space-y-2 p-3">
+                  {group.parts.map(({ part, task }) => (
+                    <li key={part.id} className="flex justify-between items-start">
+                      <div>
+                        <span className="font-medium">{part.name}</span>
+                        {part.quantity > 1 && (
+                          <span className="ml-2 text-sm text-gray-500">
+                            ({part.quantity} {part.unit || 'ea'})
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`ordered-${part.id}`}
+                          checked={part.ordered}
+                          onCheckedChange={() => {
+                            const updatedTask = tasks.find(t => t.id === task.id);
+                            if (updatedTask) {
+                              const updatedParts = updatedTask.parts?.map(p => 
+                                p.id === part.id ? { ...p, ordered: !p.ordered } : p
+                              );
+                              onUpdateTask({ ...updatedTask, parts: updatedParts });
+                            }
+                          }}
+                        />
+                        <span className="text-xs">Got it</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+
+          {categoryParts.length === 0 && (
+            <div className="text-center p-4 text-gray-500">
+              No simple parts added yet. Use the "Quick Add Simple Part" button to add some.
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <ScrollArea className="h-full">
@@ -169,21 +262,20 @@ const TasksPartsView = ({
         </div>
 
         {/* Simple Parts Card - Always on the left */}
-        {allCategoryParts.length > 0 && (
-          <div className="sm:col-span-1">
-            {renderPartsCard(
-              "Simple Parts", 
-              allCategoryParts, 
-              <Package className="h-5 w-5 mr-2 text-indigo-500" />,
-              true
-            )}
-          </div>
-        )}
+        <div className="sm:col-span-1">
+          {renderSimplePartsCard()}
+        </div>
 
         {/* Vendor Parts Cards - On the right side of the screen */}
         <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {vendorParts.map(group => 
-            renderPartsCard(group.vendor, group.parts)
+            renderVendorPartsCard(group.vendor, group.parts)
+          )}
+          
+          {vendorParts.length === 0 && (
+            <div className="col-span-2 text-center p-6 bg-gray-50 rounded-lg border border-dashed border-gray-300 text-gray-500">
+              No vendor parts added yet. Add them from the task details page.
+            </div>
           )}
         </div>
       </div>
