@@ -7,7 +7,7 @@ import StatusBadge from "./badges/StatusBadge";
 import UserActions from "./UserActions";
 import DeleteUserDialog from "./dialogs/DeleteUserDialog";
 import DeactivateUserDialog from "./dialogs/DeactivateUserDialog";
-import EditUserDialog from "./EditUserDialog";
+import EditUserDialog from "./dialogs/EditUserDialog";
 import { useUsers } from "./hooks/useUsers";
 
 const UsersTable = () => {
