@@ -38,13 +38,18 @@ const EditUserDialog = ({
   useEffect(() => {
     if (user && open) {
       console.log("Setting form values from user:", user);
+      
+      // Make sure we're setting the exact role and status values as strings
+      const userRole = user.role as "admin" | "moderator" | "user";
+      const userStatus = user.status as "active" | "inactive";
+      
       setFormDefaultValues({
         displayName: user.displayName || "",
         username: user.username || "",
         email: user.email || "",
         phoneNumber: user.phoneNumber || "",
-        role: user.role as "admin" | "moderator" | "user",
-        status: user.status as "active" | "inactive",
+        role: userRole,
+        status: userStatus,
       });
     }
   }, [user, open]);
@@ -71,7 +76,7 @@ const EditUserDialog = ({
     setTimeout(() => {
       onOpenChange(false);
       onUserUpdated();
-    }, 0);
+    }, 10);
   };
 
   return (

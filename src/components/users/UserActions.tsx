@@ -41,7 +41,7 @@ const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
@@ -53,10 +53,18 @@ const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps)
           <Edit className="mr-2 h-4 w-4" />
           Edit User
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => window.alert("Change Role functionality will be implemented in a future update")}>
+        <DropdownMenuItem onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.alert("Change Role functionality will be implemented in a future update");
+        }}>
           Change Role
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => window.alert("Reset Password functionality will be implemented in a future update")}>
+        <DropdownMenuItem onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.alert("Reset Password functionality will be implemented in a future update");
+        }}>
           Reset Password
         </DropdownMenuItem>
         <DropdownMenuSeparator />

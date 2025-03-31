@@ -45,12 +45,15 @@ const UserForm = ({
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues,
+    mode: "onChange"
   });
 
   // Reset form when defaultValues change
   useEffect(() => {
     console.log("Default values changed:", defaultValues);
-    form.reset(defaultValues);
+    if (defaultValues) {
+      form.reset(defaultValues);
+    }
   }, [defaultValues, form]);
 
   return (
@@ -114,7 +117,11 @@ const UserForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a role" />
@@ -136,7 +143,11 @@ const UserForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
