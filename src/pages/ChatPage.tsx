@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Message, ChatSession, Artifact, ContextImage } from "@/types/chat";
@@ -9,7 +10,15 @@ import ArtifactPanel from "@/components/ArtifactPanel";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const ChatPage = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome-message",
+      sender: "ai",
+      content: "Welcome to BizzyPerson Chat! How can I help you today?",
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isNew: false
+    }
+  ]);
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [showContextPanel, setShowContextPanel] = useState(false);
   const [contextImages, setContextImages] = useState<ContextImage[]>([]);
@@ -159,7 +168,15 @@ const ChatPage = () => {
     
     setAvailableSessions(prev => [...prev, newSession]);
     setActiveChatSession(newSession);
-    setMessages([]);
+    setMessages([
+      {
+        id: "welcome-message",
+        sender: "ai",
+        content: "Welcome to a new chat! How can I help you today?",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isNew: false
+      }
+    ]);
     setContextImages([]);
   };
   
@@ -167,7 +184,15 @@ const ChatPage = () => {
     const session = availableSessions.find(s => s.id === sessionId);
     if (session) {
       setActiveChatSession(session);
-      setMessages([]);
+      setMessages([
+        {
+          id: "welcome-message",
+          sender: "ai",
+          content: `Welcome to ${session.name}! How can I help you today?`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isNew: false
+        }
+      ]);
     }
   };
   
