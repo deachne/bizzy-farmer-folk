@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, X, Tag, Trash2, Archive, Share, Bold, Italic, Underline, List, ChevronDown } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import Markdown from "markdown-to-jsx";
-import { format } from "date-fns";
+import { format as formatDate } from "date-fns";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -61,7 +61,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     onUpdateNote({
       ...note,
       title: newTitle,
-      timestamp: format(now, "h:mm a"),
+      timestamp: formatDate(now, "h:mm a"),
       date: now
     });
   };
@@ -74,7 +74,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
       onUpdateNote({
         ...note,
         title: "",
-        timestamp: format(now, "h:mm a"),
+        timestamp: formatDate(now, "h:mm a"),
         date: now
       });
     }
@@ -86,7 +86,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     onUpdateNote({
       ...note,
       content: e.target.value,
-      timestamp: format(now, "h:mm a"),
+      timestamp: formatDate(now, "h:mm a"),
       date: now
     });
   };
@@ -97,7 +97,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
       const updatedNote = {
         ...note,
         tags: [...note.tags, tagInput.trim()],
-        timestamp: format(now, "h:mm a"),
+        timestamp: formatDate(now, "h:mm a"),
         date: now
       };
       onUpdateNote(updatedNote);
@@ -112,7 +112,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
       const updatedNote = {
         ...note,
         tags: [...note.tags, tag],
-        timestamp: format(now, "h:mm a"),
+        timestamp: formatDate(now, "h:mm a"),
         date: now
       };
       onUpdateNote(updatedNote);
@@ -126,7 +126,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     const updatedNote = {
       ...note,
       tags: note.tags.filter(tag => tag !== tagToRemove),
-      timestamp: format(now, "h:mm a"),
+      timestamp: formatDate(now, "h:mm a"),
       date: now
     };
     onUpdateNote(updatedNote);
@@ -162,7 +162,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     });
   };
 
-  const applyFormatting = (format: string) => {
+  const applyFormatting = (formatType: string) => {
     if (!textareaRef.current) return;
     
     const textarea = textareaRef.current;
@@ -173,7 +173,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     let formattedText = '';
     let cursorPosition = start;
     
-    switch (format) {
+    switch (formatType) {
       case "Bold":
         if (selectedText) {
           const newText = content.substring(0, start) + `**${selectedText}**` + content.substring(end);
@@ -183,7 +183,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -199,7 +199,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -219,7 +219,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -235,7 +235,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -255,7 +255,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -271,7 +271,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -296,7 +296,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: format(new Date(), "h:mm a"),
+            timestamp: formatDate(new Date(), "h:mm a"),
             date: new Date()
           });
           
@@ -319,7 +319,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
             onUpdateNote({
               ...note,
               content: newText,
-              timestamp: format(new Date(), "h:mm a"),
+              timestamp: formatDate(new Date(), "h:mm a"),
               date: new Date()
             });
             
@@ -337,7 +337,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     
     toast({
       title: "Text formatting",
-      description: `${format} formatting applied`
+      description: `${formatType} formatting applied`
     });
   };
 
@@ -591,7 +591,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
       
       <div className="mt-4 text-sm text-gray-500 text-right flex items-center justify-end">
         <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-          Last updated: {format(note.date, "MMM d, yyyy")} at {note.timestamp}
+          Last updated: {formatDate(note.date, "MMM d, yyyy")} at {note.timestamp}
         </span>
       </div>
     </div>
