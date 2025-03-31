@@ -117,37 +117,31 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     switch (format) {
       case "Bold":
         if (selectedText) {
-          // Bold the selected text
           const newText = content.substring(0, start) + `**${selectedText}**` + content.substring(end);
           setContent(newText);
-          cursorPosition = end + 4; // Move cursor after the formatted text
+          cursorPosition = end + 4;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor after the formatted text
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
           }, 0);
         } else {
-          // Insert empty bold markers and position cursor between them
           const newText = content.substring(0, start) + '****' + content.substring(end);
           setContent(newText);
-          cursorPosition = start + 2; // Position cursor between ** markers
+          cursorPosition = start + 2;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor between the markers
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
@@ -157,37 +151,31 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         
       case "Italic":
         if (selectedText) {
-          // Italicize the selected text
           const newText = content.substring(0, start) + `*${selectedText}*` + content.substring(end);
           setContent(newText);
-          cursorPosition = end + 2; // Move cursor after the formatted text
+          cursorPosition = end + 2;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor after the formatted text
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
           }, 0);
         } else {
-          // Insert empty italic markers and position cursor between them
           const newText = content.substring(0, start) + '**' + content.substring(end);
           setContent(newText);
-          cursorPosition = start + 1; // Position cursor between * markers
+          cursorPosition = start + 1;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor between the markers
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
@@ -197,37 +185,31 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         
       case "Underline":
         if (selectedText) {
-          // In markdown, we use __ for emphasis that's typically rendered as underline
           const newText = content.substring(0, start) + `__${selectedText}__` + content.substring(end);
           setContent(newText);
-          cursorPosition = end + 4; // Move cursor after the formatted text
+          cursorPosition = end + 4;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor after the formatted text
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
           }, 0);
         } else {
-          // Insert empty underline markers and position cursor between them
           const newText = content.substring(0, start) + '____' + content.substring(end);
           setContent(newText);
-          cursorPosition = start + 2; // Position cursor between __ markers
+          cursorPosition = start + 2;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor between the markers
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
@@ -237,7 +219,6 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         
       case "List":
         if (selectedText) {
-          // Format each line of the selected text as a list item
           const formattedSelection = selectedText
             .split('\n')
             .map(line => line.trim() ? `- ${line}` : line)
@@ -247,40 +228,34 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
           setContent(newText);
           cursorPosition = start + formattedSelection.length;
           
-          // Update the note
           onUpdateNote({
             ...note,
             content: newText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
           
-          // Position cursor after the list
           setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(cursorPosition, cursorPosition);
           }, 0);
         } else {
-          // Find the current line and add a list marker at the beginning
           const beforeCursor = content.substring(0, start);
           const afterCursor = content.substring(start);
           const lastNewlineBeforeCursor = beforeCursor.lastIndexOf('\n');
           const startOfLine = lastNewlineBeforeCursor === -1 ? 0 : lastNewlineBeforeCursor + 1;
           const currentLine = beforeCursor.substring(startOfLine);
           
-          // Check if the line already starts with a list marker
           if (!currentLine.trim().startsWith('-')) {
             const newText = beforeCursor.substring(0, startOfLine) + '- ' + beforeCursor.substring(startOfLine) + afterCursor;
             setContent(newText);
-            cursorPosition = start + 2; // Position cursor after the list marker
+            cursorPosition = start + 2;
             
-            // Update the note
             onUpdateNote({
               ...note,
               content: newText,
               timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             });
             
-            // Position cursor after the list marker
             setTimeout(() => {
               textarea.focus();
               textarea.setSelectionRange(cursorPosition, cursorPosition);
@@ -430,7 +405,12 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
       
       {isPreview ? (
         <div className="flex-1 overflow-y-auto p-4 prose prose-sm max-w-none bg-gray-50 rounded-md">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} className="break-words">
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              p: ({node, ...props}) => <p className="break-words" {...props} />
+            }}
+          >
             {content}
           </ReactMarkdown>
         </div>
