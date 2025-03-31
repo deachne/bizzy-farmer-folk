@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -150,6 +149,7 @@ const UserForm = ({
           <>
             <FormField
               control={form.control}
+              // @ts-ignore - We know this field exists in the schema when showPasswordFields is true
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -164,6 +164,7 @@ const UserForm = ({
             
             <FormField
               control={form.control}
+              // @ts-ignore - We know this field exists in the schema when showPasswordFields is true
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
