@@ -125,8 +125,10 @@ const TasksPage = () => {
       task.id === taskId 
         ? { 
             ...task, 
-            status: "completed" as const, 
-            completedDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            status: task.status === "completed" ? "todo" : "completed",
+            completedDate: task.status !== "completed" ? 
+              new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 
+              undefined
           } 
         : task
     );
@@ -137,9 +139,12 @@ const TasksPage = () => {
       setSelectedTask(updatedTask || null);
     }
     
+    const taskStatus = updatedTasks.find(t => t.id === taskId)?.status;
     toast({
-      title: "Task Completed",
-      description: "The task has been marked as completed",
+      title: taskStatus === "completed" ? "Task Completed" : "Task Reopened",
+      description: taskStatus === "completed" ? 
+        "The task has been marked as completed" : 
+        "The task has been reopened",
     });
   };
 
@@ -305,23 +310,14 @@ const TasksPage = () => {
             </div>
             
             {isDetailOpen && (
-              <div className="w-2/5 relative">
-                <div className="absolute top-2 left-2 z-10">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white"
-                    onClick={handleCloseDetail}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
+              <div className="w-2/5 relative border-l">
                 {selectedTask ? (
                   <TaskDetail 
                     task={selectedTask}
                     onUpdateTask={updateTask}
                     onCompleteTask={completeTask}
                     onDeleteTask={deleteTask}
+                    onClose={handleCloseDetail}
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-gray-500">
@@ -335,6 +331,15 @@ const TasksPage = () => {
                       onClick={createTask}
                     >
                       Create Task
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-full absolute top-2 right-2"
+                      onClick={handleCloseDetail}
+                    >
+                      <X className="h-4 w-4" />
                     </Button>
                   </div>
                 )}

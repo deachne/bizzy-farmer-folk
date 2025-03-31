@@ -1,7 +1,8 @@
+
 import { Task } from "@/pages/TasksPage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Flag, Plus, X, Trash2 } from "lucide-react";
+import { Check, Flag, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TasksBoardProps {
@@ -106,7 +107,7 @@ const TasksBoard = ({
         key={task.id}
         onClick={() => onSelectTask(task)}
         className={cn(
-          "mb-3 p-3 cursor-pointer rounded-lg transition-all",
+          "mb-3 p-3 cursor-pointer rounded-lg transition-all relative",
           isCompleted 
             ? "bg-gray-50 border-gray-200 border" 
             : `border-l-4 ${priorityColors.border} shadow-sm hover:shadow bg-white border border-gray-200`,
@@ -170,35 +171,21 @@ const TasksBoard = ({
             {task.source}
           </div>
           
-          <div className="flex items-center gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              className={cn(
-                "h-6 w-6 rounded-md",
-                isCompleted 
-                  ? "bg-green-500 border-green-500 text-white" 
-                  : "border-gray-300"
-              )}
-              onClick={(e) => handleCompleteTask(task.id, e)}
-              aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
-            >
-              {isCompleted && <Check className="h-3 w-3" />}
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-gray-400 hover:text-red-500 p-0"
-              onClick={(e) => {
-                e.stopPropagation();
-                // Not implemented yet
-              }}
-              aria-label="Delete task"
-            >
-              <Trash2 className="h-3 w-3" />
-            </Button>
-          </div>
+          {/* Checkbox positioned in bottom right corner */}
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn(
+              "h-6 w-6 rounded-md",
+              isCompleted 
+                ? "bg-green-500 border-green-500 text-white" 
+                : "border-gray-300"
+            )}
+            onClick={(e) => handleCompleteTask(task.id, e)}
+            aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
+          >
+            {isCompleted && <Check className="h-3 w-3" />}
+          </Button>
         </div>
       </div>
     );

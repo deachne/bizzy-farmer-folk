@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Task } from "@/pages/TasksPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { parse, isValid } from "date-fns";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import TaskDetailHeader from "./tasks/TaskDetailHeader";
 import TaskTitleInput from "./tasks/TaskTitleInput";
 import TaskStatusBadges from "./tasks/TaskStatusBadges";
@@ -17,13 +19,15 @@ interface TaskDetailProps {
   onUpdateTask: (task: Task) => void;
   onCompleteTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
+  onClose?: () => void;
 }
 
 const TaskDetail = ({ 
   task, 
   onUpdateTask, 
   onCompleteTask, 
-  onDeleteTask 
+  onDeleteTask,
+  onClose 
 }: TaskDetailProps) => {
   const [title, setTitle] = useState(task.title);
   const [isTitleEmpty, setIsTitleEmpty] = useState(task.title === "");
@@ -84,7 +88,19 @@ const TaskDetail = ({
   }, [task]);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden relative">
+      {/* Close button in top right */}
+      {onClose && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 rounded-full bg-white absolute top-2 right-2 z-20"
+          onClick={onClose}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      )}
+      
       {/* Sticky header with action buttons */}
       <TaskDetailHeader 
         task={task} 
