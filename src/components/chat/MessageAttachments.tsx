@@ -1,7 +1,7 @@
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { File, Maximize } from "lucide-react";
+import { File, Maximize, ExternalLink, Plus } from "lucide-react";
 
 interface Attachment {
   id: string;
@@ -20,11 +20,15 @@ const MessageAttachments = ({ attachments, onAddImageToContext }: MessageAttachm
     return null;
   }
 
+  const handleOpenDocument = (url: string) => {
+    window.open(url, "_blank");
+  };
+
   return (
     <div className="mt-3 flex flex-wrap gap-2">
       {attachments.map(attachment => (
         attachment.type.startsWith('image/') ? (
-          <div key={attachment.id} className="relative">
+          <div key={attachment.id} className="group relative">
             <Dialog>
               <DialogTrigger asChild>
                 <div className="group relative cursor-pointer">
@@ -53,14 +57,21 @@ const MessageAttachments = ({ attachments, onAddImageToContext }: MessageAttachm
                 className="absolute -bottom-2 -right-2 h-6 opacity-0 group-hover:opacity-100 transition-opacity"
                 onClick={() => onAddImageToContext(attachment.url, attachment.name)}
               >
+                <Plus className="h-3 w-3 mr-1" />
                 Add to context
               </Button>
             )}
           </div>
         ) : (
-          <div key={attachment.id} className="p-2 border border-gray-200 rounded text-xs flex items-center gap-1">
-            <File className="h-4 w-4" />
-            {attachment.name}
+          <div key={attachment.id} className="relative group">
+            <div 
+              className="p-3 border border-gray-200 rounded bg-gray-50 text-sm flex items-center gap-2 cursor-pointer hover:bg-gray-100"
+              onClick={() => handleOpenDocument(attachment.url)}
+            >
+              <File className="h-5 w-5 text-blue-600" />
+              <span className="max-w-[180px] truncate">{attachment.name}</span>
+              <ExternalLink className="h-4 w-4 text-gray-400" />
+            </div>
           </div>
         )
       ))}

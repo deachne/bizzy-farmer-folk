@@ -28,9 +28,10 @@ export interface ChatSession {
   model: string;
 }
 
-export interface ContextImage {
+export interface ContextItem {
   id: string;
   url: string;
   name: string;
+  type: "image" | "document";
   addedAt: string;
 }

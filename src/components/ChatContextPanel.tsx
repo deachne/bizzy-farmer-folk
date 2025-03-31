@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -9,7 +8,9 @@ import {
   Book,
   Globe,
   MessageSquare,
-  Image
+  Image,
+  File,
+  ExternalLink
 } from "lucide-react";
 import {
   Collapsible,
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import TokenCounter from "@/components/TokenCounter";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ContextItem } from "@/types/chat";
 
 interface KnowledgeSource {
   id: string;
@@ -29,22 +31,15 @@ interface KnowledgeSource {
   source?: string;
 }
 
-interface ContextImage {
-  id: string;
-  url: string;
-  name: string;
-  addedAt: string;
-}
-
 interface ChatContextPanelProps {
-  contextImages?: ContextImage[];
+  contextItems?: ContextItem[];
 }
 
-const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
+const ChatContextPanel = ({ contextItems = [] }: ChatContextPanelProps) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sections, setSections] = useState({
     knowledgeSources: true,
-    images: true,
+    mediaAndDocs: true,
     tokenCounter: true
   });
   
@@ -105,6 +100,18 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
       toast({
         title: source.active ? "Source deactivated" : "Source activated",
         description: `${source.title} is now ${source.active ? "excluded from" : "included in"} context`,
+        duration: 3000,
+      });
+    }
+  };
+  
+  const handleViewDocument = (item: ContextItem) => {
+    if (item.type === "document") {
+      // For documents, we could open in a new tab or download
+      window.open(item.url, "_blank");
+      toast({
+        title: "Opening document",
+        description: `${item.name} opened in a new tab`,
         duration: 3000,
       });
     }
@@ -250,51 +257,65 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
           </Collapsible>
         </div>
         
-        {/* Images Section */}
+        {/* Images and Documents Section */}
         <div>
           <Collapsible
-            open={sections.images}
-            onOpenChange={() => toggleSection("images")}
+            open={sections.mediaAndDocs}
+            onOpenChange={() => toggleSection("mediaAndDocs")}
           >
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-500">CONVERSATION IMAGES</h3>
+              <h3 className="text-sm font-semibold text-gray-500">IMAGES & DOCUMENTS</h3>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
                   <ChevronRight className={cn(
                     "h-4 w-4 transition-transform",
-                    sections.images && "rotate-90"
+                    sections.mediaAndDocs && "rotate-90"
                   )} />
                 </Button>
               </CollapsibleTrigger>
             </div>
             
             <CollapsibleContent className="space-y-2">
-              {contextImages.length === 0 ? (
-                <div className="text-sm text-gray-500 italic">No images shared in this conversation</div>
+              {contextItems.length === 0 ? (
+                <div className="text-sm text-gray-500 italic">No media shared in this conversation</div>
               ) : (
                 <div className="grid grid-cols-3 gap-2">
-                  {contextImages.map(img => (
-                    <Dialog key={img.id}>
-                      <DialogTrigger asChild>
-                        <div className="group relative cursor-pointer">
-                          <img 
-                            src={img.url} 
-                            alt={img.name}
-                            className="h-16 w-16 object-cover rounded border border-gray-200"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
-                            <Image className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {contextItems.map(item => (
+                    item.type === "image" ? (
+                      <Dialog key={item.id}>
+                        <DialogTrigger asChild>
+                          <div className="group relative cursor-pointer">
+                            <img 
+                              src={item.url} 
+                              alt={item.name}
+                              className="h-16 w-16 object-cover rounded border border-gray-200"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                              <Image className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
                           </div>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-3xl p-1 bg-transparent border-0">
+                          <img 
+                            src={item.url} 
+                            alt={item.name}
+                            className="max-h-[80vh] max-w-full rounded"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <div 
+                        key={item.id}
+                        className="group relative cursor-pointer border rounded p-2 bg-gray-50 flex flex-col items-center"
+                        onClick={() => handleViewDocument(item)}
+                      >
+                        <File className="h-10 w-10 text-blue-600 mb-1" />
+                        <div className="text-xs text-center truncate w-full">{item.name}</div>
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
+                          <ExternalLink className="h-4 w-4 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-3xl p-1 bg-transparent border-0">
-                        <img 
-                          src={img.url} 
-                          alt={img.name}
-                          className="max-h-[80vh] max-w-full rounded"
-                        />
-                      </DialogContent>
-                    </Dialog>
+                      </div>
+                    )
                   ))}
                 </div>
               )}

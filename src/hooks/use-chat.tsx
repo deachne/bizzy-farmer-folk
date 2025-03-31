@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { Message, ChatSession, ContextImage } from "@/types/chat";
+import { Message, ChatSession, ContextItem } from "@/types/chat";
 import { toast } from "@/components/ui/use-toast";
 
 export function useChat() {
@@ -202,7 +201,7 @@ export function useChat() {
   ]);
   const [connectionStatus, setConnectionStatus] = useState<"connected" | "connecting" | "disconnected">("connected");
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
-  const [contextImages, setContextImages] = useState<ContextImage[]>([]);
+  const [contextItems, setContextItems] = useState<ContextItem[]>([]);
 
   const generateAiResponse = (userMessage: string): string => {
     if (userMessage.toLowerCase().includes("tomato")) {
@@ -236,7 +235,9 @@ export function useChat() {
         messageAttachments.push(attachment);
         
         if (file.type.startsWith('image/')) {
-          addImageToContext(attachment.url, attachment.name);
+          addItemToContext(attachment.url, attachment.name, "image");
+        } else {
+          addItemToContext(attachment.url, attachment.name, "document");
         }
         
         setUploadProgress(prev => ({
@@ -339,7 +340,6 @@ export function useChat() {
   };
 
   const createNewChat = () => {
-    // Use the welcome message from existing chat history as a template
     setMessages([{
       id: Date.now().toString(),
       content: "Hello! How can I help with your farm management today? Feel free to ask about soil conditions, crop planning, or equipment maintenance.",
@@ -367,30 +367,31 @@ export function useChat() {
     }
   };
 
-  const addImageToContext = (imageUrl: string, imageName: string) => {
-    const newContextImage: ContextImage = {
+  const addItemToContext = (url: string, name: string, type: "image" | "document") => {
+    const newContextItem: ContextItem = {
       id: Date.now().toString(),
-      url: imageUrl,
-      name: imageName,
+      url: url,
+      name: name,
+      type: type,
       addedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     
-    setContextImages(prev => {
-      if (prev.some(img => img.url === imageUrl)) {
+    setContextItems(prev => {
+      if (prev.some(item => item.url === url)) {
         toast({
-          title: "Image already in context",
-          description: "This image is already in your context panel",
+          title: `${type === 'image' ? 'Image' : 'Document'} already in context`,
+          description: `This ${type} is already in your context panel`,
           duration: 3000,
         });
         return prev;
       }
       
       toast({
-        title: "Image added to context",
-        description: "The image has been added to your context panel",
+        title: `${type === 'image' ? 'Image' : 'Document'} added to context`,
+        description: `The ${type} has been added to your context panel`,
         duration: 3000,
       });
-      return [...prev, newContextImage];
+      return [...prev, newContextItem];
     });
   };
 
@@ -401,11 +402,11 @@ export function useChat() {
     availableSessions,
     connectionStatus,
     uploadProgress,
-    contextImages,
+    contextItems,
     sendMessage,
     saveMessageAsNote,
     createNewChat,
     switchChatSession,
-    addImageToContext
+    addItemToContext
   };
 }

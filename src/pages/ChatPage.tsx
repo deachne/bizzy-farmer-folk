@@ -22,12 +22,12 @@ const ChatPage = () => {
     availableSessions,
     connectionStatus,
     uploadProgress,
-    contextImages,
+    contextItems,
     sendMessage,
     saveMessageAsNote,
     createNewChat,
     switchChatSession,
-    addImageToContext
+    addItemToContext
   } = useChat();
 
   const { showContextPanel, setShowContextPanel, toggleContextPanel } = useContextPanel();
@@ -89,7 +89,7 @@ const ChatPage = () => {
                   messagesEndRef={messagesEndRef}
                   uploadProgress={uploadProgress}
                   onViewArtifact={viewArtifact}
-                  onAddImageToContext={addImageToContext}
+                  onAddImageToContext={(imageUrl, imageName) => addItemToContext(imageUrl, imageName, "image")}
                 />
               </div>
               
@@ -103,7 +103,7 @@ const ChatPage = () => {
             
             {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
               <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
-                <ChatContextPanel contextImages={contextImages} />
+                <ChatContextPanel contextItems={contextItems} />
               </div>
             )}
           </div>
