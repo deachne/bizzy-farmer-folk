@@ -51,8 +51,8 @@ const TaskDetailHeader = ({
 
       {onClose && (
         <Button
-          variant="default"
-          className="absolute top-2 right-2 bg-green-600 hover:bg-green-700 text-white w-10 h-10 p-0 rounded-md"
+          variant="ghost"
+          className="absolute top-2 right-2 hover:bg-green-50 text-green-600 w-10 h-10 p-0 rounded-md"
           onClick={onClose}
         >
           <X className="h-6 w-6" />
