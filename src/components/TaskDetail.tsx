@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Task } from "@/pages/TasksPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -88,7 +89,7 @@ const TaskDetail = ({
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 rounded-full bg-red-500 hover:bg-red-600 text-white absolute top-2 left-6 z-20"
+          className="h-8 w-8 p-0 rounded-full bg-red-500 hover:bg-red-600 text-white absolute top-2 left-4 z-20"
           onClick={onClose}
         >
           <X className="h-4 w-4" />
