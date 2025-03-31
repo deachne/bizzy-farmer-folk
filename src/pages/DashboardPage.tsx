@@ -1,4 +1,3 @@
-
 import React from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -262,12 +261,6 @@ const DashboardPage = () => {
             </div>
           </div>
           
-          <div className="border-t p-2 text-sm text-gray-500 flex justify-end">
-            <div>
-              <span className="font-medium">Action Log:</span> 
-              <span className="ml-2">Navigated to Dashboard</span>
-            </div>
-          </div>
         </div>
       </SidebarProvider>
     </div>
