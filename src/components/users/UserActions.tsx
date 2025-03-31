@@ -6,7 +6,6 @@ import {
   Edit, 
   Trash, 
   Power, 
-  UserPlus,
   ShieldAlert,
   KeyRound
 } from "lucide-react";
@@ -28,27 +27,27 @@ interface UserActionsProps {
 }
 
 const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps) => {
-  // Improved event handling with proper event types
-  const handleEditClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  // Fixed event types for proper event handling
+  const handleEditClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onEdit(user);
   }, [user, onEdit]);
 
-  const handleDeactivateClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleDeactivateClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onDeactivate(user);
   }, [user, onDeactivate]);
 
-  const handleDeleteClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onDelete(user);
   }, [user, onDelete]);
 
   // Handler for not-yet-implemented features
-  const handleNotImplemented = useCallback((e: React.MouseEvent<HTMLDivElement>, featureName: string) => {
+  const handleNotImplemented = useCallback((e: React.MouseEvent, featureName: string) => {
     e.preventDefault();
     e.stopPropagation();
     window.alert(`${featureName} functionality will be implemented in a future update`);
