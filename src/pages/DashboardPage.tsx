@@ -247,18 +247,6 @@ const DashboardPage = () => {
                 />
               </div>
             </div>
-            
-            <div className="bg-blue-600 text-white rounded-lg p-6 mt-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-xl font-bold mb-2">BizzyPerson UI Updated</h2>
-                  <p>Improve your workspace experience with our new dashboard design</p>
-                </div>
-                <Button variant="outline" className="text-white border-white hover:bg-blue-700">
-                  Learn More
-                </Button>
-              </div>
-            </div>
           </div>
           
         </div>
