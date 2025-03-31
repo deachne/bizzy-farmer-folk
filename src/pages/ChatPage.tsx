@@ -304,12 +304,18 @@ const ChatPage = () => {
         const uploadId = Date.now().toString() + file.name;
         uploadIds.push(uploadId);
         
-        messageAttachments.push({
+        const attachment = {
           id: uploadId,
           name: file.name,
           type: file.type,
           url: URL.createObjectURL(file)
-        });
+        };
+        
+        messageAttachments.push(attachment);
+        
+        if (file.type.startsWith('image/')) {
+          addImageToContext(attachment.url, attachment.name);
+        }
         
         setUploadProgress(prev => ({
           ...prev,
