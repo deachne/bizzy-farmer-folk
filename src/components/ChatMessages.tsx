@@ -19,7 +19,8 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  Maximize
+  Maximize,
+  File
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
@@ -155,7 +156,7 @@ const ChatMessages = ({
                           </div>
                         ) : (
                           <div key={attachment.id} className="p-2 border border-gray-200 rounded text-xs flex items-center gap-1">
-                            <FileText className="h-4 w-4" />
+                            <File className="h-4 w-4" />
                             {attachment.name}
                           </div>
                         )
