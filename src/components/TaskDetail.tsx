@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Task } from "@/pages/TasksPage";
 import { Input } from "@/components/ui/input";
@@ -133,7 +132,7 @@ const TaskDetail = ({
     setTitle(newTitle);
     setIsTitleEmpty(newTitle === "");
     
-    // Update task in parent component
+    // Update task in parent component immediately
     const updatedTask = {
       ...task,
       title: newTitle,
@@ -154,27 +153,25 @@ const TaskDetail = ({
   };
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
+    const newDescription = e.target.value;
+    setDescription(newDescription);
     
-    if (isEditing) return; // Don't update parent if we're in edit mode
-    
-    // Update task in parent component
+    // Always update parent component, regardless of edit mode
     const updatedTask = {
       ...task,
-      description: e.target.value,
+      description: newDescription,
     };
     onUpdateTask(updatedTask);
   };
 
   const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNotes(e.target.value);
+    const newNotes = e.target.value;
+    setNotes(newNotes);
     
-    if (isEditing) return; // Don't update parent if we're in edit mode
-    
-    // Update task in parent component
+    // Always update parent component, regardless of edit mode
     const updatedTask = {
       ...task,
-      notes: e.target.value,
+      notes: newNotes,
     };
     onUpdateTask(updatedTask);
   };
@@ -216,18 +213,8 @@ const TaskDetail = ({
   };
 
   const toggleEdit = () => {
-    if (isEditing) {
-      // Save changes
-      const updatedTask = {
-        ...task,
-        title,
-        description,
-        dueDate,
-        priority: priority as "high" | "medium" | "normal",
-        notes
-      };
-      onUpdateTask(updatedTask);
-    }
+    // For new tasks, we're already in edit mode, so clicking "Save" should just exit edit mode
+    // without any additional save action (since we're saving on every input change)
     setIsEditing(!isEditing);
   };
 
@@ -243,26 +230,24 @@ const TaskDetail = ({
     setPriority(newPriority);
     setPriorityOpen(false);
     
-    if (!isEditing) {
-      const updatedTask = {
-        ...task,
-        priority: newPriority
-      };
-      onUpdateTask(updatedTask);
-    }
+    // Always update parent component, regardless of edit mode
+    const updatedTask = {
+      ...task,
+      priority: newPriority
+    };
+    onUpdateTask(updatedTask);
   };
 
   const handleDueDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDueDate = e.target.value;
     setDueDate(newDueDate);
     
-    if (!isEditing) {
-      const updatedTask = {
-        ...task,
-        dueDate: newDueDate
-      };
-      onUpdateTask(updatedTask);
-    }
+    // Always update parent component, regardless of edit mode
+    const updatedTask = {
+      ...task,
+      dueDate: newDueDate
+    };
+    onUpdateTask(updatedTask);
   };
 
   // Filter tag options to only show tags that aren't already added
@@ -295,7 +280,7 @@ const TaskDetail = ({
                 {priorityConfig.label}
               </div>
             </PopoverTrigger>
-            <PopoverContent className="p-0 w-auto" align="start">
+            <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
               <div className="py-1">
                 <div 
                   className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
@@ -323,36 +308,26 @@ const TaskDetail = ({
           </Popover>
         </div>
         
-        {isEditing ? (
-          <Textarea
-            value={description}
-            onChange={handleDescriptionChange}
-            className="mb-4"
-            placeholder="Task description"
-          />
-        ) : (
-          task.description && (
-            <p className="text-sm text-gray-600 mb-4">{task.description}</p>
-          )
-        )}
+        <Textarea
+          value={description}
+          onChange={handleDescriptionChange}
+          className="mb-4"
+          placeholder="Task description"
+        />
       </div>
       
       {/* Metadata */}
       <div className="space-y-4 mb-6">
         <div className="flex items-start gap-2">
           <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
-          <div>
+          <div className="w-full">
             <p className="text-sm font-medium text-gray-700">Due Date</p>
-            {isEditing ? (
-              <Input
-                type="text"
-                value={dueDate}
-                onChange={handleDueDateChange}
-                className="mt-1"
-              />
-            ) : (
-              <p className="text-sm text-gray-600">{task.dueDate}</p>
-            )}
+            <Input
+              type="text"
+              value={dueDate}
+              onChange={handleDueDateChange}
+              className="mt-1"
+            />
           </div>
         </div>
         
@@ -383,70 +358,63 @@ const TaskDetail = ({
               className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1"
             >
               {tag}
-              {isEditing && (
-                <button 
-                  onClick={() => removeTag(tag)}
-                  className="text-blue-400 hover:text-blue-700"
-                  aria-label={`Remove ${tag} tag`}
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              )}
+              <button 
+                onClick={() => removeTag(tag)}
+                className="text-blue-400 hover:text-blue-700"
+                aria-label={`Remove ${tag} tag`}
+              >
+                <X className="h-3 w-3" />
+              </button>
             </Badge>
           ))}
         </div>
         
-        {isEditing && (
-          <div className="flex mt-2">
-            {availableTags.length > 0 ? (
-              <Popover open={tagDropdownOpen} onOpenChange={setTagDropdownOpen}>
-                <PopoverTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="text-sm h-8 border-dashed border-gray-300"
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add tag
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 w-auto" align="start">
-                  <div className="py-1">
-                    {availableTags.map((tag) => (
-                      <div
-                        key={tag}
-                        className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                        onClick={() => addTagFromDropdown(tag)}
-                      >
-                        {tag}
-                      </div>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <div className="text-sm text-gray-500">All available tags have been added</div>
-            )}
-            
-            <div className="flex ml-2">
-              <Input
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Custom tag..."
-                className="text-sm h-8 border-dashed border-gray-300"
-              />
+        <div className="flex gap-2">
+          <Popover open={tagDropdownOpen} onOpenChange={setTagDropdownOpen}>
+            <PopoverTrigger asChild>
               <Button 
+                variant="outline" 
                 size="sm" 
-                variant="ghost" 
-                className="ml-1 h-8"
-                onClick={addTag}
+                className="text-sm h-8 border-dashed border-gray-300"
+                disabled={availableTags.length === 0}
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-4 w-4 mr-1" />
+                Add tag
               </Button>
-            </div>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
+              <div className="py-1 max-h-40 overflow-y-auto">
+                {availableTags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => addTagFromDropdown(tag)}
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+          
+          <div className="flex-1 flex">
+            <Input
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Custom tag..."
+              className="text-sm h-8 border-dashed border-gray-300"
+            />
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="ml-1 h-8"
+              onClick={addTag}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
           </div>
-        )}
+        </div>
       </div>
       
       {/* Notes */}
@@ -455,18 +423,12 @@ const TaskDetail = ({
           <span className="text-sm font-medium text-gray-700">Notes</span>
         </div>
         
-        {isEditing ? (
-          <Textarea
-            value={notes}
-            onChange={handleNotesChange}
-            className="min-h-[100px] text-sm"
-            placeholder="Add notes about this task..."
-          />
-        ) : (
-          <div className="bg-gray-50 p-3 rounded-md border text-sm text-gray-600 min-h-[100px]">
-            {notes || "No notes added yet."}
-          </div>
-        )}
+        <Textarea
+          value={notes}
+          onChange={handleNotesChange}
+          className="min-h-[100px] text-sm"
+          placeholder="Add notes about this task..."
+        />
       </div>
       
       {/* Action Buttons */}
