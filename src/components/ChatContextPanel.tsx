@@ -4,7 +4,8 @@ import { toast } from "@/components/ui/use-toast";
 import { ContextItem } from "@/types/chat";
 import ContextPanelContainer from "./context-panel/ContextPanelContainer";
 import ContextPanelHeader from "./context-panel/ContextPanelHeader";
-import KnowledgeSourcesPanel, { KnowledgeSource } from "./context-panel/KnowledgeSourcesPanel";
+import KnowledgeSourcesPanel from "./context-panel/KnowledgeSourcesPanel";
+import { KnowledgeSource } from "./context-panel/KnowledgeSourceItem";
 import MediaGallery from "./context-panel/MediaGallery";
 import TokenUsagePanel from "./context-panel/TokenUsagePanel";
 

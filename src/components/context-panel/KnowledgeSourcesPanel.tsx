@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FileText, Book, Globe, ChevronRight } from "lucide-react";
 import {
@@ -8,8 +7,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import KnowledgeSourceItem from "./KnowledgeSourceItem";
-import type { KnowledgeSource } from "./KnowledgeSourceItem";
+import KnowledgeSourceItem, { KnowledgeSource } from "./KnowledgeSourceItem";
 
 interface KnowledgeSourcesPanelProps {
   sources: KnowledgeSource[];
