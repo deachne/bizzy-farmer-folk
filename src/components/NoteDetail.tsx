@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
@@ -79,7 +78,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
       addTag();
     }
   };
-
+  
   const handleDeleteNote = () => {
     if (onDeleteNote) {
       onDeleteNote(note.id);
@@ -113,109 +112,186 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     const selectedText = content.substring(start, end);
     
     let formattedText = '';
-    let newStart = start;
-    let newEnd = end;
+    let cursorPosition = start;
     
     switch (format) {
       case "Bold":
         if (selectedText) {
-          formattedText = `**${selectedText}**`;
-          newEnd = end + 4; // Account for the added ** markers
+          // Bold the selected text
+          const newText = content.substring(0, start) + `**${selectedText}**` + content.substring(end);
+          setContent(newText);
+          cursorPosition = end + 4; // Move cursor after the formatted text
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor after the formatted text
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         } else {
-          formattedText = '****';
-          newStart = start + 2;
-          newEnd = start + 2;
+          // Insert empty bold markers and position cursor between them
+          const newText = content.substring(0, start) + '****' + content.substring(end);
+          setContent(newText);
+          cursorPosition = start + 2; // Position cursor between ** markers
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor between the markers
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         }
         break;
+        
       case "Italic":
         if (selectedText) {
-          formattedText = `*${selectedText}*`;
-          newEnd = end + 2; // Account for the added * markers
+          // Italicize the selected text
+          const newText = content.substring(0, start) + `*${selectedText}*` + content.substring(end);
+          setContent(newText);
+          cursorPosition = end + 2; // Move cursor after the formatted text
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor after the formatted text
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         } else {
-          formattedText = '**';
-          newStart = start + 1;
-          newEnd = start + 1;
+          // Insert empty italic markers and position cursor between them
+          const newText = content.substring(0, start) + '**' + content.substring(end);
+          setContent(newText);
+          cursorPosition = start + 1; // Position cursor between * markers
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor between the markers
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         }
         break;
+        
       case "Underline":
-        // For markdown, we'll use Markdown's emphasis since true underline is HTML
         if (selectedText) {
-          formattedText = `__${selectedText}__`;
-          newEnd = end + 4; // Account for the added __ markers
+          // In markdown, we use __ for emphasis that's typically rendered as underline
+          const newText = content.substring(0, start) + `__${selectedText}__` + content.substring(end);
+          setContent(newText);
+          cursorPosition = end + 4; // Move cursor after the formatted text
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor after the formatted text
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         } else {
-          formattedText = '____';
-          newStart = start + 2;
-          newEnd = start + 2;
+          // Insert empty underline markers and position cursor between them
+          const newText = content.substring(0, start) + '____' + content.substring(end);
+          setContent(newText);
+          cursorPosition = start + 2; // Position cursor between __ markers
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor between the markers
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         }
         break;
+        
       case "List":
         if (selectedText) {
-          // Handle multi-line selections
-          formattedText = selectedText
+          // Format each line of the selected text as a list item
+          const formattedSelection = selectedText
             .split('\n')
             .map(line => line.trim() ? `- ${line}` : line)
             .join('\n');
-          newEnd = start + formattedText.length;
+            
+          const newText = content.substring(0, start) + formattedSelection + content.substring(end);
+          setContent(newText);
+          cursorPosition = start + formattedSelection.length;
+          
+          // Update the note
+          onUpdateNote({
+            ...note,
+            content: newText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+          
+          // Position cursor after the list
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(cursorPosition, cursorPosition);
+          }, 0);
         } else {
-          // Insert at the beginning of the current line
-          const lines = content.split('\n');
-          let currentLineIndex = 0;
-          let currentPosition = 0;
+          // Find the current line and add a list marker at the beginning
+          const beforeCursor = content.substring(0, start);
+          const afterCursor = content.substring(start);
+          const lastNewlineBeforeCursor = beforeCursor.lastIndexOf('\n');
+          const startOfLine = lastNewlineBeforeCursor === -1 ? 0 : lastNewlineBeforeCursor + 1;
+          const currentLine = beforeCursor.substring(startOfLine);
           
-          // Find which line the cursor is on
-          for (let i = 0; i < lines.length; i++) {
-            if (currentPosition + lines[i].length >= start) {
-              currentLineIndex = i;
-              break;
-            }
-            // +1 for the newline character
-            currentPosition += lines[i].length + 1;
-          }
-          
-          // If the line doesn't already start with a list marker, add one
-          if (!lines[currentLineIndex].trim().startsWith('-')) {
-            lines[currentLineIndex] = `- ${lines[currentLineIndex]}`;
-            const newContent = lines.join('\n');
-            setContent(newContent);
+          // Check if the line already starts with a list marker
+          if (!currentLine.trim().startsWith('-')) {
+            const newText = beforeCursor.substring(0, startOfLine) + '- ' + beforeCursor.substring(startOfLine) + afterCursor;
+            setContent(newText);
+            cursorPosition = start + 2; // Position cursor after the list marker
+            
+            // Update the note
             onUpdateNote({
               ...note,
-              content: newContent,
+              content: newText,
               timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             });
             
             // Position cursor after the list marker
-            const prefixLength = content.substring(0, start).split('\n').slice(0, currentLineIndex).join('\n').length;
-            const newCursorPos = prefixLength + (currentLineIndex > 0 ? 1 : 0) + 2; // +1 for newline, +2 for "- "
-            
             setTimeout(() => {
               textarea.focus();
-              textarea.setSelectionRange(newCursorPos + lines[currentLineIndex].length, newCursorPos + lines[currentLineIndex].length);
+              textarea.setSelectionRange(cursorPosition, cursorPosition);
             }, 0);
-            
-            return;
           }
-          
-          formattedText = '- ';
-          newStart = start + 2;
-          newEnd = start + 2;
         }
         break;
+        
       default:
         return;
     }
-    
-    const newContent = content.substring(0, start) + formattedText + content.substring(end);
-    setContent(newContent);
-    onUpdateNote({
-      ...note,
-      content: newContent,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    });
-    
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(newStart, newEnd);
-    }, 0);
     
     toast({
       title: "Text formatting",
