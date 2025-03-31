@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import TasksList from "@/components/TasksList";
