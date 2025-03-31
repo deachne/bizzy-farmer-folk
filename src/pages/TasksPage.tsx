@@ -1,10 +1,11 @@
+
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import TasksList from "@/components/TasksList";
 import TasksBoard from "@/components/TasksBoard";
 import TaskDetail from "@/components/TaskDetail";
-import { Plus, Filter, Search } from "lucide-react";
+import { Plus, Filter, Search, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,7 @@ export interface Task {
   id: string;
   title: string;
   description: string;
-  status: "todo" | "in-progress" | "completed";
+  status: "todo" | "in-progress" | "completed" | "parts-list" | "field-tasks";
   priority: "high" | "medium" | "normal";
   dueDate: string;
   completedDate?: string;
@@ -30,6 +31,7 @@ const TasksPage = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState("All");
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -47,7 +49,7 @@ const TasksPage = () => {
       id: "2",
       title: "Pick up stone in northeast corner of North Field",
       description: "Large stone needs to be removed before planting",
-      status: "in-progress",
+      status: "field-tasks",
       priority: "medium",
       dueDate: "Tomorrow",
       source: "Field Observation",
@@ -59,7 +61,7 @@ const TasksPage = () => {
       id: "3",
       title: "Pick up belts and spray in Brandon",
       description: "Purchase replacement belts for the combine and herbicide",
-      status: "todo",
+      status: "parts-list",
       priority: "normal",
       dueDate: "March 30, 2025",
       source: "Manual Entry",
@@ -110,6 +112,7 @@ const TasksPage = () => {
       
       setTasks([newTask, ...tasks]);
       setSelectedTask(newTask);
+      setIsDetailOpen(true);
       
       toast({
         title: "Task Created",
@@ -145,6 +148,7 @@ const TasksPage = () => {
     const updatedTasks = tasks.filter(task => task.id !== id);
     setTasks(updatedTasks);
     setSelectedTask(null);
+    setIsDetailOpen(false);
     
     toast({
       title: "Task Deleted",
@@ -157,6 +161,15 @@ const TasksPage = () => {
       task.id === updatedTask.id ? updatedTask : task
     ));
     setSelectedTask(updatedTask);
+  };
+
+  const handleSelectTask = (task: Task) => {
+    setSelectedTask(task);
+    setIsDetailOpen(true);
+  };
+
+  const handleCloseDetail = () => {
+    setIsDetailOpen(false);
   };
 
   const filteredTasks = tasks.filter(task => {
@@ -189,7 +202,7 @@ const TasksPage = () => {
           </div>
           
           <div className="flex flex-1 overflow-hidden">
-            <div className="w-3/5 border-r flex flex-col">
+            <div className={`${isDetailOpen ? 'w-3/5' : 'w-full'} flex flex-col transition-all duration-300`}>
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-4">Tasks</h2>
                 
@@ -262,7 +275,7 @@ const TasksPage = () => {
                         <TasksList 
                           tasks={upcomingTasks} 
                           selectedTask={selectedTask} 
-                          onSelectTask={setSelectedTask}
+                          onSelectTask={handleSelectTask}
                           onCompleteTask={completeTask}
                         />
                       </div>
@@ -274,7 +287,7 @@ const TasksPage = () => {
                         <TasksList 
                           tasks={completedTasks} 
                           selectedTask={selectedTask} 
-                          onSelectTask={setSelectedTask}
+                          onSelectTask={handleSelectTask}
                           onCompleteTask={completeTask}
                         />
                       </div>
@@ -284,7 +297,7 @@ const TasksPage = () => {
                   <TasksBoard
                     tasks={filteredTasks}
                     selectedTask={selectedTask}
-                    onSelectTask={setSelectedTask}
+                    onSelectTask={handleSelectTask}
                     onCompleteTask={completeTask}
                     createTask={createTask}
                   />
@@ -292,30 +305,53 @@ const TasksPage = () => {
               </div>
             </div>
             
-            <div className="w-2/5">
-              {selectedTask ? (
-                <TaskDetail 
-                  task={selectedTask}
-                  onUpdateTask={updateTask}
-                  onCompleteTask={completeTask}
-                  onDeleteTask={deleteTask}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-500">
-                  <div className="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-300 mb-4">
-                    <Plus className="h-8 w-8" />
-                  </div>
-                  <p className="text-xl font-medium mb-2">No task selected</p>
-                  <p className="text-sm text-gray-400 mb-6">Select a task or create a new one</p>
-                  <Button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white" 
-                    onClick={createTask}
+            {isDetailOpen && (
+              <div className="w-2/5 relative">
+                <div className="absolute top-2 left-2 z-10">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 rounded-full"
+                    onClick={handleCloseDetail}
                   >
-                    Create Task
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
-              )}
-            </div>
+                {selectedTask ? (
+                  <TaskDetail 
+                    task={selectedTask}
+                    onUpdateTask={updateTask}
+                    onCompleteTask={completeTask}
+                    onDeleteTask={deleteTask}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                    <div className="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-300 mb-4">
+                      <Plus className="h-8 w-8" />
+                    </div>
+                    <p className="text-xl font-medium mb-2">No task selected</p>
+                    <p className="text-sm text-gray-400 mb-6">Select a task or create a new one</p>
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white" 
+                      onClick={createTask}
+                    >
+                      Create Task
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {!isDetailOpen && selectedTask && (
+              <div className="fixed bottom-20 right-6 z-20">
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center"
+                  onClick={() => setIsDetailOpen(true)}
+                >
+                  View Task <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            )}
           </div>
           
           <div className="border-t p-2 text-sm text-gray-500 flex justify-end">

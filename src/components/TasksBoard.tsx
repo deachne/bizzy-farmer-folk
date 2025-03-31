@@ -1,6 +1,5 @@
 
 import { Task } from "@/pages/TasksPage";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Check, Flag, Plus } from "lucide-react";
@@ -23,8 +22,41 @@ const TasksBoard = ({
 }: TasksBoardProps) => {
   // Get tasks by status
   const todoTasks = tasks.filter(task => task.status === "todo");
+  const fieldTasks = tasks.filter(task => task.status === "field-tasks");
+  const partsListTasks = tasks.filter(task => task.status === "parts-list");
   const inProgressTasks = tasks.filter(task => task.status === "in-progress");
   const completedTasks = tasks.filter(task => task.status === "completed");
+
+  // Status config for coloring the boards
+  const getStatusConfig = (status: string) => {
+    switch(status) {
+      case "field-tasks":
+        return {
+          title: "Field Tasks",
+          badge: "bg-green-50 text-green-700",
+        };
+      case "parts-list":
+        return {
+          title: "Parts List",
+          badge: "bg-orange-50 text-orange-700",
+        };
+      case "in-progress":
+        return {
+          title: "In Progress",
+          badge: "bg-yellow-50 text-yellow-700",
+        };
+      case "completed":
+        return {
+          title: "Completed",
+          badge: "bg-gray-50 text-gray-700",
+        };
+      default: // todo
+        return {
+          title: "To Do",
+          badge: "bg-blue-50 text-blue-700",
+        };
+    }
+  };
 
   // Priority color mapping
   const getPriorityColor = (priority: string) => {
@@ -152,21 +184,17 @@ const TasksBoard = ({
     );
   };
 
-  // Column styles
-  const columnClasses = "bg-gray-50 rounded-lg p-3 min-h-[300px] w-full";
-  const columnHeaderClasses = "text-sm font-medium mb-3 flex justify-between items-center";
-
-  return (
-    <div className="grid grid-cols-3 gap-4 h-full overflow-auto pb-4">
-      {/* To Do Column */}
-      <div className={columnClasses}>
-        <div className={columnHeaderClasses}>
-          <div className="flex items-center">
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 mr-2">
-              {todoTasks.length}
-            </Badge>
-            <h3>To Do</h3>
-          </div>
+  // Board rendering
+  const renderBoard = (title: string, tasksToRender: Task[], badgeClass: string, showAddButton: boolean = false) => (
+    <div className="bg-gray-50 rounded-lg p-3 min-h-[300px] w-full">
+      <div className="text-sm font-medium mb-3 flex justify-between items-center">
+        <div className="flex items-center">
+          <Badge variant="outline" className={`${badgeClass} mr-2`}>
+            {tasksToRender.length}
+          </Badge>
+          <h3>{title}</h3>
+        </div>
+        {showAddButton && (
           <Button 
             variant="ghost" 
             size="sm" 
@@ -175,41 +203,54 @@ const TasksBoard = ({
           >
             <Plus className="h-4 w-4" />
           </Button>
-        </div>
-        <div className="space-y-2">
-          {todoTasks.map(renderTaskCard)}
-        </div>
+        )}
       </div>
+      <div className="space-y-2">
+        {tasksToRender.map(renderTaskCard)}
+      </div>
+    </div>
+  );
+
+  // Column styles
+  const columnClasses = "bg-gray-50 rounded-lg p-3 min-h-[300px] w-full";
+
+  return (
+    <div className="grid grid-cols-5 gap-4 h-full overflow-auto pb-4">
+      {/* To Do Column */}
+      {renderBoard(
+        getStatusConfig("todo").title, 
+        todoTasks, 
+        getStatusConfig("todo").badge, 
+        true
+      )}
+
+      {/* Field Tasks Column */}
+      {renderBoard(
+        getStatusConfig("field-tasks").title, 
+        fieldTasks, 
+        getStatusConfig("field-tasks").badge
+      )}
+
+      {/* Parts List Column */}
+      {renderBoard(
+        getStatusConfig("parts-list").title, 
+        partsListTasks, 
+        getStatusConfig("parts-list").badge
+      )}
 
       {/* In Progress Column */}
-      <div className={columnClasses}>
-        <div className={columnHeaderClasses}>
-          <div className="flex items-center">
-            <Badge variant="outline" className="bg-yellow-50 text-yellow-700 mr-2">
-              {inProgressTasks.length}
-            </Badge>
-            <h3>In Progress</h3>
-          </div>
-        </div>
-        <div className="space-y-2">
-          {inProgressTasks.map(renderTaskCard)}
-        </div>
-      </div>
+      {renderBoard(
+        getStatusConfig("in-progress").title, 
+        inProgressTasks, 
+        getStatusConfig("in-progress").badge
+      )}
 
       {/* Completed Column */}
-      <div className={columnClasses}>
-        <div className={columnHeaderClasses}>
-          <div className="flex items-center">
-            <Badge variant="outline" className="bg-green-50 text-green-700 mr-2">
-              {completedTasks.length}
-            </Badge>
-            <h3>Completed</h3>
-          </div>
-        </div>
-        <div className="space-y-2">
-          {completedTasks.map(renderTaskCard)}
-        </div>
-      </div>
+      {renderBoard(
+        getStatusConfig("completed").title, 
+        completedTasks, 
+        getStatusConfig("completed").badge
+      )}
     </div>
   );
 };
