@@ -1,5 +1,4 @@
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +28,11 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
   const [tagInput, setTagInput] = useState("");
   const [isPreview, setIsPreview] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  useEffect(() => {
+    setTitle(note.title);
+    setContent(note.content);
+  }, [note.id, note.title, note.content]);
   
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -99,7 +103,6 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     });
   };
 
-  // Apply formatting to selected text
   const applyFormatting = (format: string) => {
     if (!textareaRef.current) return;
     
@@ -121,12 +124,10 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         cursorPosition = start + 1;
         break;
       case "Underline":
-        // Using HTML since Markdown doesn't have native underline
         formattedText = `<u>${selectedText}</u>`;
         cursorPosition = start + 3;
         break;
       case "List":
-        // Split by lines and add bullet points
         formattedText = selectedText
           .split('\n')
           .map(line => `- ${line}`)
@@ -145,7 +146,6 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     });
     
-    // Set cursor position after formatting
     setTimeout(() => {
       textarea.focus();
       if (selectedText) {
