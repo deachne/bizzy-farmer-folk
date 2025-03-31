@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Edit, Trash, Power } from "lucide-react";
 import { 
   DropdownMenu,
   DropdownMenuContent, 
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { User } from "./AddUserDialog";
 import { toast } from "sonner";
+import EditUserDialog from "./EditUserDialog";
 
 // Default users if no users in localStorage
 const defaultUsers = [
@@ -109,11 +110,13 @@ const UsersTable = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   
-  useEffect(() => {
-    // Load users from localStorage on component mount
+  const loadUsers = () => {
+    // Load users from localStorage
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
       setUsers(JSON.parse(storedUsers));
@@ -122,6 +125,11 @@ const UsersTable = () => {
       setUsers(defaultUsers);
       localStorage.setItem('users', JSON.stringify(defaultUsers));
     }
+  };
+  
+  useEffect(() => {
+    // Load users on component mount
+    loadUsers();
   }, []);
   
   const handleDeleteUser = () => {
@@ -158,6 +166,16 @@ const UsersTable = () => {
   const confirmDeactivateUser = (user: User) => {
     setUserToDeactivate(user);
     setShowDeactivateDialog(true);
+  };
+
+  const openEditUser = (user: User) => {
+    setUserToEdit(user);
+    setShowEditDialog(true);
+  };
+
+  const handleUserUpdated = () => {
+    // Reload the users list after an update
+    loadUsers();
   };
 
   return (
@@ -202,20 +220,29 @@ const UsersTable = () => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Edit User</DropdownMenuItem>
-                    <DropdownMenuItem>Change Role</DropdownMenuItem>
-                    <DropdownMenuItem>Reset Password</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => openEditUser(user)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit User
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.alert("Change Role functionality will be implemented in a future update")}>
+                      Change Role
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.alert("Reset Password functionality will be implemented in a future update")}>
+                      Reset Password
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
                       onClick={() => confirmDeactivateUser(user)}
                       className="text-amber-600"
                     >
+                      <Power className="mr-2 h-4 w-4" />
                       {user.status === "active" ? "Deactivate User" : "Activate User"}
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => confirmDeleteUser(user)}
                       className="text-red-600"
                     >
+                      <Trash className="mr-2 h-4 w-4" />
                       Delete User
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -267,6 +294,14 @@ const UsersTable = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit User Dialog */}
+      <EditUserDialog 
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        user={userToEdit}
+        onUserUpdated={handleUserUpdated}
+      />
     </>
   );
 };
