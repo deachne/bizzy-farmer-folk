@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { X, ChevronLeft, ChevronRight, Save, Copy, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Artifact } from "@/types/chat";
+import { Artifact } from "@/pages/ChatPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -20,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import TokenCounter from "@/components/TokenCounter";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { ContextImage } from "@/types/chat";
 
 interface KnowledgeSource {
   id: string;
@@ -28,6 +28,13 @@ interface KnowledgeSource {
   title: string;
   active: boolean;
   source?: string;
+}
+
+interface ContextImage {
+  id: string;
+  url: string;
+  name: string;
+  addedAt: string;
 }
 
 interface ChatContextPanelProps {

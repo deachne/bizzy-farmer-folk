@@ -1,7 +1,7 @@
 
 import { RefObject, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
-import { Message } from "@/types/chat";
+import { Message } from "@/pages/ChatPage";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
