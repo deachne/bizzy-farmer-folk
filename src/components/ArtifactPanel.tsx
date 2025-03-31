@@ -60,7 +60,7 @@ const ArtifactPanel = ({
   const handleSaveArtifact = () => {
     toast({
       title: "Artifact Saved",
-      description: "Artifact has been saved to your notes",
+      description: "Artifact has been saved to your documents",
       duration: 3000,
     });
   };
@@ -224,7 +224,7 @@ const ArtifactPanel = ({
           <div className="flex justify-between">
             <Button variant="outline" size="sm" onClick={handleSaveArtifact}>
               <Save className="h-4 w-4 mr-2" />
-              Save to Notes
+              Save to Documents
             </Button>
             <div className="flex space-x-2">
               <Button variant="outline" size="sm" onClick={handleCopyArtifact}>
