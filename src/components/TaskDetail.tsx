@@ -13,6 +13,7 @@ import TaskDueDate from "./tasks/TaskDueDate";
 import TaskSource from "./tasks/TaskSource";
 import TaskTags from "./tasks/TaskTags";
 import TaskNotes from "./tasks/TaskNotes";
+import PartsNeeded from "./tasks/PartsNeeded";
 
 interface TaskDetailProps {
   task: Task;
@@ -154,6 +155,8 @@ const TaskDetail = ({
           </div>
           
           <TaskTags task={task} onUpdateTask={onUpdateTask} />
+          
+          <PartsNeeded task={task} onUpdateTask={onUpdateTask} />
           
           <TaskNotes
             task={task}

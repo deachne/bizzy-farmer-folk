@@ -2,7 +2,7 @@
 import { Task } from "@/pages/TasksPage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Flag, Plus } from "lucide-react";
+import { Check, Flag, Plus, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TasksBoardProps {
@@ -101,6 +101,7 @@ const TasksBoard = ({
   const renderTaskCard = (task: Task) => {
     const priorityColors = getPriorityColor(task.priority);
     const isCompleted = task.status === "completed";
+    const hasParts = task.parts && task.parts.length > 0;
     
     return (
       <div 
@@ -138,6 +139,10 @@ const TasksBoard = ({
           </div>
           
           <div className="flex items-start gap-1">
+            {hasParts && !isCompleted && (
+              <ShoppingBag className="h-4 w-4 text-green-600" />
+            )}
+            
             {!isCompleted && (
               <Flag 
                 className={cn("h-4 w-4", priorityColors.flagColor)} 
@@ -147,24 +152,37 @@ const TasksBoard = ({
           </div>
         </div>
         
-        {task.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {task.tags.map((tag, index) => (
-              <Badge 
-                key={index} 
-                variant="outline" 
-                className={cn(
-                  "text-xs py-0 px-2",
-                  isCompleted 
-                    ? "bg-gray-100 text-gray-500 border-gray-200" 
-                    : "bg-blue-50 text-blue-700 border-blue-200"
-                )}
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
+        <div className="flex flex-wrap gap-1 mt-2">
+          {task.tags.length > 0 && task.tags.map((tag, index) => (
+            <Badge 
+              key={index} 
+              variant="outline" 
+              className={cn(
+                "text-xs py-0 px-2",
+                isCompleted 
+                  ? "bg-gray-100 text-gray-500 border-gray-200" 
+                  : "bg-blue-50 text-blue-700 border-blue-200"
+              )}
+            >
+              {tag}
+            </Badge>
+          ))}
+          
+          {hasParts && (
+            <Badge 
+              variant="outline" 
+              className={cn(
+                "flex items-center gap-1 text-xs py-0 px-2",
+                isCompleted 
+                  ? "bg-gray-100 text-gray-500 border-gray-200" 
+                  : "bg-green-50 text-green-700 border-green-200"
+              )}
+            >
+              <ShoppingBag className="h-2 w-2" /> 
+              {task.parts?.length}
+            </Badge>
+          )}
+        </div>
         
         <div className="flex justify-between items-center mt-2">
           <div className="text-xs text-gray-500">
@@ -217,9 +235,6 @@ const TasksBoard = ({
       </div>
     </div>
   );
-
-  // Column styles
-  const columnClasses = "bg-gray-50 rounded-lg p-3 min-h-[300px] w-full";
 
   return (
     <div className="grid grid-cols-5 gap-4 h-full overflow-auto pb-4">

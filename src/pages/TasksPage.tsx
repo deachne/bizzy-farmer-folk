@@ -1,16 +1,26 @@
-
 import React, { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import TasksList from "@/components/TasksList";
 import TasksBoard from "@/components/TasksBoard";
 import TaskDetail from "@/components/TaskDetail";
-import { Plus, Filter, Search, X, ChevronRight } from "lucide-react";
+import { Plus, Filter, Search, X, ChevronRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/use-toast";
+import ShoppingList from "@/components/tasks/ShoppingList";
+
+export interface Part {
+  id: string;
+  name: string;
+  quantity: number;
+  unit?: string;
+  partNumber?: string;
+  vendor?: string;
+  ordered?: boolean;
+  received?: boolean;
+}
 
 export interface Task {
   id: string;
@@ -24,6 +34,7 @@ export interface Task {
   sourceText?: string;
   tags: string[];
   notes?: string;
+  parts?: Part[];
 }
 
 const TasksPage = () => {
@@ -32,6 +43,7 @@ const TasksPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState("All");
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [showShoppingList, setShowShoppingList] = useState(false);
   
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -43,7 +55,27 @@ const TasksPage = () => {
       dueDate: "Today",
       source: "Equipment Note",
       tags: ["Equipment", "Urgent"],
-      notes: "Purchase new nozzles from AgriSupply. Need 24 units."
+      notes: "Purchase new nozzles from AgriSupply. Need 24 units.",
+      parts: [
+        {
+          id: "p1",
+          name: "Standard Spray Nozzles",
+          quantity: 24,
+          partNumber: "SN-120-X",
+          vendor: "AgriSupply",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p2",
+          name: "Nozzle gaskets",
+          quantity: 24,
+          partNumber: "NG-120",
+          vendor: "AgriSupply",
+          ordered: false,
+          received: false
+        }
+      ]
     },
     {
       id: "2",
@@ -66,7 +98,27 @@ const TasksPage = () => {
       dueDate: "March 30, 2025",
       source: "Manual Entry",
       tags: ["Supplies"],
-      notes: "Check prices at both suppliers before purchasing."
+      notes: "Check prices at both suppliers before purchasing.",
+      parts: [
+        {
+          id: "p3",
+          name: "Combine Drive Belt",
+          quantity: 2,
+          partNumber: "CD-450-X",
+          vendor: "Brandon Farm Supply",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p4",
+          name: "Herbicide - Roundup",
+          quantity: 10,
+          unit: "gallons",
+          vendor: "Brandon Ag Chemicals",
+          ordered: false,
+          received: false
+        }
+      ]
     },
     {
       id: "4",
@@ -124,7 +176,6 @@ const TasksPage = () => {
   const completeTask = (taskId: string) => {
     const updatedTasks = tasks.map(task => {
       if (task.id === taskId) {
-        // Explicitly handle the status as a union type
         const newStatus: Task["status"] = task.status === "completed" ? "todo" : "completed";
         
         return { 
@@ -184,6 +235,10 @@ const TasksPage = () => {
     setIsDetailOpen(false);
   };
 
+  const toggleShoppingList = () => {
+    setShowShoppingList(!showShoppingList);
+  };
+
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = searchQuery === "" || 
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -197,6 +252,7 @@ const TasksPage = () => {
 
   const upcomingTasks = filteredTasks.filter(task => task.status !== "completed");
   const completedTasks = filteredTasks.filter(task => task.status === "completed");
+  const tasksWithParts = tasks.filter(task => task.parts && task.parts.length > 0);
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -214,7 +270,7 @@ const TasksPage = () => {
           </div>
           
           <div className="flex flex-1 overflow-hidden">
-            <div className={`${isDetailOpen ? 'w-3/5' : 'w-full'} flex flex-col transition-all duration-300`}>
+            <div className={`${(isDetailOpen || showShoppingList) ? 'w-3/5' : 'w-full'} flex flex-col transition-all duration-300`}>
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-4">Tasks</h2>
                 
@@ -226,12 +282,22 @@ const TasksPage = () => {
                     </TabsList>
                   </Tabs>
                   
-                  <Button 
-                    className="ml-2 bg-blue-600 hover:bg-blue-700 text-white" 
-                    onClick={createTask}
-                  >
-                    <Plus className="h-4 w-4 mr-1" /> New Task
-                  </Button>
+                  <div className="flex space-x-2">
+                    {tasksWithParts.length > 0 && (
+                      <Button 
+                        className="ml-2 bg-green-600 hover:bg-green-700 text-white" 
+                        onClick={toggleShoppingList}
+                      >
+                        <ShoppingBag className="h-4 w-4 mr-1" /> Parts
+                      </Button>
+                    )}
+                    <Button 
+                      className="ml-2 bg-blue-600 hover:bg-blue-700 text-white" 
+                      onClick={createTask}
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> New Task
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-2 mb-4">
@@ -351,6 +417,17 @@ const TasksPage = () => {
                     </Button>
                   </div>
                 )}
+              </div>
+            )}
+            
+            {showShoppingList && (
+              <div className="w-2/5 relative border-l">
+                <ShoppingList 
+                  tasks={tasksWithParts} 
+                  onClose={() => setShowShoppingList(false)}
+                  onTaskSelect={handleSelectTask}
+                  onUpdateTask={updateTask}
+                />
               </div>
             )}
             

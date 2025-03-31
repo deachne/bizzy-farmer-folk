@@ -4,7 +4,7 @@ import { Task } from "@/pages/TasksPage";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Flag } from "lucide-react";
+import { Check, Flag, ShoppingBag } from "lucide-react";
 
 interface TasksListProps {
   tasks: Task[];
@@ -58,6 +58,7 @@ const TasksList = ({ tasks, selectedTask, onSelectTask, onCompleteTask }: TasksL
       {tasks.map((task) => {
         const priorityColors = getPriorityColor(task.priority);
         const isCompleted = task.status === "completed";
+        const hasParts = task.parts && task.parts.length > 0;
         
         return (
           <div
@@ -109,32 +110,51 @@ const TasksList = ({ tasks, selectedTask, onSelectTask, onCompleteTask }: TasksL
                     }
                   </p>
                   
-                  {task.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {task.tags.map((tag, index) => (
-                        <Badge 
-                          key={index} 
-                          variant="outline" 
-                          className={cn(
-                            isCompleted 
-                              ? "bg-gray-100 text-gray-500 border-gray-200" 
-                              : "bg-blue-50 text-blue-700 border-blue-200"
-                          )}
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {task.tags.length > 0 && task.tags.map((tag, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="outline" 
+                        className={cn(
+                          isCompleted 
+                            ? "bg-gray-100 text-gray-500 border-gray-200" 
+                            : "bg-blue-50 text-blue-700 border-blue-200"
+                        )}
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                    
+                    {hasParts && (
+                      <Badge 
+                        variant="outline" 
+                        className={cn(
+                          "flex items-center gap-1",
+                          isCompleted 
+                            ? "bg-gray-100 text-gray-500 border-gray-200" 
+                            : "bg-green-50 text-green-700 border-green-200"
+                        )}
+                      >
+                        <ShoppingBag className="h-3 w-3" /> 
+                        {task.parts?.length} {task.parts?.length === 1 ? 'part' : 'parts'}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
               
-              {!isCompleted && (
-                <Flag 
-                  className={cn("h-4 w-4 mt-1", priorityColors.flagColor)} 
-                  fill={task.priority === "high" ? "currentColor" : "none"}
-                />
-              )}
+              <div className="flex items-start space-x-1">
+                {hasParts && !isCompleted && (
+                  <ShoppingBag className="h-4 w-4 text-green-600 mt-1" />
+                )}
+                
+                {!isCompleted && (
+                  <Flag 
+                    className={cn("h-4 w-4 mt-1", priorityColors.flagColor)} 
+                    fill={task.priority === "high" ? "currentColor" : "none"}
+                  />
+                )}
+              </div>
             </div>
             
             <div className="mt-2 text-xs text-gray-500">
