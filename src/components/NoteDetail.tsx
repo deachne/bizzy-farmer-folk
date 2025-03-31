@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
@@ -277,66 +276,56 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
   const markdownOptions = {
     overrides: {
       p: {
-        component: "p",
-        props: {
-          className: "mb-4 break-words"
-        }
+        component: ({ children, ...props }) => (
+          <p className="mb-4 break-words" {...props}>{children}</p>
+        ),
       },
       h1: {
-        component: "h1",
-        props: {
-          className: "text-2xl font-bold mb-4"
-        }
+        component: ({ children, ...props }) => (
+          <h1 className="text-2xl font-bold mb-4" {...props}>{children}</h1>
+        ),
       },
       h2: {
-        component: "h2",
-        props: {
-          className: "text-xl font-bold mb-3"
-        }
+        component: ({ children, ...props }) => (
+          <h2 className="text-xl font-bold mb-3" {...props}>{children}</h2>
+        ),
       },
       h3: {
-        component: "h3",
-        props: {
-          className: "text-lg font-bold mb-2"
-        }
+        component: ({ children, ...props }) => (
+          <h3 className="text-lg font-bold mb-2" {...props}>{children}</h3>
+        ),
       },
       ul: {
-        component: "ul",
-        props: {
-          className: "list-disc pl-5 mb-4"
-        }
+        component: ({ children, ...props }) => (
+          <ul className="list-disc pl-5 mb-4" {...props}>{children}</ul>
+        ),
       },
       ol: {
-        component: "ol",
-        props: {
-          className: "list-decimal pl-5 mb-4"
-        }
+        component: ({ children, ...props }) => (
+          <ol className="list-decimal pl-5 mb-4" {...props}>{children}</ol>
+        ),
       },
       li: {
-        component: "li",
-        props: {
-          className: "mb-1"
-        }
+        component: ({ children, ...props }) => (
+          <li className="mb-1" {...props}>{children}</li>
+        ),
       },
       a: {
-        component: "a",
-        props: {
-          className: "text-blue-600 hover:underline"
-        }
+        component: ({ children, ...props }) => (
+          <a className="text-blue-600 hover:underline" {...props}>{children}</a>
+        ),
       },
       blockquote: {
-        component: "blockquote",
-        props: {
-          className: "border-l-4 border-gray-300 pl-4 italic my-4"
-        }
+        component: ({ children, ...props }) => (
+          <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4" {...props}>{children}</blockquote>
+        ),
       },
       hr: {
-        component: "hr",
-        props: {
-          className: "my-4 border-t border-gray-300"
-        }
-      }
-    }
+        component: ({ ...props }) => (
+          <hr className="my-4 border-t border-gray-300" {...props} />
+        ),
+      },
+    },
   };
 
   return (
