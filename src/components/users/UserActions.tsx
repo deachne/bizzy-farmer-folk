@@ -1,7 +1,15 @@
 
 import React, { useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Edit, Trash, Power } from "lucide-react";
+import { 
+  MoreHorizontal, 
+  Edit, 
+  Trash, 
+  Power, 
+  UserPlus,
+  ShieldAlert,
+  KeyRound
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,23 +28,31 @@ interface UserActionsProps {
 }
 
 const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps) => {
-  const handleEditClick = useCallback((e: React.MouseEvent) => {
+  // Improved event handling with proper event types
+  const handleEditClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     onEdit(user);
   }, [user, onEdit]);
 
-  const handleDeactivateClick = useCallback((e: React.MouseEvent) => {
+  const handleDeactivateClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     onDeactivate(user);
   }, [user, onDeactivate]);
 
-  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
+  const handleDeleteClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     onDelete(user);
   }, [user, onDelete]);
+
+  // Handler for not-yet-implemented features
+  const handleNotImplemented = useCallback((e: React.MouseEvent<HTMLDivElement>, featureName: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.alert(`${featureName} functionality will be implemented in a future update`);
+  }, []);
 
   return (
     <DropdownMenu>
@@ -45,43 +61,60 @@ const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps)
           variant="ghost" 
           className="h-8 w-8 p-0" 
           onClick={(e) => e.stopPropagation()}
-          aria-label="Open user actions menu"
+          aria-label={`Actions for user ${user.displayName}`}
         >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      
+      <DropdownMenuContent align="end" aria-label="User actions menu">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleEditClick}>
+        
+        {/* Edit user action */}
+        <DropdownMenuItem 
+          onClick={handleEditClick}
+          aria-label="Edit user details"
+        >
           <Edit className="mr-2 h-4 w-4" />
           Edit User
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          window.alert("Change Role functionality will be implemented in a future update");
-        }}>
+        
+        {/* Change role action - not implemented yet */}
+        <DropdownMenuItem 
+          onClick={(e) => handleNotImplemented(e, "Change Role")}
+          aria-label="Change user role"
+        >
+          <ShieldAlert className="mr-2 h-4 w-4" />
           Change Role
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          window.alert("Reset Password functionality will be implemented in a future update");
-        }}>
+        
+        {/* Reset password action - not implemented yet */}
+        <DropdownMenuItem 
+          onClick={(e) => handleNotImplemented(e, "Reset Password")}
+          aria-label="Reset user password"
+        >
+          <KeyRound className="mr-2 h-4 w-4" />
           Reset Password
         </DropdownMenuItem>
+        
         <DropdownMenuSeparator />
+        
+        {/* Deactivate/Activate user action */}
         <DropdownMenuItem 
           onClick={handleDeactivateClick}
           className="text-amber-600"
+          aria-label={user.status === "active" ? "Deactivate user account" : "Activate user account"}
         >
           <Power className="mr-2 h-4 w-4" />
           {user.status === "active" ? "Deactivate User" : "Activate User"}
         </DropdownMenuItem>
+        
+        {/* Delete user action */}
         <DropdownMenuItem 
           onClick={handleDeleteClick}
           className="text-red-600"
+          aria-label="Permanently delete user"
         >
           <Trash className="mr-2 h-4 w-4" />
           Delete User
