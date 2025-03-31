@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { ChatSession } from "@/pages/ChatPage";
+import { ChatSession } from "@/types/chat";
 import { ChevronDown, PlusCircle, Sidebar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
