@@ -67,12 +67,15 @@ const TasksPartsView = ({
   
   tasks.forEach(task => {
     task.parts?.forEach(part => {
-      // Categorize simple parts
+      // Only add parts that aren't ordered (checked off)
       if (part.category) {
-        const categoryGroup = getOrCreateGroup(categoryParts, part.category, 'category');
-        categoryGroup.parts.push({ part, task });
+        // For category (simple) parts, only add if not ordered
+        if (!part.ordered) {
+          const categoryGroup = getOrCreateGroup(categoryParts, part.category, 'category');
+          categoryGroup.parts.push({ part, task });
+        }
       }
-      // Categorize vendor parts
+      // Add all vendor parts (these will still show even when ordered)
       else if (part.vendor) {
         const vendorGroup = getOrCreateGroup(vendorParts, part.vendor, 'vendor');
         vendorGroup.parts.push({ part, task });
@@ -300,3 +303,4 @@ const TasksPartsView = ({
 };
 
 export default TasksPartsView;
+

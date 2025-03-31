@@ -19,7 +19,7 @@ const ShoppingList = ({ tasks, onClose, onTaskSelect, onUpdateTask }: ShoppingLi
   const [activeTab, setActiveTab] = useState<string>("needed");
   const [filter, setFilter] = useState<string>("all");
   
-  // Group parts by vendor
+  // Group parts by vendor - filter out any category/simple parts
   const groupedParts: Record<string, {
     vendor: string;
     parts: { part: Part; task: Task }[];
@@ -28,16 +28,19 @@ const ShoppingList = ({ tasks, onClose, onTaskSelect, onUpdateTask }: ShoppingLi
   tasks.forEach(task => {
     if (task.parts && task.parts.length > 0) {
       task.parts.forEach(part => {
-        const vendor = part.vendor || "Unspecified Vendor";
-        
-        if (!groupedParts[vendor]) {
-          groupedParts[vendor] = {
-            vendor,
-            parts: []
-          };
+        // Only include parts with a vendor (skip simple/category parts)
+        if (part.vendor) {
+          const vendor = part.vendor;
+          
+          if (!groupedParts[vendor]) {
+            groupedParts[vendor] = {
+              vendor,
+              parts: []
+            };
+          }
+          
+          groupedParts[vendor].parts.push({ part, task });
         }
-        
-        groupedParts[vendor].parts.push({ part, task });
       });
     }
   });
@@ -311,3 +314,4 @@ const ShoppingList = ({ tasks, onClose, onTaskSelect, onUpdateTask }: ShoppingLi
 };
 
 export default ShoppingList;
+
