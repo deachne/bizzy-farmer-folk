@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Task } from "@/pages/TasksPage";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -80,7 +81,7 @@ const TasksList = ({ tasks, selectedTask, onSelectTask, onCompleteTask }: TasksL
                   className={cn(
                     "h-6 w-6 rounded-md mt-1",
                     isCompleted 
-                      ? "bg-gray-400 border-gray-400 text-white" 
+                      ? "bg-green-500 border-green-500 text-white" 
                       : "border-gray-300"
                   )}
                   onClick={(e) => handleCompleteTask(task.id, e)}
@@ -146,3 +147,4 @@ const TasksList = ({ tasks, selectedTask, onSelectTask, onCompleteTask }: TasksL
 };
 
 export default TasksList;
+
