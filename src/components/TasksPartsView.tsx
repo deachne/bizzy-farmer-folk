@@ -152,9 +152,12 @@ const TasksPartsView = ({
     </Card>
   );
 
+  // Prepare the categorized parts for rendering
+  const allCategoryParts = categoryParts.flatMap(group => group.parts);
+
   return (
     <ScrollArea className="h-full">
-      <div className="p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="p-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Quick Add Button */}
         <div className="col-span-full flex justify-end mb-4">
           <Button 
@@ -165,22 +168,24 @@ const TasksPartsView = ({
           </Button>
         </div>
 
-        {/* Simple Parts Card - Always on the right */}
-        {categoryParts.length > 0 && (
-          <div className="sm:col-start-2 sm:col-end-3 lg:col-start-3 lg:col-end-4">
+        {/* Simple Parts Card - Always on the left */}
+        {allCategoryParts.length > 0 && (
+          <div className="sm:col-span-1">
             {renderPartsCard(
               "Simple Parts", 
-              categoryParts.flatMap(group => group.parts), 
+              allCategoryParts, 
               <Package className="h-5 w-5 mr-2 text-indigo-500" />,
               true
             )}
           </div>
         )}
 
-        {/* Vendor Parts Cards */}
-        {vendorParts.map(group => 
-          renderPartsCard(group.vendor, group.parts)
-        )}
+        {/* Vendor Parts Cards - On the right side of the screen */}
+        <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {vendorParts.map(group => 
+            renderPartsCard(group.vendor, group.parts)
+          )}
+        </div>
       </div>
       
       <QuickAddParts 
