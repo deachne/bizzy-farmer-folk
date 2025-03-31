@@ -8,6 +8,7 @@ import { Plus, ChevronDown, Check, FileText, File, Image, Table, Text, MoreHoriz
 import { Badge } from "@/components/ui/badge";
 import DocumentsList from "@/components/documents/DocumentsList";
 import DocumentPreview from "@/components/documents/DocumentPreview";
+import DocumentUploadDialog from "@/components/documents/DocumentUploadDialog";
 import { Document } from "@/types/documents";
 
 const DocumentsPage = () => {
@@ -16,6 +17,7 @@ const DocumentsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("Recent first");
   const [filterBy, setFilterBy] = useState("In Knowledge Base: All");
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
   const [documents, setDocuments] = useState<Document[]>([
     {
@@ -97,6 +99,11 @@ const DocumentsPage = () => {
     setSelectedDocument(updatedDocument);
   };
 
+  const addDocument = (newDocument: Document) => {
+    setDocuments(prevDocuments => [newDocument, ...prevDocuments]);
+    setSelectedDocument(newDocument);
+  };
+
   const filteredDocuments = filterDocumentsBySearch(filterDocumentsByType());
 
   return (
@@ -142,7 +149,8 @@ const DocumentsPage = () => {
                     <div className="flex-grow"></div>
                     <Button 
                       size="icon" 
-                      className="ml-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full" 
+                      className="ml-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full"
+                      onClick={() => setIsUploadDialogOpen(true)}
                     >
                       <Plus className="h-5 w-5" />
                     </Button>
@@ -193,7 +201,8 @@ const DocumentsPage = () => {
                   <p className="text-xl font-medium mb-2">No document selected</p>
                   <p className="text-sm text-gray-400 mb-6">Select a document to preview</p>
                   <Button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white" 
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={() => setIsUploadDialogOpen(true)}
                   >
                     Upload Document
                   </Button>
@@ -210,6 +219,12 @@ const DocumentsPage = () => {
           </div>
         </div>
       </SidebarProvider>
+      
+      <DocumentUploadDialog 
+        open={isUploadDialogOpen}
+        onOpenChange={setIsUploadDialogOpen}
+        onAddDocument={addDocument}
+      />
     </div>
   );
 };
