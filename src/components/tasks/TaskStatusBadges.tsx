@@ -3,6 +3,7 @@ import React from "react";
 import { Task } from "@/pages/TasksPage";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getStatusConfig, getPriorityConfig } from "./TaskDetailUtils";
+import { Flag } from "lucide-react";
 
 interface TaskStatusBadgesProps {
   task: Task;
