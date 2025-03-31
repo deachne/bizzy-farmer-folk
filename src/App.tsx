@@ -12,6 +12,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ConfigurationPage from "./pages/ConfigurationPage";
 import UsersPage from "./pages/UsersPage";
 import SystemPage from "./pages/SystemPage";
+import ExtensionsPage from "./pages/ExtensionsPage";
 import React from "react"; 
 
 // Create the query client outside of the component
@@ -35,6 +36,7 @@ const App = () => {
               <Route path="/configuration" element={<ConfigurationPage />} />
               <Route path="/users" element={<UsersPage />} />
               <Route path="/system" element={<SystemPage />} />
+              <Route path="/extensions" element={<ExtensionsPage />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
