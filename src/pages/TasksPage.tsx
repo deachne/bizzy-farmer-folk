@@ -647,23 +647,6 @@ const TasksPage = () => {
           </div>
         </div>
       </SidebarProvider>
-
-      <div className="fixed bottom-6 right-6">
-        <Button
-          size="icon"
-          className="h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg"
-          onClick={createTask}
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
-      </div>
-      
-      <QuickAddParts 
-        open={showQuickAddParts}
-        onOpenChange={setShowQuickAddParts}
-        tasks={tasks}
-        onUpdateTask={updateTask}
-      />
     </div>
   );
 };
