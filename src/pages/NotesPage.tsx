@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -70,6 +71,13 @@ const NotesPage = () => {
       category: "This Week"
     }
   ]);
+
+  // Get all unique tags from all notes
+  const allTags = Array.from(
+    new Set(
+      notes.flatMap(note => note.tags)
+    )
+  );
 
   const createNote = () => {
     // First clear the selected note
@@ -190,6 +198,7 @@ const NotesPage = () => {
                     setSelectedNote(updatedNote);
                   }}
                   onDeleteNote={deleteNote}
+                  allTags={allTags}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
