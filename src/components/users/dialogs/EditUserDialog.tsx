@@ -76,16 +76,21 @@ const EditUserDialog = ({
     setTimeout(() => {
       onOpenChange(false);
       onUserUpdated();
-    }, 10);
+    }, 100); // Increased timeout to ensure proper cleanup
   };
+
+  const dialogDescription = "Make changes to the user information below.";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        aria-describedby="edit-user-description"
+      >
         <DialogHeader>
           <DialogTitle>Edit User: {user?.displayName}</DialogTitle>
-          <DialogDescription>
-            Make changes to the user information below.
+          <DialogDescription id="edit-user-description">
+            {dialogDescription}
           </DialogDescription>
         </DialogHeader>
         <UserForm 

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Edit, Trash, Power } from "lucide-react";
 import {
@@ -20,29 +20,33 @@ interface UserActionsProps {
 }
 
 const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps) => {
-  const handleEditClick = (e: React.MouseEvent) => {
+  const handleEditClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onEdit(user);
-  };
+  }, [user, onEdit]);
 
-  const handleDeactivateClick = (e: React.MouseEvent) => {
+  const handleDeactivateClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onDeactivate(user);
-  };
+  }, [user, onDeactivate]);
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onDelete(user);
-  };
+  }, [user, onDelete]);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
-          <span className="sr-only">Open menu</span>
+        <Button 
+          variant="ghost" 
+          className="h-8 w-8 p-0" 
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Open user actions menu"
+        >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

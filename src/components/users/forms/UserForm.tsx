@@ -52,7 +52,12 @@ const UserForm = ({
   useEffect(() => {
     console.log("Default values changed:", defaultValues);
     if (defaultValues) {
-      form.reset(defaultValues);
+      // Ensure we reset the form with complete and correct values
+      form.reset({
+        ...defaultValues,
+        role: defaultValues.role || "user",
+        status: defaultValues.status || "active"
+      });
     }
   }, [defaultValues, form]);
 
@@ -116,13 +121,14 @@ const UserForm = ({
           name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role</FormLabel>
+              <FormLabel id="role-label">Role</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
-                value={field.value}
+                value={field.value || "user"}
+                name={field.name}
               >
-                <FormControl>
+                <FormControl aria-labelledby="role-label">
                   <SelectTrigger>
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
@@ -142,13 +148,14 @@ const UserForm = ({
           name="status"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
+              <FormLabel id="status-label">Status</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
-                value={field.value}
+                value={field.value || "active"}
+                name={field.name}
               >
-                <FormControl>
+                <FormControl aria-labelledby="status-label">
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>

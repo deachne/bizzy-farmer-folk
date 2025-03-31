@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { User } from "../types";
@@ -76,18 +76,29 @@ export function AddUserDialog({ open, onOpenChange, onUserAdded }: AddUserDialog
     // Show success message
     toast.success("User created successfully");
     
-    // Close the dialog
-    onOpenChange(false);
+    // Close the dialog after a small delay to ensure proper cleanup
+    setTimeout(() => {
+      onOpenChange(false);
+    }, 100);
   };
+
+  const dialogDescription = "Create a new user by filling out the information below.";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent 
+        className="sm:max-w-[500px]"
+        aria-describedby="add-user-description"
+      >
         <DialogHeader>
           <DialogTitle>Add New User</DialogTitle>
+          <DialogDescription id="add-user-description">
+            {dialogDescription}
+          </DialogDescription>
         </DialogHeader>
         
         <UserForm 
+          key="add-user-form"
           defaultValues={defaultValues}
           onSubmit={handleSubmit}
           submitButtonText="Create User"
