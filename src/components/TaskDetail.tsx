@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Task } from "@/pages/TasksPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -138,6 +137,14 @@ const TaskDetail = ({
     }
   };
 
+  const handleStatusChange = (newStatus: Task['status']) => {
+    const updatedTask = {
+      ...task,
+      status: newStatus
+    };
+    onUpdateTask(updatedTask);
+  };
+
   // Define priority colors and labels
   const getPriorityConfig = (priority: string) => {
     switch (priority) {
@@ -166,6 +173,7 @@ const TaskDetail = ({
   };
 
   const statusConfig = getStatusConfig(task.status);
+  const availableStatuses: Task['status'][] = ["todo", "in-progress", "completed"];
   const priorityConfig = getPriorityConfig(priority);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -324,9 +332,30 @@ const TaskDetail = ({
         />
         
         <div className="flex flex-wrap gap-2 mb-4">
-          <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusConfig.bg} ${statusConfig.text}`}>
-            {statusConfig.label}
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div 
+                className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${statusConfig.bg} ${statusConfig.text}`}
+              >
+                {statusConfig.label}
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
+              <div className="py-1">
+                {availableStatuses
+                  .filter(status => status !== task.status)
+                  .map((status) => (
+                    <div
+                      key={status}
+                      className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleStatusChange(status)}
+                    >
+                      {getStatusConfig(status).label}
+                    </div>
+                  ))}
+              </div>
+            </PopoverContent>
+          </Popover>
           
           <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
             <PopoverTrigger asChild>
