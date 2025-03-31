@@ -5,7 +5,7 @@ import NoteSidebar from "@/components/NoteSidebar";
 import ExtensionHeader from "@/components/extensions/ExtensionHeader";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, RefreshCw, Filter, Package, Database, Settings, ShoppingCart } from "lucide-react";
+import { Plus, RefreshCw, Filter, Package, Database, Settings, ShoppingCart, Search } from "lucide-react";
 import ExtensionItem from "@/components/extensions/ExtensionItem";
 
 const ExtensionsPage = () => {
