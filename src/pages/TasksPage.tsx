@@ -5,12 +5,13 @@ import TasksList from "@/components/TasksList";
 import TasksBoard from "@/components/TasksBoard";
 import TasksPartsView from "@/components/TasksPartsView";
 import TaskDetail from "@/components/TaskDetail";
-import { Plus, Filter, Search, X, ChevronRight, ShoppingBag, Package } from "lucide-react";
+import { Plus, Filter, Search, X, ChevronRight, ShoppingBag, Package, ListPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import ShoppingList from "@/components/tasks/ShoppingList";
+import QuickAddParts from "@/components/tasks/QuickAddParts";
 
 export interface Part {
   id: string;
@@ -45,6 +46,7 @@ const TasksPage = () => {
   const [sourceFilter, setSourceFilter] = useState("All");
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [showShoppingList, setShowShoppingList] = useState(false);
+  const [showQuickAddParts, setShowQuickAddParts] = useState(false);
   
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -324,6 +326,10 @@ const TasksPage = () => {
     setShowShoppingList(!showShoppingList);
   };
 
+  const toggleQuickAddParts = () => {
+    setShowQuickAddParts(!showQuickAddParts);
+  };
+
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = searchQuery === "" || 
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -372,12 +378,20 @@ const TasksPage = () => {
                   
                   <div className="flex space-x-2">
                     {tasksWithParts.length > 0 && (
-                      <Button 
-                        className="ml-2 bg-green-600 hover:bg-green-700 text-white" 
-                        onClick={toggleShoppingList}
-                      >
-                        <ShoppingBag className="h-4 w-4 mr-1" /> Parts
-                      </Button>
+                      <>
+                        <Button 
+                          className="ml-2 bg-green-600 hover:bg-green-700 text-white" 
+                          onClick={toggleShoppingList}
+                        >
+                          <ShoppingBag className="h-4 w-4 mr-1" /> Parts
+                        </Button>
+                        <Button 
+                          className="ml-2 bg-emerald-500 hover:bg-emerald-600 text-white" 
+                          onClick={toggleQuickAddParts}
+                        >
+                          <ListPlus className="h-4 w-4 mr-1" /> Quick Add
+                        </Button>
+                      </>
                     )}
                     <Button 
                       className="ml-2 bg-blue-600 hover:bg-blue-700 text-white" 
@@ -555,6 +569,13 @@ const TasksPage = () => {
           <Plus className="h-6 w-6" />
         </Button>
       </div>
+      
+      <QuickAddParts 
+        open={showQuickAddParts}
+        onOpenChange={setShowQuickAddParts}
+        tasks={tasks}
+        onUpdateTask={updateTask}
+      />
     </div>
   );
 };
