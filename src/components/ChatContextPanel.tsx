@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
-  ExternalLink, 
   RefreshCw, 
   ChevronRight, 
   Check,
@@ -45,7 +44,6 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sections, setSections] = useState({
     knowledgeSources: true,
-    suggestedQuestions: true,
     images: true,
     tokenCounter: true
   });
@@ -71,12 +69,6 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
       source: "extension.org"
     }
   ]);
-  
-  const suggestedQuestions = [
-    "How do I prevent tomato blight?",
-    "Will it spread to other plants?",
-    "Show more resistant varieties"
-  ];
   
   const toggleSection = (section: keyof typeof sections) => {
     setSections(prev => ({
@@ -116,15 +108,6 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
         duration: 3000,
       });
     }
-  };
-  
-  const askQuestion = (question: string) => {
-    // In a real app, we would send the question to the chat
-    console.log(`Asking: ${question}`);
-    toast({
-      description: `Question added: "${question}"`,
-      duration: 3000,
-    });
   };
   
   return (
@@ -246,7 +229,7 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
                           size="sm"
                           className="p-0 h-6 w-6 text-gray-400 hover:text-gray-700"
                         >
-                          <ExternalLink className="h-3 w-3" />
+                          <Book className="h-3 w-3" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -315,39 +298,6 @@ const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
                   ))}
                 </div>
               )}
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
-        
-        {/* Suggested Questions */}
-        <div>
-          <Collapsible
-            open={sections.suggestedQuestions}
-            onOpenChange={() => toggleSection("suggestedQuestions")}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-500">SUGGESTED QUESTIONS</h3>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
-                  <ChevronRight className={cn(
-                    "h-4 w-4 transition-transform",
-                    sections.suggestedQuestions && "rotate-90"
-                  )} />
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            
-            <CollapsibleContent className="space-y-2">
-              {suggestedQuestions.map((question, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="w-full justify-start text-sm font-normal"
-                  onClick={() => askQuestion(question)}
-                >
-                  {question}
-                </Button>
-              ))}
             </CollapsibleContent>
           </Collapsible>
         </div>
