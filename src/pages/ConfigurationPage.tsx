@@ -4,7 +4,6 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import ConfigurationHeader from "@/components/configuration/ConfigurationHeader";
 import ConfigurationTabs from "@/components/configuration/ConfigurationTabs";
-import SystemSettingsPanel from "@/components/configuration/SystemSettingsPanel";
 
 const ConfigurationPage = () => {
   return (
@@ -21,7 +20,6 @@ const ConfigurationPage = () => {
               
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <ConfigurationTabs />
-                <SystemSettingsPanel />
               </div>
             </div>
           </div>
