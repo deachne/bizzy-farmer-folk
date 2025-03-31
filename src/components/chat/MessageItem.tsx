@@ -1,5 +1,5 @@
 
-import { RefObject, useState } from "react";
+import { useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Message } from "@/types/chat";
 import {
