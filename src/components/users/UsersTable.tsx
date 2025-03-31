@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import UserAvatar from "./UserAvatar";
 import RoleBadge from "./badges/RoleBadge";
@@ -29,6 +29,13 @@ const UsersTable = () => {
     setShowDeactivateDialog,
     setShowEditDialog
   } = useUsers();
+
+  // Load users on component mount and when dialogs close
+  useEffect(() => {
+    if (!showEditDialog && !showDeleteDialog && !showDeactivateDialog) {
+      loadUsers();
+    }
+  }, [showEditDialog, showDeleteDialog, showDeactivateDialog, loadUsers]);
 
   return (
     <>

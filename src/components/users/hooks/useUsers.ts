@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { User, defaultUsers } from "../types";
 
@@ -12,7 +12,7 @@ export const useUsers = () => {
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   
-  const loadUsers = () => {
+  const loadUsers = useCallback(() => {
     // Load users from localStorage
     const storedUsers = localStorage.getItem('users');
     if (storedUsers) {
@@ -22,25 +22,30 @@ export const useUsers = () => {
       setUsers(defaultUsers);
       localStorage.setItem('users', JSON.stringify(defaultUsers));
     }
-  };
+  }, []);
   
   useEffect(() => {
     // Load users on component mount
     loadUsers();
-  }, []);
+  }, [loadUsers]);
   
-  const handleDeleteUser = () => {
+  const handleDeleteUser = useCallback(() => {
     if (!userToDelete) return;
     
     const updatedUsers = users.filter(user => user.id !== userToDelete.id);
     setUsers(updatedUsers);
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     toast.success(`User ${userToDelete.displayName} deleted successfully`);
-    setShowDeleteDialog(false);
-    setUserToDelete(null);
-  };
+    
+    // Use setTimeout to ensure clean state updates
+    setTimeout(() => {
+      setShowDeleteDialog(false);
+      setUserToDelete(null);
+      loadUsers();
+    }, 0);
+  }, [userToDelete, users, loadUsers]);
   
-  const handleDeactivateUser = () => {
+  const handleDeactivateUser = useCallback(() => {
     if (!userToDeactivate) return;
     
     const updatedUsers = users.map(user => 
@@ -51,24 +56,29 @@ export const useUsers = () => {
     
     const action = userToDeactivate.status === "active" ? "deactivated" : "activated";
     toast.success(`User ${userToDeactivate.displayName} ${action}`);
-    setShowDeactivateDialog(false);
-    setUserToDeactivate(null);
-  };
+    
+    // Use setTimeout to ensure clean state updates
+    setTimeout(() => {
+      setShowDeactivateDialog(false);
+      setUserToDeactivate(null);
+      loadUsers();
+    }, 0);
+  }, [userToDeactivate, users, loadUsers]);
   
-  const confirmDeleteUser = (user: User) => {
+  const confirmDeleteUser = useCallback((user: User) => {
     setUserToDelete(user);
     setShowDeleteDialog(true);
-  };
+  }, []);
   
-  const confirmDeactivateUser = (user: User) => {
+  const confirmDeactivateUser = useCallback((user: User) => {
     setUserToDeactivate(user);
     setShowDeactivateDialog(true);
-  };
+  }, []);
 
-  const openEditUser = (user: User) => {
+  const openEditUser = useCallback((user: User) => {
     setUserToEdit(user);
     setShowEditDialog(true);
-  };
+  }, []);
 
   return {
     users,

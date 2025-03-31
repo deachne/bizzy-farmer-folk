@@ -64,10 +64,14 @@ const EditUserDialog = ({
     // Save back to localStorage
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     
-    // Notify and close dialog
+    // Notify and close dialog - using setTimeout to ensure clean dialog closing
     toast.success(`User ${values.displayName} updated successfully`);
-    onOpenChange(false);
-    onUserUpdated();
+    
+    // Use setTimeout to ensure the dialog is properly closed before updating the UI
+    setTimeout(() => {
+      onOpenChange(false);
+      onUserUpdated();
+    }, 0);
   };
 
   return (
