@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { X, ChevronLeft, ChevronRight, Save, Copy, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Artifact } from "@/pages/ChatPage";
+import { Artifact } from "@/types/chat";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -26,21 +25,18 @@ const ArtifactPanel = ({
   const [minimized, setMinimized] = useState(false);
   const isMobile = useIsMobile();
   
-  // Reset currentIndex when artifacts change
   useEffect(() => {
     if (artifacts.length > 0) {
       setCurrentIndex(initialArtifactIndex);
     }
   }, [artifacts, initialArtifactIndex]);
 
-  // Reset minimized state when isOpen changes
   useEffect(() => {
     if (!isOpen) {
       setMinimized(false);
     }
   }, [isOpen]);
 
-  // Current artifact is only valid when artifacts exist and index is valid
   const currentArtifact = artifacts.length > 0 ? artifacts[Math.min(currentIndex, artifacts.length - 1)] : null;
 
   useEffect(() => {
@@ -70,7 +66,6 @@ const ArtifactPanel = ({
   };
 
   const handleCopyArtifact = () => {
-    // Implementation depends on artifact type
     toast({
       title: "Copied to Clipboard",
       description: "Artifact content has been copied to clipboard",
@@ -79,7 +74,6 @@ const ArtifactPanel = ({
   };
 
   const handleDownloadArtifact = () => {
-    // Implementation depends on artifact type
     toast({
       title: "Download Started",
       description: "Artifact download has begun",
@@ -108,9 +102,7 @@ const ArtifactPanel = ({
       )}
       style={{ width: isMobile ? "100%" : "40%" }}
     >
-      {/* Artifact panel container */}
       <div className="h-full flex flex-col bg-white border-l shadow-xl">
-        {/* Header */}
         <div className="h-16 border-b flex items-center justify-between px-4">
           <div className="flex items-center space-x-2">
             <h3 className="font-semibold truncate max-w-[200px]">
@@ -143,7 +135,6 @@ const ArtifactPanel = ({
           </div>
         </div>
         
-        {/* Navigation */}
         {artifacts.length > 1 && (
           <div className="border-b py-2 px-4 flex justify-between">
             <Button 
@@ -167,7 +158,6 @@ const ArtifactPanel = ({
           </div>
         )}
         
-        {/* Content */}
         <ScrollArea className="flex-1 overflow-auto">
           <div className="p-4">
             {currentArtifact?.type === "table" && (
@@ -230,7 +220,6 @@ const ArtifactPanel = ({
           </div>
         </ScrollArea>
         
-        {/* Actions footer */}
         <div className="border-t p-4 bg-white">
           <div className="flex justify-between">
             <Button variant="outline" size="sm" onClick={handleSaveArtifact}>
@@ -251,7 +240,6 @@ const ArtifactPanel = ({
         </div>
       </div>
       
-      {/* Minimized indicator */}
       {minimized && (
         <div 
           className="fixed right-0 bottom-20 bg-primary text-white p-2 rounded-l-md cursor-pointer z-50 animate-slide-in-right"
@@ -261,7 +249,6 @@ const ArtifactPanel = ({
         </div>
       )}
       
-      {/* Safe resizing handle that won't cause errors */}
       {!isMobile && (
         <div 
           className="absolute top-0 left-0 bottom-0 w-4 cursor-ew-resize hover:bg-blue-400 hover:opacity-50 transition-colors"

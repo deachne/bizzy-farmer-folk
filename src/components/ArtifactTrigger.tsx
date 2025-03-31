@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { FileBox, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Artifact } from "@/pages/ChatPage";
+import { Artifact } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
 
 interface ArtifactTriggerProps {
