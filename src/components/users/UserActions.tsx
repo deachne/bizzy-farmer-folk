@@ -1,0 +1,64 @@
+
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal, Edit, Trash, Power } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { User } from "./types";
+
+interface UserActionsProps {
+  user: User;
+  onEdit: (user: User) => void;
+  onDeactivate: (user: User) => void;
+  onDelete: (user: User) => void;
+}
+
+const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => onEdit(user)}>
+          <Edit className="mr-2 h-4 w-4" />
+          Edit User
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => window.alert("Change Role functionality will be implemented in a future update")}>
+          Change Role
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => window.alert("Reset Password functionality will be implemented in a future update")}>
+          Reset Password
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          onClick={() => onDeactivate(user)}
+          className="text-amber-600"
+        >
+          <Power className="mr-2 h-4 w-4" />
+          {user.status === "active" ? "Deactivate User" : "Activate User"}
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => onDelete(user)}
+          className="text-red-600"
+        >
+          <Trash className="mr-2 h-4 w-4" />
+          Delete User
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default UserActions;
