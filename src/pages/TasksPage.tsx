@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -121,22 +122,29 @@ const TasksPage = () => {
   };
 
   const completeTask = (taskId: string) => {
-    const updatedTasks = tasks.map(task => 
-      task.id === taskId 
-        ? { 
-            ...task, 
-            status: task.status === "completed" ? "todo" : "completed",
-            completedDate: task.status !== "completed" ? 
-              new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 
-              undefined
-          } 
-        : task
-    );
+    const updatedTasks = tasks.map(task => {
+      if (task.id === taskId) {
+        // Explicitly handle the status as a union type
+        const newStatus: Task["status"] = task.status === "completed" ? "todo" : "completed";
+        
+        return { 
+          ...task, 
+          status: newStatus,
+          completedDate: newStatus === "completed" ? 
+            new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 
+            undefined
+        };
+      }
+      return task;
+    });
+    
     setTasks(updatedTasks);
     
     if (selectedTask?.id === taskId) {
       const updatedTask = updatedTasks.find(task => task.id === taskId);
-      setSelectedTask(updatedTask || null);
+      if (updatedTask) {
+        setSelectedTask(updatedTask);
+      }
     }
     
     const taskStatus = updatedTasks.find(t => t.id === taskId)?.status;
