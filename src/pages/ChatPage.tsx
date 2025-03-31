@@ -16,6 +16,12 @@ export interface Message {
   sender: "user" | "ai";
   timestamp: string;
   artifacts?: Artifact[];
+  attachments?: {
+    id: string;
+    name: string;
+    type: string;
+    url: string;
+  }[];
   isNew?: boolean;
   status?: "sending" | "sent" | "delivered" | "error";
 }
@@ -31,6 +37,13 @@ export interface ChatSession {
   id: string;
   name: string;
   model: string;
+}
+
+interface ContextImage {
+  id: string;
+  url: string;
+  name: string;
+  addedAt: string;
 }
 
 const ChatPage = () => {
@@ -236,7 +249,8 @@ const ChatPage = () => {
   const [artifactPanelOpen, setArtifactPanelOpen] = useState(false);
   const [currentMessageArtifacts, setCurrentMessageArtifacts] = useState<Artifact[]>([]);
   const [initialArtifactIndex, setInitialArtifactIndex] = useState(0);
-  
+  const [contextImages, setContextImages] = useState<ContextImage[]>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -283,11 +297,19 @@ const ChatPage = () => {
   const sendMessage = (content: string, attachments?: File[]) => {
     const fileUploads: Promise<void>[] = [];
     const uploadIds: string[] = [];
+    let messageAttachments: Message['attachments'] = [];
     
     if (attachments && attachments.length > 0) {
       attachments.forEach(file => {
         const uploadId = Date.now().toString() + file.name;
         uploadIds.push(uploadId);
+        
+        messageAttachments.push({
+          id: uploadId,
+          name: file.name,
+          type: file.type,
+          url: URL.createObjectURL(file)
+        });
         
         setUploadProgress(prev => ({
           ...prev,
@@ -319,6 +341,7 @@ const ChatPage = () => {
       content,
       sender: "user",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      attachments: messageAttachments,
       isNew: true,
       status: "sending"
     };
@@ -465,6 +488,33 @@ const ChatPage = () => {
     setArtifactPanelOpen(false);
   };
 
+  const addImageToContext = (imageUrl: string, imageName: string) => {
+    const newContextImage: ContextImage = {
+      id: Date.now().toString(),
+      url: imageUrl,
+      name: imageName,
+      addedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setContextImages(prev => {
+      if (prev.some(img => img.url === imageUrl)) {
+        toast({
+          title: "Image already in context",
+          description: "This image is already in your context panel",
+          duration: 3000,
+        });
+        return prev;
+      }
+      
+      toast({
+        title: "Image added to context",
+        description: "The image has been added to your context panel",
+        duration: 3000,
+      });
+      return [...prev, newContextImage];
+    });
+  };
+
   return (
     <div className="flex min-h-screen max-h-screen overflow-hidden bg-white">
       <SidebarProvider>
@@ -499,6 +549,7 @@ const ChatPage = () => {
                   messagesEndRef={messagesEndRef}
                   uploadProgress={uploadProgress}
                   onViewArtifact={handleViewArtifact}
+                  onAddImageToContext={addImageToContext}
                 />
               </div>
               
@@ -512,7 +563,7 @@ const ChatPage = () => {
             
             {showContextPanel && !(isMobile && artifactPanelOpen) && (
               <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
-                <ChatContextPanel />
+                <ChatContextPanel contextImages={contextImages} />
               </div>
             )}
           </div>

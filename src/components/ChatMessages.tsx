@@ -1,3 +1,4 @@
+
 import { RefObject, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Message } from "@/pages/ChatPage";
@@ -17,7 +18,8 @@ import {
   ExternalLink,
   CheckCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Maximize
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
@@ -31,6 +33,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ArtifactTrigger from "./ArtifactTrigger";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -39,6 +42,7 @@ interface ChatMessagesProps {
   messagesEndRef: RefObject<HTMLDivElement>;
   uploadProgress?: Record<string, number>;
   onViewArtifact: (messageId: string, artifactIndex: number) => void;
+  onAddImageToContext?: (imageUrl: string, imageName: string) => void;
 }
 
 const ChatMessages = ({ 
@@ -47,7 +51,8 @@ const ChatMessages = ({
   onSaveAsNote, 
   messagesEndRef,
   uploadProgress = {},
-  onViewArtifact
+  onViewArtifact,
+  onAddImageToContext
 }: ChatMessagesProps) => {
   const [expandedMessages, setExpandedMessages] = useState<Record<string, boolean>>({});
   
@@ -109,6 +114,54 @@ const ChatMessages = ({
                   <div className="text-gray-700 whitespace-pre-wrap">
                     {message.content}
                   </div>
+                  
+                  {/* Display message attachments (images) */}
+                  {message.attachments && message.attachments.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {message.attachments.map(attachment => (
+                        attachment.type.startsWith('image/') ? (
+                          <div key={attachment.id} className="relative">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <div className="group relative cursor-pointer">
+                                  <img 
+                                    src={attachment.url} 
+                                    alt={attachment.name}
+                                    className="h-24 w-24 object-cover rounded border border-gray-200"
+                                  />
+                                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                                    <Maximize className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+                                </div>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-3xl p-1 bg-transparent border-0">
+                                <img 
+                                  src={attachment.url} 
+                                  alt={attachment.name}
+                                  className="max-h-[80vh] max-w-full rounded"
+                                />
+                              </DialogContent>
+                            </Dialog>
+                            {onAddImageToContext && (
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                className="absolute -bottom-2 -right-2 h-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => onAddImageToContext(attachment.url, attachment.name)}
+                              >
+                                Add to context
+                              </Button>
+                            )}
+                          </div>
+                        ) : (
+                          <div key={attachment.id} className="p-2 border border-gray-200 rounded text-xs flex items-center gap-1">
+                            <FileText className="h-4 w-4" />
+                            {attachment.name}
+                          </div>
+                        )
+                      ))}
+                    </div>
+                  )}
                   
                   <CollapsibleContent>
                     {message.artifacts && message.artifacts.length > 0 && (

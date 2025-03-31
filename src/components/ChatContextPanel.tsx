@@ -9,7 +9,8 @@ import {
   FileText,
   Book,
   Globe,
-  MessageSquare
+  MessageSquare,
+  Image
 } from "lucide-react";
 import {
   Collapsible,
@@ -19,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import TokenCounter from "@/components/TokenCounter";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 interface KnowledgeSource {
   id: string;
@@ -28,11 +30,23 @@ interface KnowledgeSource {
   source?: string;
 }
 
-const ChatContextPanel = () => {
+interface ContextImage {
+  id: string;
+  url: string;
+  name: string;
+  addedAt: string;
+}
+
+interface ChatContextPanelProps {
+  contextImages?: ContextImage[];
+}
+
+const ChatContextPanel = ({ contextImages = [] }: ChatContextPanelProps) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sections, setSections] = useState({
     knowledgeSources: true,
     suggestedQuestions: true,
+    images: true,
     tokenCounter: true
   });
   
@@ -249,6 +263,58 @@ const ChatContextPanel = () => {
                     </div>
                   ))}
               </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+        
+        {/* Images Section */}
+        <div>
+          <Collapsible
+            open={sections.images}
+            onOpenChange={() => toggleSection("images")}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-gray-500">CONVERSATION IMAGES</h3>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
+                  <ChevronRight className={cn(
+                    "h-4 w-4 transition-transform",
+                    sections.images && "rotate-90"
+                  )} />
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            
+            <CollapsibleContent className="space-y-2">
+              {contextImages.length === 0 ? (
+                <div className="text-sm text-gray-500 italic">No images shared in this conversation</div>
+              ) : (
+                <div className="grid grid-cols-3 gap-2">
+                  {contextImages.map(img => (
+                    <Dialog key={img.id}>
+                      <DialogTrigger asChild>
+                        <div className="group relative cursor-pointer">
+                          <img 
+                            src={img.url} 
+                            alt={img.name}
+                            className="h-16 w-16 object-cover rounded border border-gray-200"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                            <Image className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-3xl p-1 bg-transparent border-0">
+                        <img 
+                          src={img.url} 
+                          alt={img.name}
+                          className="max-h-[80vh] max-w-full rounded"
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  ))}
+                </div>
+              )}
             </CollapsibleContent>
           </Collapsible>
         </div>
