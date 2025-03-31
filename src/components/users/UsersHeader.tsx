@@ -1,10 +1,13 @@
 
-import React from "react";
-import { Search } from "lucide-react";
+import React, { useState } from "react";
+import { Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AddUserDialog } from "./AddUserDialog";
 
 const UsersHeader = () => {
+  const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+
   return (
     <div className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center">
@@ -23,9 +26,10 @@ const UsersHeader = () => {
           />
           <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
         </div>
-        <Button variant="outline">
-          Add User
+        <Button variant="outline" onClick={() => setShowAddUserDialog(true)}>
+          <UserPlus className="mr-2 h-4 w-4" /> Add User
         </Button>
+        <AddUserDialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog} />
       </div>
     </div>
   );

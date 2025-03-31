@@ -19,19 +19,6 @@ const UsersPage = () => {
               <h2 className="text-xl font-bold mb-4">User Management</h2>
               
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="mb-6">
-                  <h3 className="text-base font-medium mb-4">Filters</h3>
-                  <div className="flex">
-                    <div className="w-full">
-                      <input
-                        type="text"
-                        placeholder="Search by name or email"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-                
                 <UsersTable />
               </div>
             </div>
