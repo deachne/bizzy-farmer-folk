@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Package, ExternalLink, ShoppingBag } from "lucide-react";
+import { Package, ExternalLink, ShoppingBag, List } from "lucide-react";
 
 interface TasksPartsViewProps {
   tasks: Task[];
@@ -28,17 +28,27 @@ const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewPro
   // Group parts by vendor
   const groupedByVendor: Record<string, { vendor: string; parts: { part: Part; task: Task }[] }> = {};
   
+  // Create a special "Simple Items" category for parts without vendor or just basic supplies
+  const simpleItems: { part: Part; task: Task }[] = [];
+  
   allParts.forEach(({ part, task }) => {
-    const vendor = part.vendor || "Unassigned";
-    
-    if (!groupedByVendor[vendor]) {
-      groupedByVendor[vendor] = {
-        vendor,
-        parts: []
-      };
+    // Identify simple items - those without a vendor or have simple labels like "supplies"
+    if (!part.vendor || part.vendor.trim() === "" || 
+        ["supplies", "misc", "groceries", "general"].includes(part.vendor.toLowerCase())) {
+      simpleItems.push({ part, task });
+    } else {
+      // Normal vendor grouping for everything else
+      const vendor = part.vendor;
+      
+      if (!groupedByVendor[vendor]) {
+        groupedByVendor[vendor] = {
+          vendor,
+          parts: []
+        };
+      }
+      
+      groupedByVendor[vendor].parts.push({ part, task });
     }
-    
-    groupedByVendor[vendor].parts.push({ part, task });
   });
 
   // Toggle part ordered status
@@ -91,6 +101,62 @@ const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewPro
   return (
     <ScrollArea className="h-full">
       <div className="p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Simple Items List */}
+        {simpleItems.length > 0 && (
+          <Card key="simple-items" className="shadow-sm hover:shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center justify-between">
+                <span className="flex items-center">
+                  <List className="h-5 w-5 mr-2 text-green-500" />
+                  Simple Items
+                </span>
+                <Badge variant="outline" className="bg-green-50 text-green-700">
+                  {simpleItems.length} {simpleItems.length === 1 ? 'item' : 'items'}
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc pl-5 space-y-2">
+                {simpleItems.map(({ part, task }) => (
+                  <li key={part.id} className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="font-medium">{part.name}</span>
+                        {part.quantity > 1 && (
+                          <span className="ml-2 text-sm text-gray-500">
+                            ({part.quantity} {part.unit || 'ea'})
+                          </span>
+                        )}
+                        
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="p-0 h-auto text-xs text-blue-600 ml-2 flex items-center"
+                          onClick={() => onSelectTask(task)}
+                        >
+                          <ExternalLink className="h-3 w-3 mr-1" /> 
+                          {task.title}
+                        </Button>
+                      </div>
+                      
+                      <div className="flex flex-row space-x-3 items-center">
+                        <div className="flex items-center gap-1">
+                          <Checkbox 
+                            id={`ordered-${part.id}`}
+                            checked={part.ordered}
+                            onCheckedChange={() => toggleOrdered(task.id, part.id)}
+                          />
+                          <span className="text-xs">Got it</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Render card for each vendor group */}
         {Object.values(groupedByVendor).map(({ vendor, parts }) => (
           <Card key={vendor} className="shadow-sm hover:shadow">
