@@ -84,11 +84,11 @@ const ChatMessages = ({
             <div className="flex items-start">
               <div className="flex-shrink-0 mr-4">
                 {message.sender === "user" ? (
-                  <Avatar className="h-10 w-10 bg-gray-300">
+                  <Avatar>
                     <div className="text-white font-medium">U</div>
                   </Avatar>
                 ) : (
-                  <Avatar className="h-10 w-10 bg-blue-600">
+                  <Avatar>
                     <div className="text-white font-medium">AI</div>
                   </Avatar>
                 )}
@@ -200,7 +200,7 @@ const ChatMessages = ({
           <div className="rounded-lg p-4 bg-white border border-blue-100 animate-pulse">
             <div className="flex items-start">
               <div className="flex-shrink-0 mr-4">
-                <Avatar className="h-10 w-10 bg-blue-600">
+                <Avatar>
                   <div className="text-white font-medium">AI</div>
                 </Avatar>
               </div>
