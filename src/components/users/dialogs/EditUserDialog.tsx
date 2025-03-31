@@ -5,6 +5,7 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
+  DialogDescription
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { User } from "../types";
@@ -36,10 +37,11 @@ const EditUserDialog = ({
   // Update form values when user changes or dialog opens
   useEffect(() => {
     if (user && open) {
+      console.log("Setting form values from user:", user);
       setFormDefaultValues({
-        displayName: user.displayName,
-        username: user.username,
-        email: user.email,
+        displayName: user.displayName || "",
+        username: user.username || "",
+        email: user.email || "",
         phoneNumber: user.phoneNumber || "",
         role: user.role as "admin" | "moderator" | "user",
         status: user.status as "active" | "inactive",
@@ -73,8 +75,12 @@ const EditUserDialog = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit User: {user?.displayName}</DialogTitle>
+          <DialogDescription>
+            Make changes to the user information below.
+          </DialogDescription>
         </DialogHeader>
         <UserForm 
+          key={user?.id || 'no-user'} // Add key to force re-render when user changes
           defaultValues={formDefaultValues}
           onSubmit={handleSubmit}
           submitButtonText="Save Changes"

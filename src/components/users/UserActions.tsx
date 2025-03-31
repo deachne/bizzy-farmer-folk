@@ -20,6 +20,24 @@ interface UserActionsProps {
 }
 
 const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps) => {
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEdit(user);
+  };
+
+  const handleDeactivateClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDeactivate(user);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete(user);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,7 +49,7 @@ const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps)
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => onEdit(user)}>
+        <DropdownMenuItem onClick={handleEditClick}>
           <Edit className="mr-2 h-4 w-4" />
           Edit User
         </DropdownMenuItem>
@@ -43,14 +61,14 @@ const UserActions = ({ user, onEdit, onDeactivate, onDelete }: UserActionsProps)
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
-          onClick={() => onDeactivate(user)}
+          onClick={handleDeactivateClick}
           className="text-amber-600"
         >
           <Power className="mr-2 h-4 w-4" />
           {user.status === "active" ? "Deactivate User" : "Activate User"}
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => onDelete(user)}
+          onClick={handleDeleteClick}
           className="text-red-600"
         >
           <Trash className="mr-2 h-4 w-4" />
