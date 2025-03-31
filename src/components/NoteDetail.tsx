@@ -26,20 +26,36 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
   const [content, setContent] = useState(note.content);
   const [tagInput, setTagInput] = useState("");
   const [isPreview, setIsPreview] = useState(false);
+  const [isTitleEmpty, setIsTitleEmpty] = useState(note.title === "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
   useEffect(() => {
     setTitle(note.title);
     setContent(note.content);
+    setIsTitleEmpty(note.title === "");
   }, [note.id, note.title, note.content]);
   
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    setIsTitleEmpty(newTitle === "");
     onUpdateNote({
       ...note,
-      title: e.target.value,
+      title: newTitle,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     });
+  };
+  
+  const handleTitleFocus = () => {
+    if (title === "New Note") {
+      setTitle("");
+      setIsTitleEmpty(true);
+      onUpdateNote({
+        ...note,
+        title: "",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+    }
   };
   
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -334,7 +350,11 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         <Input
           value={title}
           onChange={handleTitleChange}
-          className="text-2xl font-semibold border-none px-0 focus-visible:ring-0 flex-1 mr-4"
+          onFocus={handleTitleFocus}
+          className={cn(
+            "text-2xl font-semibold border-none px-0 focus-visible:ring-0 flex-1 mr-4",
+            isTitleEmpty && "text-gray-400"
+          )}
           placeholder="Note title"
         />
         

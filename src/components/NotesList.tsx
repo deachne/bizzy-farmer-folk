@@ -46,7 +46,9 @@ const NotesList = ({ notes, selectedNote, onSelectNote }: NotesListProps) => {
                   )}
                 >
                   <div className="flex justify-between items-start">
-                    <h4 className="font-semibold text-gray-900">{note.title}</h4>
+                    <h4 className="font-semibold text-gray-900">
+                      {note.title || <span className="text-gray-400">Untitled Note</span>}
+                    </h4>
                     <span className="text-xs text-gray-500 ml-2">{note.timestamp}</span>
                   </div>
                   <p className="text-sm text-gray-600 mt-1 line-clamp-2">{note.content}</p>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -80,7 +79,7 @@ const NotesPage = () => {
     setTimeout(() => {
       const newNote = {
         id: Date.now().toString(),
-        title: "New Note",
+        title: "", // Empty title by default for new notes
         content: "",
         tags: [],
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
