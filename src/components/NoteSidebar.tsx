@@ -28,12 +28,12 @@ const NoteSidebar = () => {
   ];
   
   const adminItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-    { icon: Users, label: "Users", path: "/users" },
-    { icon: Package, label: "Extensions", path: "/extensions" },
-    { icon: Settings, label: "System", path: "/system" },
-    { icon: Settings, label: "Configuration", path: "/configuration" },
-    { icon: BarChart, label: "Analytics", path: "/analytics" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: currentPath.includes("/dashboard") },
+    { icon: Users, label: "Users", path: "/users", active: currentPath.includes("/users") },
+    { icon: Package, label: "Extensions", path: "/extensions", active: currentPath.includes("/extensions") },
+    { icon: Settings, label: "System", path: "/system", active: currentPath.includes("/system") },
+    { icon: Settings, label: "Configuration", path: "/configuration", active: currentPath.includes("/configuration") },
+    { icon: BarChart, label: "Analytics", path: "/analytics", active: currentPath.includes("/analytics") },
   ];
 
   const renderMenuItem = (item: { icon: any, label: string, path: string, active?: boolean }) => {

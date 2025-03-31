@@ -8,6 +8,7 @@ import NotesPage from "./pages/NotesPage";
 import ChatPage from "./pages/ChatPage";
 import TasksPage from "./pages/TasksPage";
 import DocumentsPage from "./pages/DocumentsPage";
+import DashboardPage from "./pages/DashboardPage";
 import React from "react"; 
 
 // Create the query client outside of the component
@@ -27,6 +28,7 @@ const App = () => {
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/tasks" element={<TasksPage />} />
               <Route path="/documents" element={<DocumentsPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
