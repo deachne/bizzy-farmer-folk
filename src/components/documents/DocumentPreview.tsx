@@ -2,6 +2,7 @@
 import { Document } from "@/types/documents";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { FileText, Download, Plus, Check, Text, Table, X, Tag } from "lucide-react";
 import { useState } from "react";
@@ -24,7 +25,18 @@ const DocumentPreview = ({ document, onUpdateDocument }: DocumentPreviewProps) =
     "Budget", "North Field", "East Field", "South Field", "Fertilizer"
   ]);
   
-  const addTag = (tag: string) => {
+  const addTag = () => {
+    if (tagInput.trim() && onUpdateDocument && !document.tags.includes(tagInput.trim())) {
+      const updatedDocument = {
+        ...document,
+        tags: [...document.tags, tagInput.trim()],
+      };
+      onUpdateDocument(updatedDocument);
+      setTagInput("");
+    }
+  };
+
+  const addTagFromDropdown = (tag: string) => {
     if (onUpdateDocument && !document.tags.includes(tag)) {
       const updatedDocument = {
         ...document,
@@ -42,6 +54,12 @@ const DocumentPreview = ({ document, onUpdateDocument }: DocumentPreviewProps) =
         tags: document.tags.filter(tag => tag !== tagToRemove),
       };
       onUpdateDocument(updatedDocument);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      addTag();
     }
   };
 
@@ -120,7 +138,7 @@ const DocumentPreview = ({ document, onUpdateDocument }: DocumentPreviewProps) =
         
         <div className="mb-6">
           <h3 className="text-base font-medium mb-2">Tags</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-2">
             {document.tags.map(tag => (
               <Badge key={tag} className="bg-black text-white flex items-center gap-1">
                 {tag}
@@ -135,34 +153,53 @@ const DocumentPreview = ({ document, onUpdateDocument }: DocumentPreviewProps) =
                 )}
               </Badge>
             ))}
-            
+          </div>
+          
+          <div className="flex gap-2">
             <Popover open={tagDropdownOpen} onOpenChange={setTagDropdownOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-full">
-                  <Plus className="h-3.5 w-3.5 mr-1" /> Add tag
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-sm h-8 border-dashed border-gray-300"
+                  disabled={availableTags.length === 0}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add tag
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="p-0 w-[200px]" align="start">
-                <div className="py-1 max-h-[200px] overflow-y-auto">
-                  {availableTags.length > 0 ? (
-                    availableTags.map((tag) => (
-                      <div
-                        key={tag}
-                        className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                        onClick={() => addTag(tag)}
-                      >
-                        <Tag className="h-4 w-4 mr-2 text-gray-500" />
-                        {tag}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="px-4 py-2 text-sm text-gray-500">
-                      All available tags have been added
+              <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
+                <div className="py-1 max-h-40 overflow-y-auto">
+                  {availableTags.map((tag) => (
+                    <div
+                      key={tag}
+                      className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                      onClick={() => addTagFromDropdown(tag)}
+                    >
+                      {tag}
                     </div>
-                  )}
+                  ))}
                 </div>
               </PopoverContent>
             </Popover>
+            
+            <div className="flex-1 flex">
+              <Input
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Custom tag..."
+                className="text-sm h-8 border-dashed border-gray-300"
+              />
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="ml-1 h-8"
+                onClick={addTag}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
