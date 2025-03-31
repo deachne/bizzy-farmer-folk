@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { format } from "date-fns";
 
 export interface Note {
   id: string;
@@ -16,6 +16,7 @@ export interface Note {
   content: string;
   tags: string[];
   timestamp: string;
+  date: Date;
   category?: string;
 }
 
@@ -28,7 +29,6 @@ const NotesPage = () => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Sample notes data
   const [notes, setNotes] = useState<Note[]>([
     {
       id: "1",
@@ -36,6 +36,7 @@ const NotesPage = () => {
       content: "Checked the North 40 field this morning. Standing water is mostly gone from the NE corner, should be ready for equipment...",
       tags: ["North 40", "Standing Water", "Equipment Readiness"],
       timestamp: "11:32 AM",
+      date: new Date(2023, 5, 15),
       category: "Today"
     },
     {
@@ -44,6 +45,7 @@ const NotesPage = () => {
       content: "Called AgriChem Supply about urea quote. They confirmed price of $520/ton is valid through May 15. Need to decide on ord...",
       tags: ["Price Quote", "Urea", "AgriChem"],
       timestamp: "9:45 AM",
+      date: new Date(2023, 5, 15),
       category: "Today"
     },
     {
@@ -52,6 +54,7 @@ const NotesPage = () => {
       content: "Seeder needs new parts before planting season. Called dealer for pricing on replacement wear parts - $450 for full set. ...",
       tags: ["Seeder", "Maintenance"],
       timestamp: "2:15 PM",
+      date: new Date(2023, 5, 14),
       category: "Yesterday"
     },
     {
@@ -60,6 +63,7 @@ const NotesPage = () => {
       content: "Met with Prairie AG rep about fertilizer availability. They're expecting shipment next week. Should call to confirm befo...",
       tags: ["Fertilizer", "Prairie AG", "Follow up"],
       timestamp: "10:30 AM",
+      date: new Date(2023, 5, 14),
       category: "Yesterday"
     },
     {
@@ -68,11 +72,11 @@ const NotesPage = () => {
       content: "Soil test results for South Quarter came back. Will need to adjust phosphorus application rate - higher than expected. R...",
       tags: ["South Quarter", "Soil Test", "Phosphorus"],
       timestamp: "3:45 PM",
+      date: new Date(2023, 5, 12),
       category: "This Week"
     }
   ]);
 
-  // Get all unique tags from all notes
   const allTags = Array.from(
     new Set(
       notes.flatMap(note => note.tags)
@@ -80,17 +84,17 @@ const NotesPage = () => {
   );
 
   const createNote = () => {
-    // First clear the selected note
     setSelectedNote(null);
     
-    // Small delay to ensure the clearing animation is visible
     setTimeout(() => {
+      const now = new Date();
       const newNote = {
         id: Date.now().toString(),
-        title: "", // Empty title by default for new notes
+        title: "",
         content: "",
         tags: [],
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: format(now, "h:mm a"),
+        date: now,
         category: "Today"
       };
       
@@ -124,7 +128,6 @@ const NotesPage = () => {
         <NoteSidebar />
         
         <div className="flex-1 flex flex-col">
-          {/* Top Bar */}
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center">
               <div className="bg-blue-600 text-white text-xl font-semibold px-4 py-2 rounded-md">
@@ -135,7 +138,6 @@ const NotesPage = () => {
           </div>
           
           <div className="flex flex-1 overflow-hidden">
-            {/* Notes List Panel */}
             <div className="w-1/3 border-r flex flex-col">
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-4">Notes</h2>
@@ -186,7 +188,6 @@ const NotesPage = () => {
               </div>
             </div>
             
-            {/* Note Content Panel */}
             <div className="w-2/3">
               {selectedNote ? (
                 <NoteDetail 
@@ -216,7 +217,6 @@ const NotesPage = () => {
             </div>
           </div>
           
-          {/* Action Log Footer */}
           <div className="border-t p-2 text-sm text-gray-500 flex justify-end">
             <div>
               <span className="font-medium">Action Log:</span> 

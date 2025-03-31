@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, X, Tag, Trash2, Archive, Share, Bold, Italic, Underline, List, ChevronDown } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import Markdown from "markdown-to-jsx";
+import { format } from "date-fns";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -56,10 +57,12 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     const newTitle = e.target.value;
     setTitle(newTitle);
     setIsTitleEmpty(newTitle === "");
+    const now = new Date();
     onUpdateNote({
       ...note,
       title: newTitle,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: format(now, "h:mm a"),
+      date: now
     });
   };
   
@@ -67,29 +70,35 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
     if (title === "New Note") {
       setTitle("");
       setIsTitleEmpty(true);
+      const now = new Date();
       onUpdateNote({
         ...note,
         title: "",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: format(now, "h:mm a"),
+        date: now
       });
     }
   };
   
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
+    const now = new Date();
     onUpdateNote({
       ...note,
       content: e.target.value,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: format(now, "h:mm a"),
+      date: now
     });
   };
   
   const addTag = () => {
     if (tagInput.trim() && !note.tags.includes(tagInput.trim())) {
+      const now = new Date();
       const updatedNote = {
         ...note,
         tags: [...note.tags, tagInput.trim()],
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: format(now, "h:mm a"),
+        date: now
       };
       onUpdateNote(updatedNote);
       setTagInput("");
@@ -99,10 +108,12 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
   
   const selectTag = (tag: string) => {
     if (!note.tags.includes(tag)) {
+      const now = new Date();
       const updatedNote = {
         ...note,
         tags: [...note.tags, tag],
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: format(now, "h:mm a"),
+        date: now
       };
       onUpdateNote(updatedNote);
       setTagInput("");
@@ -111,10 +122,12 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
   };
   
   const removeTag = (tagToRemove: string) => {
+    const now = new Date();
     const updatedNote = {
       ...note,
       tags: note.tags.filter(tag => tag !== tagToRemove),
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: format(now, "h:mm a"),
+      date: now
     };
     onUpdateNote(updatedNote);
   };
@@ -170,7 +183,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -185,7 +199,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -204,7 +219,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -219,7 +235,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -238,7 +255,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -253,7 +271,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -277,7 +296,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
           onUpdateNote({
             ...note,
             content: newText,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: format(new Date(), "h:mm a"),
+            date: new Date()
           });
           
           setTimeout(() => {
@@ -299,7 +319,8 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
             onUpdateNote({
               ...note,
               content: newText,
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              timestamp: format(new Date(), "h:mm a"),
+              date: new Date()
             });
             
             setTimeout(() => {
@@ -570,7 +591,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote, allTags = [] }: NoteDeta
       
       <div className="mt-4 text-sm text-gray-500 text-right flex items-center justify-end">
         <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-          Last updated: {note.timestamp}
+          Last updated: {format(note.date, "MMM d, yyyy")} at {note.timestamp}
         </span>
       </div>
     </div>

@@ -1,8 +1,8 @@
-
 import { Note } from "@/pages/NotesPage";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { FileText, FolderOpen } from "lucide-react";
+import { format } from "date-fns";
 
 interface NotesListProps {
   notes: Note[];
@@ -49,7 +49,10 @@ const NotesList = ({ notes, selectedNote, onSelectNote }: NotesListProps) => {
                     <h4 className="font-semibold text-gray-900">
                       {note.title || <span className="text-gray-400">Untitled Note</span>}
                     </h4>
-                    <span className="text-xs text-gray-500 ml-2">{note.timestamp}</span>
+                    <div className="text-xs text-gray-500 ml-2 text-right">
+                      <div>{format(note.date, "MMM d, yyyy")}</div>
+                      <div>{note.timestamp}</div>
+                    </div>
                   </div>
                   <p className="text-sm text-gray-600 mt-1 line-clamp-2">{note.content}</p>
                   
