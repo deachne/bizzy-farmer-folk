@@ -422,6 +422,16 @@ const TasksPage = () => {
   const completedTasks = filteredTasks.filter(task => task.status === "completed");
   const tasksWithParts = tasks.filter(task => task.parts && task.parts.length > 0);
 
+  const addSimplePart = (part: Part) => {
+    const updatedTasks = [...tasks];
+    const firstTask = updatedTasks[0];
+    
+    if (firstTask) {
+      firstTask.parts = [...(firstTask.parts || []), part];
+      setTasks(updatedTasks);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-white">
       <SidebarProvider>
@@ -563,6 +573,7 @@ const TasksPage = () => {
                     tasks={filteredTasks}
                     onSelectTask={handleSelectTask}
                     onUpdateTask={updateTask}
+                    onAddSimplePart={addSimplePart}
                   />
                 )}
               </div>
