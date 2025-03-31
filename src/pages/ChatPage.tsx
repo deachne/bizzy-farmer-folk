@@ -9,7 +9,7 @@ import ChatContextPanel from "@/components/ChatContextPanel";
 import ArtifactPanel from "@/components/ArtifactPanel";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useChat } from "@/hooks/use-chat";
+import { useChat } from "@/hooks/chat"; // Updated import
 import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { useArtifacts } from "@/hooks/use-artifacts";
 import { useContextPanel } from "@/hooks/use-context-panel";
