@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -145,6 +144,90 @@ const TasksPage = () => {
       source: "Chat",
       tags: ["Pricing"],
       notes: "Current price is $495/ton plus delivery. Firm until April 15."
+    },
+    {
+      id: "6",
+      title: "Kitchen Supplies Restock",
+      description: "Pick up some kitchen essentials",
+      status: "todo",
+      priority: "normal",
+      dueDate: "April 1, 2025",
+      source: "Manual Entry",
+      tags: ["Supplies"],
+      parts: [
+        {
+          id: "p5",
+          name: "Paper Towels",
+          quantity: 2,
+          vendor: "",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p6",
+          name: "Garbage Bags",
+          quantity: 1,
+          unit: "box",
+          vendor: "",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p7",
+          name: "Electrical Tape",
+          quantity: 3,
+          partNumber: "ET-100",
+          vendor: "Hardware Store",
+          ordered: false,
+          received: false
+        }
+      ]
+    },
+    {
+      id: "7",
+      title: "Garden Maintenance",
+      description: "Prepare garden tools and supplies",
+      status: "todo",
+      priority: "medium",
+      dueDate: "April 5, 2025",
+      source: "Field Observation",
+      tags: ["Gardening"],
+      parts: [
+        {
+          id: "p8",
+          name: "Garden Gloves",
+          quantity: 1,
+          vendor: "Gardening Supply Co",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p9",
+          name: "Plant Fertilizer",
+          quantity: 2,
+          unit: "bags",
+          vendor: "Gardening Supply Co",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p10",
+          name: "Pruning Shears",
+          quantity: 1,
+          partNumber: "PS-200",
+          vendor: "Gardening Supply Co",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p11",
+          name: "Twine",
+          quantity: 1,
+          vendor: "",
+          ordered: false,
+          received: false
+        }
+      ]
     }
   ]);
 
