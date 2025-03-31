@@ -1,5 +1,5 @@
 
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, ClipboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea"; 
 import { Input } from "@/components/ui/input";
@@ -81,36 +81,85 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
     }
   };
   
-  const handlePaste = () => {
-    navigator.clipboard.read().then(
-      clipboardItems => {
-        for (const clipboardItem of clipboardItems) {
-          for (const type of clipboardItem.types) {
-            if (type.startsWith('image/')) {
-              clipboardItem.getType(type).then(blob => {
-                const file = new File([blob], `pasted-image-${Date.now()}.png`, { type });
-                setAttachments(prev => [...prev, file]);
-                setIsPasteMenuOpen(false);
-                
-                toast({
-                  title: "Image pasted",
-                  description: "Image from clipboard added to message",
-                  duration: 3000,
-                });
-              });
-            }
+  const handlePaste = async () => {
+    try {
+      const clipboardItems = await navigator.clipboard.read();
+      let added = false;
+      
+      for (const clipboardItem of clipboardItems) {
+        for (const type of clipboardItem.types) {
+          if (type.startsWith('image/')) {
+            const blob = await clipboardItem.getType(type);
+            const file = new File([blob], `pasted-image-${Date.now()}.png`, { type });
+            setAttachments(prev => [...prev, file]);
+            added = true;
           }
         }
-      },
-      () => {
+      }
+      
+      if (added) {
         toast({
-          title: "Paste failed",
-          description: "Could not access clipboard content",
-          variant: "destructive",
+          title: "Image pasted",
+          description: "Image from clipboard added to message",
           duration: 3000,
         });
+      } else {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          setMessage(prev => prev + text);
+          adjustTextareaHeight();
+          toast({
+            title: "Text pasted",
+            description: "Text from clipboard added to message",
+            duration: 3000,
+          });
+        }
       }
-    );
+      
+      setIsPasteMenuOpen(false);
+    } catch (err) {
+      console.error("Paste failed:", err);
+      toast({
+        title: "Paste failed",
+        description: "Could not access clipboard content",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+  
+  const handleDirectPaste = async (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    // Allow default paste behavior for text
+    // This is just for handling image pastes directly in the textarea
+    try {
+      const items = e.clipboardData.items;
+      let hasImage = false;
+      
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          hasImage = true;
+          const blob = items[i].getAsFile();
+          if (blob) {
+            e.preventDefault(); // Prevent default paste only for images
+            setAttachments(prev => [...prev, blob]);
+            toast({
+              title: "Image pasted",
+              description: "Image from clipboard added to message",
+              duration: 3000,
+            });
+          }
+        }
+      }
+      
+      // If there's no image, let the default paste behavior handle text
+      if (!hasImage) {
+        // The text will be pasted by the default behavior
+        setTimeout(adjustTextareaHeight, 0);
+      }
+    } catch (err) {
+      console.error("Error handling paste:", err);
+      // Allow default paste behavior if our handler fails
+    }
   };
   
   const triggerFileInput = () => {
@@ -232,15 +281,7 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
               onClick={handlePaste}
             >
               <Image className="h-4 w-4 mr-2" />
-              Paste image
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="w-full justify-start"
-              onClick={() => setIsPasteMenuOpen(false)}
-            >
-              <FilePlus className="h-4 w-4 mr-2" />
-              Paste text
+              Paste image or text
             </Button>
           </div>
         )}
@@ -254,6 +295,7 @@ const ChatInputBar = ({ onSendMessage, connectionStatus }: ChatInputBarProps) =>
             adjustTextareaHeight();
           }}
           onKeyDown={handleKeyPress}
+          onPaste={handleDirectPaste}
           placeholder="Type your message here..."
           className="flex-1 border-0 shadow-none focus-visible:ring-0 min-h-[40px] max-h-[150px] overflow-y-auto resize-none py-2"
           rows={1}
