@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Task } from "@/pages/TasksPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -31,12 +31,24 @@ const TaskDetail = ({
   onDeleteTask 
 }: TaskDetailProps) => {
   const [title, setTitle] = useState(task.title);
+  const [isTitleEmpty, setIsTitleEmpty] = useState(task.title === "");
   const [description, setDescription] = useState(task.description);
   const [dueDate, setDueDate] = useState(task.dueDate);
   const [priority, setPriority] = useState(task.priority);
   const [notes, setNotes] = useState(task.notes || "");
   const [tagInput, setTagInput] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(task.title === "New Task");
+  
+  // Update state when task changes
+  useEffect(() => {
+    setTitle(task.title);
+    setIsTitleEmpty(task.title === "");
+    setDescription(task.description);
+    setDueDate(task.dueDate);
+    setPriority(task.priority);
+    setNotes(task.notes || "");
+    setIsEditing(task.title === "New Task");
+  }, [task]);
 
   // Define status colors and labels
   const getStatusConfig = (status: string) => {
@@ -93,7 +105,27 @@ const TaskDetail = ({
   const priorityConfig = getPriorityConfig(priority);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    setIsTitleEmpty(newTitle === "");
+    
+    const updatedTask = {
+      ...task,
+      title: newTitle,
+    };
+    onUpdateTask(updatedTask);
+  };
+
+  const handleTitleFocus = () => {
+    if (title === "New Task") {
+      setTitle("");
+      setIsTitleEmpty(true);
+      const updatedTask = {
+        ...task,
+        title: "",
+      };
+      onUpdateTask(updatedTask);
+    }
   };
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -169,15 +201,13 @@ const TaskDetail = ({
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Task Details</h2>
         
-        {isEditing ? (
-          <Input
-            value={title}
-            onChange={handleTitleChange}
-            className="text-xl font-medium mb-4"
-          />
-        ) : (
-          <h3 className="text-xl font-medium mb-4 break-words">{task.title}</h3>
-        )}
+        <Input
+          value={title}
+          onChange={handleTitleChange}
+          onFocus={handleTitleFocus}
+          className={`text-xl font-medium mb-4 ${isTitleEmpty ? "text-gray-400" : ""}`}
+          placeholder="Task title"
+        />
         
         <div className="flex flex-wrap gap-2 mb-4">
           <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusConfig.bg} ${statusConfig.text}`}>
