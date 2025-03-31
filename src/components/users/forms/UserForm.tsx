@@ -23,11 +23,12 @@ import {
   userFormSchema, 
   userWithPasswordFormSchema, 
   UserFormValues,
-  UserWithPasswordFormValues
+  UserWithPasswordFormValues,
+  UserFormWithPasswordFields
 } from "./userFormSchema";
 
 interface UserFormProps {
-  defaultValues: UserFormValues | UserWithPasswordFormValues;
+  defaultValues: UserFormWithPasswordFields;
   onSubmit: (values: UserFormValues | UserWithPasswordFormValues) => void;
   submitButtonText?: string;
   showPasswordFields?: boolean;
@@ -154,7 +155,7 @@ const UserForm = ({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,7 +169,7 @@ const UserForm = ({
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

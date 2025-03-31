@@ -33,9 +33,9 @@ const EditUserDialog = ({
     status: "active",
   });
 
-  // Update form values when user changes
+  // Update form values when user changes or dialog opens
   useEffect(() => {
-    if (user) {
+    if (user && open) {
       setFormDefaultValues({
         displayName: user.displayName,
         username: user.username,
@@ -45,7 +45,7 @@ const EditUserDialog = ({
         status: user.status as "active" | "inactive",
       });
     }
-  }, [user]);
+  }, [user, open]);
 
   const handleSubmit = (values: UserFormValues) => {
     if (!user) return;
@@ -72,7 +72,7 @@ const EditUserDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
+          <DialogTitle>Edit User: {user?.displayName}</DialogTitle>
         </DialogHeader>
         <UserForm 
           defaultValues={formDefaultValues}

@@ -11,20 +11,23 @@ const baseUserSchema = z.object({
   status: z.enum(["active", "inactive"]),
 });
 
+// Create type that includes optional password fields
+export type UserFormWithPasswordFields = z.infer<typeof baseUserSchema> & {
+  password?: string;
+  confirmPassword?: string;
+};
+
+// Export the base schema for edit user form
+export const userFormSchema = baseUserSchema;
+
 // Extended schema with password fields
-const passwordSchema = baseUserSchema.extend({
+export const userWithPasswordFormSchema = baseUserSchema.extend({
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"]
 });
-
-// Export the base schema for edit user form
-export const userFormSchema = baseUserSchema;
-
-// Export the schema with password fields for add user form
-export const userWithPasswordFormSchema = passwordSchema;
 
 // Export the types
 export type UserFormValues = z.infer<typeof userFormSchema>;

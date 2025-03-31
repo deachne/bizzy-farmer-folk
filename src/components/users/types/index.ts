@@ -1,8 +1,17 @@
 
-import { User } from "../AddUserDialog";
-
-// Re-export the User type for easier imports
-export type { User };
+// User type definition
+export interface User {
+  id: number;
+  displayName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  role: string;
+  status: string;
+  created: string;
+  initial: string;
+}
 
 // Default users if no users in localStorage
 export const defaultUsers: User[] = [
