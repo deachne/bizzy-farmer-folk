@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
@@ -5,8 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, X, Tag, Trash2, Archive, Share, Bold, Italic, Underline, List } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import Markdown from "markdown-to-jsx";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -274,6 +274,71 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     });
   };
 
+  const markdownOptions = {
+    overrides: {
+      p: {
+        component: "p",
+        props: {
+          className: "mb-4 break-words"
+        }
+      },
+      h1: {
+        component: "h1",
+        props: {
+          className: "text-2xl font-bold mb-4"
+        }
+      },
+      h2: {
+        component: "h2",
+        props: {
+          className: "text-xl font-bold mb-3"
+        }
+      },
+      h3: {
+        component: "h3",
+        props: {
+          className: "text-lg font-bold mb-2"
+        }
+      },
+      ul: {
+        component: "ul",
+        props: {
+          className: "list-disc pl-5 mb-4"
+        }
+      },
+      ol: {
+        component: "ol",
+        props: {
+          className: "list-decimal pl-5 mb-4"
+        }
+      },
+      li: {
+        component: "li",
+        props: {
+          className: "mb-1"
+        }
+      },
+      a: {
+        component: "a",
+        props: {
+          className: "text-blue-600 hover:underline"
+        }
+      },
+      blockquote: {
+        component: "blockquote",
+        props: {
+          className: "border-l-4 border-gray-300 pl-4 italic my-4"
+        }
+      },
+      hr: {
+        component: "hr",
+        props: {
+          className: "my-4 border-t border-gray-300"
+        }
+      }
+    }
+  };
+
   return (
     <div className="h-full flex flex-col p-6 bg-white">
       <div className="flex justify-between items-center mb-6">
@@ -405,14 +470,9 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
       
       {isPreview ? (
         <div className="flex-1 overflow-y-auto p-4 prose prose-sm max-w-none bg-gray-50 rounded-md">
-          <ReactMarkdown 
-            remarkPlugins={[remarkGfm]}
-            components={{
-              p: ({node, ...props}) => <p className="break-words" {...props} />
-            }}
-          >
+          <Markdown options={markdownOptions}>
             {content}
-          </ReactMarkdown>
+          </Markdown>
         </div>
       ) : (
         <Textarea
