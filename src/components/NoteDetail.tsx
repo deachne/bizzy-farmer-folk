@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Note } from "@/pages/NotesPage";
 import { Input } from "@/components/ui/input";
@@ -119,7 +120,6 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
       case "Bold":
         if (selectedText) {
           formattedText = `**${selectedText}**`;
-          newStart = start;
           newEnd = end + 4; // Account for the added ** markers
         } else {
           formattedText = '****';
@@ -130,7 +130,6 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
       case "Italic":
         if (selectedText) {
           formattedText = `*${selectedText}*`;
-          newStart = start;
           newEnd = end + 2; // Account for the added * markers
         } else {
           formattedText = '**';
@@ -139,25 +138,63 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
         }
         break;
       case "Underline":
+        // For markdown, we'll use Markdown's emphasis since true underline is HTML
         if (selectedText) {
-          formattedText = `<u>${selectedText}</u>`;
-          newStart = start;
-          newEnd = end + 7; // Account for the added <u></u> tags
+          formattedText = `__${selectedText}__`;
+          newEnd = end + 4; // Account for the added __ markers
         } else {
-          formattedText = '<u></u>';
-          newStart = start + 3;
-          newEnd = start + 3;
+          formattedText = '____';
+          newStart = start + 2;
+          newEnd = start + 2;
         }
         break;
       case "List":
         if (selectedText) {
+          // Handle multi-line selections
           formattedText = selectedText
             .split('\n')
-            .map(line => `- ${line}`)
+            .map(line => line.trim() ? `- ${line}` : line)
             .join('\n');
-          newStart = start;
           newEnd = start + formattedText.length;
         } else {
+          // Insert at the beginning of the current line
+          const lines = content.split('\n');
+          let currentLineIndex = 0;
+          let currentPosition = 0;
+          
+          // Find which line the cursor is on
+          for (let i = 0; i < lines.length; i++) {
+            if (currentPosition + lines[i].length >= start) {
+              currentLineIndex = i;
+              break;
+            }
+            // +1 for the newline character
+            currentPosition += lines[i].length + 1;
+          }
+          
+          // If the line doesn't already start with a list marker, add one
+          if (!lines[currentLineIndex].trim().startsWith('-')) {
+            lines[currentLineIndex] = `- ${lines[currentLineIndex]}`;
+            const newContent = lines.join('\n');
+            setContent(newContent);
+            onUpdateNote({
+              ...note,
+              content: newContent,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+            
+            // Position cursor after the list marker
+            const prefixLength = content.substring(0, start).split('\n').slice(0, currentLineIndex).join('\n').length;
+            const newCursorPos = prefixLength + (currentLineIndex > 0 ? 1 : 0) + 2; // +1 for newline, +2 for "- "
+            
+            setTimeout(() => {
+              textarea.focus();
+              textarea.setSelectionRange(newCursorPos + lines[currentLineIndex].length, newCursorPos + lines[currentLineIndex].length);
+            }, 0);
+            
+            return;
+          }
+          
           formattedText = '- ';
           newStart = start + 2;
           newEnd = start + 2;
