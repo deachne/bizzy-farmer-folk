@@ -352,7 +352,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
           onChange={handleTitleChange}
           onFocus={handleTitleFocus}
           className={cn(
-            "text-2xl font-semibold border-none px-0 focus-visible:ring-0 flex-1 mr-4",
+            "text-2xl font-semibold px-3 py-2 border border-gray-300 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 flex-1 mr-4",
             isTitleEmpty && "text-gray-400"
           )}
           placeholder="Note title"
