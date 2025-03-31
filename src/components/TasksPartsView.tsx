@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Task, Part } from "@/pages/TasksPage";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -5,14 +6,40 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Package, ExternalLink, ShoppingBag, List, ListPlus } from "lucide-react";
+import { 
+  Package, 
+  ExternalLink, 
+  ShoppingBag, 
+  List, 
+  ListPlus,
+  ChevronDown,
+  Store,
+  Home,
+  ShoppingCart
+} from "lucide-react";
 import QuickAddParts from "./tasks/QuickAddParts";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger 
+} from "@/components/ui/accordion";
 
 interface TasksPartsViewProps {
   tasks: Task[];
   onSelectTask: (task: Task) => void;
   onUpdateTask: (task: Task) => void;
 }
+
+// Helper function to get an icon based on category
+const getCategoryIcon = (category: string) => {
+  switch (category?.toLowerCase()) {
+    case 'shop': return <Store className="h-5 w-5 mr-2 text-purple-500" />;
+    case 'grocery': return <ShoppingCart className="h-5 w-5 mr-2 text-green-500" />;
+    case 'cabin': return <Home className="h-5 w-5 mr-2 text-orange-500" />;
+    default: return <List className="h-5 w-5 mr-2 text-blue-500" />;
+  }
+};
 
 const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewProps) => {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -27,17 +54,34 @@ const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewPro
     }
   });
 
-  // Group parts by vendor
+  // Group parts by vendor for regular parts
   const groupedByVendor: Record<string, { vendor: string; parts: { part: Part; task: Task }[] }> = {};
   
-  // Create a special "Simple Items" category for parts without vendor or just basic supplies
-  const simpleItems: { part: Part; task: Task }[] = [];
+  // Group simple items by category
+  const groupedByCategory: Record<string, { category: string; parts: { part: Part; task: Task }[] }> = {};
   
   allParts.forEach(({ part, task }) => {
-    // Identify simple items - those without a vendor or have simple labels like "supplies"
-    if (!part.vendor || part.vendor.trim() === "" || 
+    // Check if it's a categorized simple item
+    if (part.category) {
+      if (!groupedByCategory[part.category]) {
+        groupedByCategory[part.category] = {
+          category: part.category,
+          parts: []
+        };
+      }
+      groupedByCategory[part.category].parts.push({ part, task });
+    }
+    // Identify other simple items - those without a vendor or have simple labels
+    else if (!part.vendor || part.vendor.trim() === "" || 
         ["supplies", "misc", "groceries", "general"].includes(part.vendor.toLowerCase())) {
-      simpleItems.push({ part, task });
+      // Put them in the "General" category
+      if (!groupedByCategory["General"]) {
+        groupedByCategory["General"] = {
+          category: "General",
+          parts: []
+        };
+      }
+      groupedByCategory["General"].parts.push({ part, task });
     } else {
       // Normal vendor grouping for everything else
       const vendor = part.vendor;
@@ -94,7 +138,7 @@ const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewPro
         <Package className="h-16 w-16 mb-4 text-gray-300" />
         <h3 className="text-xl font-medium mb-2">No Parts Found</h3>
         <p className="text-sm text-center max-w-md mb-4">
-          Add parts to your tasks to see them listed here. Parts can be grouped by vendor for better organization.
+          Add parts to your tasks to see them listed here. Parts can be grouped by vendor or category for better organization.
         </p>
         <Button 
           className="bg-emerald-500 hover:bg-emerald-600 text-white"
@@ -125,61 +169,70 @@ const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewPro
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Simple Items List */}
-          {simpleItems.length > 0 && (
-            <Card key="simple-items" className="shadow-sm hover:shadow">
+          {/* Categorized Simple Items Sections */}
+          {Object.values(groupedByCategory).map(({ category, parts }) => (
+            <Card key={`category-${category}`} className="shadow-sm hover:shadow">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center justify-between">
                   <span className="flex items-center">
-                    <List className="h-5 w-5 mr-2 text-green-500" />
-                    Simple Items
+                    {getCategoryIcon(category)}
+                    {category}
                   </span>
-                  <Badge variant="outline" className="bg-green-50 text-green-700">
-                    {simpleItems.length} {simpleItems.length === 1 ? 'item' : 'items'}
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                    {parts.length} {parts.length === 1 ? 'item' : 'items'}
                   </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="list-disc pl-5 space-y-2">
-                  {simpleItems.map(({ part, task }) => (
-                    <li key={part.id} className="pb-2">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <span className="font-medium">{part.name}</span>
-                          {part.quantity > 1 && (
-                            <span className="ml-2 text-sm text-gray-500">
-                              ({part.quantity} {part.unit || 'ea'})
-                            </span>
-                          )}
-                          
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 h-auto text-xs text-blue-600 ml-2 flex items-center"
-                            onClick={() => onSelectTask(task)}
-                          >
-                            <ExternalLink className="h-3 w-3 mr-1" /> 
-                            {task.title}
-                          </Button>
-                        </div>
-                        
-                        <div className="flex flex-row space-x-3 items-center">
-                          <div className="flex items-center gap-1">
-                            <Checkbox 
-                              id={`ordered-${part.id}`}
-                              checked={part.ordered}
-                              onCheckedChange={() => toggleOrdered(task.id, part.id)}
-                            />
-                            <span className="text-xs">Got it</span>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <Accordion type="single" collapsible className="w-full" defaultValue="items">
+                  <AccordionItem value="items" className="border-none">
+                    <AccordionTrigger className="py-2">
+                      <span className="text-sm font-medium">Items</span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="list-disc pl-5 space-y-2">
+                        {parts.map(({ part, task }) => (
+                          <li key={part.id} className="pb-2">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <span className="font-medium">{part.name}</span>
+                                {part.quantity > 1 && (
+                                  <span className="ml-2 text-sm text-gray-500">
+                                    ({part.quantity} {part.unit || 'ea'})
+                                  </span>
+                                )}
+                                
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  className="p-0 h-auto text-xs text-blue-600 ml-2 flex items-center"
+                                  onClick={() => onSelectTask(task)}
+                                >
+                                  <ExternalLink className="h-3 w-3 mr-1" /> 
+                                  {task.title}
+                                </Button>
+                              </div>
+                              
+                              <div className="flex flex-row space-x-3 items-center">
+                                <div className="flex items-center gap-1">
+                                  <Checkbox 
+                                    id={`ordered-${part.id}`}
+                                    checked={part.ordered}
+                                    onCheckedChange={() => toggleOrdered(task.id, part.id)}
+                                  />
+                                  <span className="text-xs">Got it</span>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
-          )}
+          ))}
 
           {/* Render card for each vendor group */}
           {Object.values(groupedByVendor).map(({ vendor, parts }) => (
@@ -196,51 +249,60 @@ const TasksPartsView = ({ tasks, onSelectTask, onUpdateTask }: TasksPartsViewPro
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3">
-                  {parts.map(({ part, task }) => (
-                    <li key={part.id} className="border-b pb-3 last:border-0">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="font-medium">{part.name}</div>
-                          <div className="text-sm text-gray-500">
-                            {part.quantity} {part.unit || 'ea'}
-                            {part.partNumber && <span className="ml-2">• {part.partNumber}</span>}
-                          </div>
-                          
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 h-auto text-xs text-blue-600 mt-1 flex items-center"
-                            onClick={() => onSelectTask(task)}
-                          >
-                            <ExternalLink className="h-3 w-3 mr-1" /> 
-                            {task.title}
-                          </Button>
-                        </div>
-                        
-                        <div className="flex flex-col space-y-1 items-end">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs">Ordered</span>
-                            <Checkbox 
-                              id={`ordered-${part.id}`}
-                              checked={part.ordered}
-                              onCheckedChange={() => toggleOrdered(task.id, part.id)}
-                            />
-                          </div>
-                          
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs">Received</span>
-                            <Checkbox 
-                              id={`received-${part.id}`}
-                              checked={part.received}
-                              onCheckedChange={() => toggleReceived(task.id, part.id)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <Accordion type="single" collapsible className="w-full" defaultValue="items">
+                  <AccordionItem value="items" className="border-none">
+                    <AccordionTrigger className="py-2">
+                      <span className="text-sm font-medium">Parts</span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-3">
+                        {parts.map(({ part, task }) => (
+                          <li key={part.id} className="border-b pb-3 last:border-0">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="font-medium">{part.name}</div>
+                                <div className="text-sm text-gray-500">
+                                  {part.quantity} {part.unit || 'ea'}
+                                  {part.partNumber && <span className="ml-2">• {part.partNumber}</span>}
+                                </div>
+                                
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  className="p-0 h-auto text-xs text-blue-600 mt-1 flex items-center"
+                                  onClick={() => onSelectTask(task)}
+                                >
+                                  <ExternalLink className="h-3 w-3 mr-1" /> 
+                                  {task.title}
+                                </Button>
+                              </div>
+                              
+                              <div className="flex flex-col space-y-1 items-end">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs">Ordered</span>
+                                  <Checkbox 
+                                    id={`ordered-${part.id}`}
+                                    checked={part.ordered}
+                                    onCheckedChange={() => toggleOrdered(task.id, part.id)}
+                                  />
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs">Received</span>
+                                  <Checkbox 
+                                    id={`received-${part.id}`}
+                                    checked={part.received}
+                                    onCheckedChange={() => toggleReceived(task.id, part.id)}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           ))}

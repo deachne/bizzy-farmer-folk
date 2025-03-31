@@ -22,6 +22,7 @@ export interface Part {
   vendor?: string;
   ordered?: boolean;
   received?: boolean;
+  category?: string;
 }
 
 export interface Task {
@@ -161,7 +162,7 @@ const TasksPage = () => {
           id: "p5",
           name: "Paper Towels",
           quantity: 2,
-          vendor: "",
+          category: "Grocery",
           ordered: false,
           received: false
         },
@@ -170,7 +171,7 @@ const TasksPage = () => {
           name: "Garbage Bags",
           quantity: 1,
           unit: "box",
-          vendor: "",
+          category: "Grocery",
           ordered: false,
           received: false
         },
@@ -225,7 +226,83 @@ const TasksPage = () => {
           id: "p11",
           name: "Twine",
           quantity: 1,
-          vendor: "",
+          category: "Shop",
+          ordered: false,
+          received: false
+        }
+      ]
+    },
+    {
+      id: "8",
+      title: "Cabin Weekend Trip",
+      description: "Items needed for the weekend cabin trip",
+      status: "todo",
+      priority: "normal",
+      dueDate: "April 10, 2025",
+      source: "Manual Entry",
+      tags: ["Trip", "Cabin"],
+      parts: [
+        {
+          id: "p12",
+          name: "Firewood",
+          quantity: 1,
+          unit: "bundle",
+          category: "Cabin",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p13",
+          name: "Bottled Water",
+          quantity: 2,
+          unit: "cases",
+          category: "Grocery",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p14",
+          name: "Propane",
+          quantity: 1,
+          unit: "tank",
+          category: "Cabin",
+          ordered: false,
+          received: false
+        }
+      ]
+    },
+    {
+      id: "9",
+      title: "Workshop Organization",
+      description: "Items needed for workshop cleanup and organization",
+      status: "todo",
+      priority: "normal",
+      dueDate: "April 15, 2025",
+      source: "Manual Entry",
+      tags: ["Workshop", "Organization"],
+      parts: [
+        {
+          id: "p15",
+          name: "Storage Bins",
+          quantity: 4,
+          category: "Shop",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p16",
+          name: "Tool Pegs",
+          quantity: 20,
+          category: "Shop",
+          ordered: false,
+          received: false
+        },
+        {
+          id: "p17",
+          name: "Cable Ties",
+          quantity: 1,
+          unit: "pack",
+          category: "Shop",
           ordered: false,
           received: false
         }
