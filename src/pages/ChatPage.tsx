@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Message, ChatSession, Artifact, ContextImage } from "@/types/chat";
@@ -48,20 +47,18 @@ const ChatPage = () => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const [connectionStatus, setConnectionStatus] = useState<"connected" | "connecting" | "disconnected">("connected");
   
-  // Initialize context panel visibility based on screen size
   useEffect(() => {
     setShowContextPanel(!isMobile);
   }, [isMobile]);
   
-  // Scroll to bottom of messages
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isAiTyping]);
   
-  // Function to add image to context
   const addImageToContext = (imageUrl: string, imageName: string) => {
     const newContextImage: ContextImage = {
       id: Date.now().toString(),
@@ -71,7 +68,6 @@ const ChatPage = () => {
     };
     
     setContextImages(prev => {
-      // Check if the image is already in context to prevent duplicates
       if (prev.some(img => img.url === imageUrl)) {
         toast({
           title: "Image already in context",
@@ -102,14 +98,12 @@ const ChatPage = () => {
     
     setMessages(prev => [...prev, newMessage]);
     
-    // Add any image attachments to context automatically
     attachments.forEach(attachment => {
       if (attachment.type.startsWith('image/')) {
         addImageToContext(attachment.url, attachment.name);
       }
     });
     
-    // Simulate AI response
     setIsAiTyping(true);
     setTimeout(() => {
       const aiResponse: Message = {
@@ -143,7 +137,6 @@ const ChatPage = () => {
   const handleSaveAsNote = (messageId: string) => {
     const messageToSave = messages.find(m => m.id === messageId);
     if (messageToSave) {
-      // In a real application, this would interact with the notes system
       toast({
         title: "Note Saved",
         description: "The message has been saved as a note",
@@ -174,7 +167,6 @@ const ChatPage = () => {
     const session = availableSessions.find(s => s.id === sessionId);
     if (session) {
       setActiveChatSession(session);
-      // In a real app, this would load messages for the selected session
       setMessages([]);
     }
   };
@@ -188,7 +180,6 @@ const ChatPage = () => {
     setShowArtifactPanel(true);
   };
   
-  // Find the currently selected artifact if any
   const currentArtifacts = selectedArtifact 
     ? messages.find(m => m.id === selectedArtifact.messageId)?.artifacts || []
     : [];
@@ -215,7 +206,10 @@ const ChatPage = () => {
             onAddImageToContext={addImageToContext}
           />
           
-          <ChatInputBar onSendMessage={handleSendMessage} />
+          <ChatInputBar 
+            onSendMessage={handleSendMessage} 
+            connectionStatus={connectionStatus}
+          />
         </div>
         
         {showContextPanel && (
