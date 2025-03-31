@@ -1,7 +1,8 @@
+
 import { Task } from "@/pages/TasksPage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Flag, Plus } from "lucide-react";
+import { Check, Flag, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TasksBoardProps {
@@ -96,6 +97,13 @@ const TasksBoard = ({
     onCompleteTask(taskId);
   };
 
+  // Handle task deletion
+  const handleDeleteTask = (taskId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent selection of the task
+    // We need to pass this event up to the parent component
+    // First we need to add this to props
+  };
+
   // Render a task card for the board
   const renderTaskCard = (task: Task) => {
     const priorityColors = getPriorityColor(task.priority);
@@ -136,12 +144,14 @@ const TasksBoard = ({
             </p>
           </div>
           
-          {!isCompleted && (
-            <Flag 
-              className={cn("h-4 w-4", priorityColors.flagColor)} 
-              fill={task.priority === "high" ? "currentColor" : "none"}
-            />
-          )}
+          <div className="flex items-start gap-1">
+            {!isCompleted && (
+              <Flag 
+                className={cn("h-4 w-4", priorityColors.flagColor)} 
+                fill={task.priority === "high" ? "currentColor" : "none"}
+              />
+            )}
+          </div>
         </div>
         
         {task.tags.length > 0 && (
@@ -168,16 +178,18 @@ const TasksBoard = ({
             {task.source}
           </div>
           
-          {!isCompleted && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-6 w-6 p-0"
-              onClick={(e) => handleCompleteTask(task.id, e)}
-            >
-              <Check className="h-3 w-3" />
-            </Button>
-          )}
+          <div className="flex items-center gap-1">
+            {!isCompleted && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 w-6 p-0"
+                onClick={(e) => handleCompleteTask(task.id, e)}
+              >
+                <Check className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     );

@@ -85,6 +85,7 @@ const TasksList = ({ tasks, selectedTask, onSelectTask, onCompleteTask }: TasksL
                       : "border-gray-300"
                   )}
                   onClick={(e) => handleCompleteTask(task.id, e)}
+                  aria-label={isCompleted ? "Mark as incomplete" : "Mark as complete"}
                 >
                   {isCompleted && <Check className="h-3 w-3" />}
                 </Button>
@@ -147,4 +148,3 @@ const TasksList = ({ tasks, selectedTask, onSelectTask, onCompleteTask }: TasksL
 };
 
 export default TasksList;
-

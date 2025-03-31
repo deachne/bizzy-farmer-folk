@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { format, parse, isValid } from "date-fns";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -319,265 +320,257 @@ const TaskDetail = ({
   const availableTags = tagOptions.filter(tag => !task.tags.includes(tag));
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-6">
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Task Details</h2>
-        
-        <Input
-          value={title}
-          onChange={handleTitleChange}
-          onFocus={handleTitleFocus}
-          className={`text-xl font-medium mb-4 ${isTitleEmpty ? "text-gray-400" : ""}`}
-          placeholder="Task title"
-        />
-        
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Popover>
-            <PopoverTrigger asChild>
-              <div 
-                className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${statusConfig.bg} ${statusConfig.text}`}
-              >
-                {statusConfig.label}
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
-              <div className="py-1">
-                {availableStatuses
-                  .filter(status => status !== task.status)
-                  .map((status) => (
-                    <div
-                      key={status}
-                      className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                      onClick={() => handleStatusChange(status)}
-                    >
-                      {getStatusConfig(status).label}
-                    </div>
-                  ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-          
-          <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
-            <PopoverTrigger asChild>
-              <div 
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${priorityConfig.bg} ${priorityConfig.text}`}
-              >
-                {priorityConfig.icon}
-                {priorityConfig.label}
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
-              <div className="py-1">
-                <div 
-                  className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handlePriorityChange("high")}
-                >
-                  <Flag className="h-4 w-4 text-red-500" fill="currentColor" />
-                  <span>High</span>
-                </div>
-                <div 
-                  className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handlePriorityChange("medium")}
-                >
-                  <Flag className="h-4 w-4 text-yellow-500" />
-                  <span>Medium</span>
-                </div>
-                <div 
-                  className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handlePriorityChange("normal")}
-                >
-                  <Flag className="h-4 w-4 text-green-500" />
-                  <span>Normal</span>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-        
-        <Textarea
-          value={description}
-          onChange={handleDescriptionChange}
-          className="mb-4"
-          placeholder="Task description"
-        />
-      </div>
-      
-      {/* Metadata */}
-      <div className="space-y-4 mb-6">
-        <div className="flex items-start gap-2">
-          <CalendarIcon className="h-5 w-5 text-gray-400 mt-0.5" />
-          <div className="w-full">
-            <p className="text-sm font-medium text-gray-700">Due Date</p>
-            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-full justify-start text-left font-normal mt-1 ${!dueDateObj ? "text-gray-500" : ""}`}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dueDate || "Select a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 z-50" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dueDateObj}
-                  onSelect={handleCalendarSelect}
-                  initialFocus
-                  className="p-3 pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-        </div>
-        
-        <div className="flex items-start gap-2">
-          <Link className="h-5 w-5 text-gray-400 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-gray-700">Source</p>
-            <p className="text-sm text-gray-600">{task.source}</p>
-            {task.sourceText && (
-              <p className="text-sm text-blue-600 mt-1 italic">"{task.sourceText}"</p>
-            )}
-          </div>
-        </div>
-      </div>
-      
-      {/* Tags */}
-      <div className="mb-6">
-        <div className="flex items-center mb-2">
-          <Tag className="h-4 w-4 text-gray-400 mr-2" />
-          <span className="text-sm font-medium text-gray-700">Tags</span>
-        </div>
-        
-        <div className="flex flex-wrap gap-2 mb-2">
-          {task.tags.map((tag, index) => (
-            <Badge 
-              key={index} 
-              variant="outline" 
-              className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1"
-            >
-              {tag}
-              <button 
-                onClick={() => removeTag(tag)}
-                className="text-blue-400 hover:text-blue-700"
-                aria-label={`Remove ${tag} tag`}
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </Badge>
-          ))}
-        </div>
-        
-        <div className="flex gap-2">
-          <Popover open={tagDropdownOpen} onOpenChange={setTagDropdownOpen}>
-            <PopoverTrigger asChild>
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Sticky header with action buttons */}
+      <div className="p-4 border-b bg-white sticky top-0 z-10">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold">Task Details</h2>
+          <div className="flex space-x-2">
+            {task.status !== "completed" ? (
               <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-sm h-8 border-dashed border-gray-300"
-                disabled={availableTags.length === 0}
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={handleComplete}
               >
-                <Plus className="h-4 w-4 mr-1" />
-                Add tag
+                <Check className="h-4 w-4 mr-1" />
+                Complete
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
-              <div className="py-1 max-h-40 overflow-y-auto">
-                {availableTags.map((tag) => (
-                  <div
-                    key={tag}
-                    className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => addTagFromDropdown(tag)}
-                  >
-                    {tag}
-                  </div>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-          
-          <div className="flex-1 flex">
-            <Input
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Custom tag..."
-              className="text-sm h-8 border-dashed border-gray-300"
-            />
+            ) : (
+              <Button 
+                size="sm"
+                variant="outline"
+                className="text-blue-600 border-blue-200"
+                onClick={handleComplete}
+              >
+                <Check className="h-4 w-4 mr-1" />
+                Mark Incomplete
+              </Button>
+            )}
+            
             <Button 
-              size="sm" 
-              variant="ghost" 
-              className="ml-1 h-8"
-              onClick={addTag}
+              size="sm"
+              variant="outline"
+              className="text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={handleDelete}
             >
-              <Plus className="h-4 w-4" />
+              <Trash2 className="h-4 w-4 mr-1" />
+              Delete
             </Button>
           </div>
         </div>
       </div>
       
-      {/* Notes */}
-      <div className="mb-6 flex-1">
-        <div className="flex items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">Notes</span>
+      {/* Scrollable content */}
+      <ScrollArea className="flex-1">
+        <div className="p-6">
+          <Input
+            value={title}
+            onChange={handleTitleChange}
+            onFocus={handleTitleFocus}
+            className={`text-xl font-medium mb-4 ${isTitleEmpty ? "text-gray-400" : ""}`}
+            placeholder="Task title"
+          />
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <div 
+                  className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${statusConfig.bg} ${statusConfig.text}`}
+                >
+                  {statusConfig.label}
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
+                <div className="py-1">
+                  {availableStatuses
+                    .filter(status => status !== task.status)
+                    .map((status) => (
+                      <div
+                        key={status}
+                        className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                        onClick={() => handleStatusChange(status)}
+                      >
+                        {getStatusConfig(status).label}
+                      </div>
+                    ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            
+            <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
+              <PopoverTrigger asChild>
+                <div 
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${priorityConfig.bg} ${priorityConfig.text}`}
+                >
+                  {priorityConfig.icon}
+                  {priorityConfig.label}
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
+                <div className="py-1">
+                  <div 
+                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handlePriorityChange("high")}
+                  >
+                    <Flag className="h-4 w-4 text-red-500" fill="currentColor" />
+                    <span>High</span>
+                  </div>
+                  <div 
+                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handlePriorityChange("medium")}
+                  >
+                    <Flag className="h-4 w-4 text-yellow-500" />
+                    <span>Medium</span>
+                  </div>
+                  <div 
+                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handlePriorityChange("normal")}
+                  >
+                    <Flag className="h-4 w-4 text-green-500" />
+                    <span>Normal</span>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+          
+          <Textarea
+            value={description}
+            onChange={handleDescriptionChange}
+            className="mb-4"
+            placeholder="Task description"
+          />
+          
+          {/* Metadata */}
+          <div className="space-y-4 mb-6">
+            <div className="flex items-start gap-2">
+              <CalendarIcon className="h-5 w-5 text-gray-400 mt-0.5" />
+              <div className="w-full">
+                <p className="text-sm font-medium text-gray-700">Due Date</p>
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`w-full justify-start text-left font-normal mt-1 ${!dueDateObj ? "text-gray-500" : ""}`}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dueDate || "Select a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 z-50" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dueDateObj}
+                      onSelect={handleCalendarSelect}
+                      initialFocus
+                      className="p-3 pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-2">
+              <Link className="h-5 w-5 text-gray-400 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Source</p>
+                <p className="text-sm text-gray-600">{task.source}</p>
+                {task.sourceText && (
+                  <p className="text-sm text-blue-600 mt-1 italic">"{task.sourceText}"</p>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Tags */}
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <Tag className="h-4 w-4 text-gray-400 mr-2" />
+              <span className="text-sm font-medium text-gray-700">Tags</span>
+            </div>
+            
+            <div className="flex flex-wrap gap-2 mb-2">
+              {task.tags.map((tag, index) => (
+                <Badge 
+                  key={index} 
+                  variant="outline" 
+                  className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1"
+                >
+                  {tag}
+                  <button 
+                    onClick={() => removeTag(tag)}
+                    className="text-blue-400 hover:text-blue-700"
+                    aria-label={`Remove ${tag} tag`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+            
+            <div className="flex gap-2">
+              <Popover open={tagDropdownOpen} onOpenChange={setTagDropdownOpen}>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-sm h-8 border-dashed border-gray-300"
+                    disabled={availableTags.length === 0}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add tag
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-auto z-50 bg-white" align="start">
+                  <div className="py-1 max-h-40 overflow-y-auto">
+                    {availableTags.map((tag) => (
+                      <div
+                        key={tag}
+                        className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                        onClick={() => addTagFromDropdown(tag)}
+                      >
+                        {tag}
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
+              <div className="flex-1 flex">
+                <Input
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Custom tag..."
+                  className="text-sm h-8 border-dashed border-gray-300"
+                />
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  className="ml-1 h-8"
+                  onClick={addTag}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Notes */}
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="text-sm font-medium text-gray-700">Notes</span>
+            </div>
+            
+            <Textarea
+              value={notes}
+              onChange={handleNotesChange}
+              className="min-h-[100px] text-sm"
+              placeholder="Add notes about this task..."
+            />
+          </div>
         </div>
-        
-        <Textarea
-          value={notes}
-          onChange={handleNotesChange}
-          className="min-h-[100px] text-sm"
-          placeholder="Add notes about this task..."
-        />
-      </div>
-      
-      {/* Action Buttons */}
-      <div className="flex space-x-2 mt-auto pt-4 border-t">
-        {task.status !== "completed" ? (
-          <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={handleComplete}
-          >
-            <Check className="h-4 w-4 mr-2" />
-            Complete
-          </Button>
-        ) : (
-          <Button 
-            variant="outline"
-            className="text-blue-600 border-blue-200"
-            onClick={handleComplete}
-          >
-            <Check className="h-4 w-4 mr-2" />
-            Completed
-          </Button>
-        )}
-        
-        <Button 
-          variant="outline"
-          onClick={toggleEdit}
-        >
-          {isEditing ? (
-            <>
-              <Check className="h-4 w-4 mr-2" />
-              Save
-            </>
-          ) : (
-            <>
-              <Edit2 className="h-4 w-4 mr-2" />
-              Edit
-            </>
-          )}
-        </Button>
-        
-        <Button 
-          variant="outline"
-          className="text-red-600 hover:bg-red-50 hover:text-red-700"
-          onClick={handleDelete}
-        >
-          <Trash2 className="h-4 w-4 mr-2" />
-          Delete
-        </Button>
-      </div>
+      </ScrollArea>
     </div>
   );
 };
