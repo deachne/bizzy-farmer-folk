@@ -1,4 +1,3 @@
-
 import { RefObject, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Message } from "@/pages/ChatPage";
@@ -68,21 +67,6 @@ const ChatMessages = ({
     });
   };
 
-  const renderStatusIcon = (status?: string) => {
-    switch (status) {
-      case "sending":
-        return <Clock className="h-4 w-4 text-gray-400" />;
-      case "sent":
-        return <CheckCircle className="h-4 w-4 text-gray-400" />;
-      case "delivered":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "error":
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <ScrollArea className="h-full pr-4">
       <div className="space-y-6 pb-6">
@@ -112,13 +96,8 @@ const ChatMessages = ({
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <div className="font-semibold text-gray-900 flex items-center">
+                  <div className="font-semibold text-gray-900">
                     {message.sender === "user" ? "You" : "Claude"}
-                    {message.status && (
-                      <span className="ml-2" title={message.status}>
-                        {renderStatusIcon(message.status)}
-                      </span>
-                    )}
                   </div>
                   <div className="text-sm text-gray-500">{message.timestamp}</div>
                 </div>
