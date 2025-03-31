@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Task } from "@/pages/TasksPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -40,7 +39,6 @@ const TaskDetail = ({
   const [priorityOpen, setPriorityOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   
-  // Update state when task changes
   useEffect(() => {
     setTitle(task.title);
     setIsTitleEmpty(task.title === "");
@@ -50,9 +48,7 @@ const TaskDetail = ({
     setNotes(task.notes || "");
     setIsEditing(task.title === "New Task");
     
-    // Try to parse the due date string to a Date object
     try {
-      // Try different formats
       let dateObj;
       if (task.dueDate.toLowerCase() === 'today') {
         dateObj = new Date();
@@ -60,7 +56,6 @@ const TaskDetail = ({
         dateObj = new Date();
         dateObj.setDate(dateObj.getDate() + 1);
       } else {
-        // Try to parse various date formats
         const formats = [
           'yyyy-MM-dd',
           'MM/dd/yyyy',
@@ -89,26 +84,23 @@ const TaskDetail = ({
 
   return (
     <div className="h-full flex flex-col overflow-hidden relative">
-      {/* Close button in top right */}
       {onClose && (
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 rounded-full bg-red-500 hover:bg-red-600 text-white absolute top-2 left-4 z-20"
+          className="h-8 w-8 p-0 rounded-full bg-red-500 hover:bg-red-600 text-white absolute top-2 left-6 z-20"
           onClick={onClose}
         >
           <X className="h-4 w-4" />
         </Button>
       )}
       
-      {/* Sticky header with action buttons */}
       <TaskDetailHeader 
         task={task} 
         onCompleteTask={onCompleteTask} 
         onDeleteTask={onDeleteTask} 
       />
       
-      {/* Scrollable content */}
       <ScrollArea className="flex-1">
         <div className="p-6">
           <TaskTitleInput
@@ -144,7 +136,6 @@ const TaskDetail = ({
             }}
           />
           
-          {/* Metadata */}
           <div className="space-y-4 mb-6">
             <TaskDueDate
               task={task}
@@ -161,10 +152,8 @@ const TaskDetail = ({
             <TaskSource task={task} />
           </div>
           
-          {/* Tags */}
           <TaskTags task={task} onUpdateTask={onUpdateTask} />
           
-          {/* Notes */}
           <TaskNotes
             task={task}
             notes={notes}
