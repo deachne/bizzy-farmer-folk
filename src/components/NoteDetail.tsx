@@ -112,27 +112,56 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     const selectedText = content.substring(start, end);
     
     let formattedText = '';
-    let cursorPosition = 0;
+    let newStart = start;
+    let newEnd = end;
     
     switch (format) {
       case "Bold":
-        formattedText = `**${selectedText}**`;
-        cursorPosition = start + 2;
+        if (selectedText) {
+          formattedText = `**${selectedText}**`;
+          newStart = start;
+          newEnd = end + 4; // Account for the added ** markers
+        } else {
+          formattedText = '****';
+          newStart = start + 2;
+          newEnd = start + 2;
+        }
         break;
       case "Italic":
-        formattedText = `*${selectedText}*`;
-        cursorPosition = start + 1;
+        if (selectedText) {
+          formattedText = `*${selectedText}*`;
+          newStart = start;
+          newEnd = end + 2; // Account for the added * markers
+        } else {
+          formattedText = '**';
+          newStart = start + 1;
+          newEnd = start + 1;
+        }
         break;
       case "Underline":
-        formattedText = `<u>${selectedText}</u>`;
-        cursorPosition = start + 3;
+        if (selectedText) {
+          formattedText = `<u>${selectedText}</u>`;
+          newStart = start;
+          newEnd = end + 7; // Account for the added <u></u> tags
+        } else {
+          formattedText = '<u></u>';
+          newStart = start + 3;
+          newEnd = start + 3;
+        }
         break;
       case "List":
-        formattedText = selectedText
-          .split('\n')
-          .map(line => `- ${line}`)
-          .join('\n');
-        cursorPosition = start + 2;
+        if (selectedText) {
+          formattedText = selectedText
+            .split('\n')
+            .map(line => `- ${line}`)
+            .join('\n');
+          newStart = start;
+          newEnd = start + formattedText.length;
+        } else {
+          formattedText = '- ';
+          newStart = start + 2;
+          newEnd = start + 2;
+        }
         break;
       default:
         return;
@@ -148,11 +177,7 @@ const NoteDetail = ({ note, onUpdateNote, onDeleteNote }: NoteDetailProps) => {
     
     setTimeout(() => {
       textarea.focus();
-      if (selectedText) {
-        textarea.setSelectionRange(start, start + formattedText.length);
-      } else {
-        textarea.setSelectionRange(cursorPosition, cursorPosition);
-      }
+      textarea.setSelectionRange(newStart, newEnd);
     }, 0);
     
     toast({
