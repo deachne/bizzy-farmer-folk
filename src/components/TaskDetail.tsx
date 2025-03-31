@@ -1,9 +1,12 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Task } from "@/pages/TasksPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { format, parse, isValid } from "date-fns";
 import {
   Select,
   SelectContent,
@@ -24,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { 
   Flag, 
-  Calendar, 
+  Calendar as CalendarIcon, 
   Tag, 
   Plus, 
   X, 
@@ -51,11 +54,13 @@ const TaskDetail = ({
   const [isTitleEmpty, setIsTitleEmpty] = useState(task.title === "");
   const [description, setDescription] = useState(task.description);
   const [dueDate, setDueDate] = useState(task.dueDate);
+  const [dueDateObj, setDueDateObj] = useState<Date | undefined>(undefined);
   const [priority, setPriority] = useState(task.priority);
   const [notes, setNotes] = useState(task.notes || "");
   const [tagInput, setTagInput] = useState("");
   const [isEditing, setIsEditing] = useState(task.title === "New Task");
   const [priorityOpen, setPriorityOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const [tagOptions] = useState([
     "Equipment", "Urgent", "North Field", "East Field", "South Field", 
@@ -71,6 +76,42 @@ const TaskDetail = ({
     setPriority(task.priority);
     setNotes(task.notes || "");
     setIsEditing(task.title === "New Task");
+    
+    // Try to parse the due date string to a Date object
+    try {
+      // Try different formats
+      let dateObj;
+      if (task.dueDate.toLowerCase() === 'today') {
+        dateObj = new Date();
+      } else if (task.dueDate.toLowerCase() === 'tomorrow') {
+        dateObj = new Date();
+        dateObj.setDate(dateObj.getDate() + 1);
+      } else {
+        // Try to parse various date formats
+        const formats = [
+          'yyyy-MM-dd',
+          'MM/dd/yyyy',
+          'MMMM d, yyyy',
+          'MMMM dd, yyyy',
+        ];
+        
+        for (const formatStr of formats) {
+          const parsed = parse(task.dueDate, formatStr, new Date());
+          if (isValid(parsed)) {
+            dateObj = parsed;
+            break;
+          }
+        }
+      }
+      
+      if (dateObj && isValid(dateObj)) {
+        setDueDateObj(dateObj);
+      } else {
+        setDueDateObj(undefined);
+      }
+    } catch (e) {
+      setDueDateObj(undefined);
+    }
   }, [task]);
 
   // Define status colors and labels
@@ -156,7 +197,7 @@ const TaskDetail = ({
     const newDescription = e.target.value;
     setDescription(newDescription);
     
-    // Always update parent component, regardless of edit mode
+    // Always update parent component
     const updatedTask = {
       ...task,
       description: newDescription,
@@ -168,7 +209,7 @@ const TaskDetail = ({
     const newNotes = e.target.value;
     setNotes(newNotes);
     
-    // Always update parent component, regardless of edit mode
+    // Always update parent component
     const updatedTask = {
       ...task,
       notes: newNotes,
@@ -230,7 +271,7 @@ const TaskDetail = ({
     setPriority(newPriority);
     setPriorityOpen(false);
     
-    // Always update parent component, regardless of edit mode
+    // Always update parent component
     const updatedTask = {
       ...task,
       priority: newPriority
@@ -242,12 +283,28 @@ const TaskDetail = ({
     const newDueDate = e.target.value;
     setDueDate(newDueDate);
     
-    // Always update parent component, regardless of edit mode
+    // Always update parent component
     const updatedTask = {
       ...task,
       dueDate: newDueDate
     };
     onUpdateTask(updatedTask);
+  };
+
+  const handleCalendarSelect = (date: Date | undefined) => {
+    if (date) {
+      const formattedDate = format(date, 'MMMM d, yyyy');
+      setDueDate(formattedDate);
+      setDueDateObj(date);
+      setCalendarOpen(false);
+
+      // Always update parent component
+      const updatedTask = {
+        ...task,
+        dueDate: formattedDate
+      };
+      onUpdateTask(updatedTask);
+    }
   };
 
   // Filter tag options to only show tags that aren't already added
@@ -319,15 +376,29 @@ const TaskDetail = ({
       {/* Metadata */}
       <div className="space-y-4 mb-6">
         <div className="flex items-start gap-2">
-          <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
+          <CalendarIcon className="h-5 w-5 text-gray-400 mt-0.5" />
           <div className="w-full">
             <p className="text-sm font-medium text-gray-700">Due Date</p>
-            <Input
-              type="text"
-              value={dueDate}
-              onChange={handleDueDateChange}
-              className="mt-1"
-            />
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={`w-full justify-start text-left font-normal mt-1 ${!dueDateObj ? "text-gray-500" : ""}`}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dueDate || "Select a date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 z-50" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dueDateObj}
+                  onSelect={handleCalendarSelect}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         
