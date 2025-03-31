@@ -6,7 +6,7 @@ import AttachmentPreview from "./chat/AttachmentPreview";
 import ConnectionStatusIndicator from "./chat/ConnectionStatusIndicator";
 import PasteMenu from "./chat/PasteMenu";
 import ChatInputControls from "./chat/ChatInputControls";
-import { useChatInput } from "@/hooks/use-chat-input";
+import { useChatInput } from "@/hooks/chat-input"; // Updated import path
 import { ConnectionStatus } from "@/types/chat-input";
 
 interface ChatInputBarProps {
