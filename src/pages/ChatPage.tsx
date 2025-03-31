@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -39,10 +40,13 @@ const ChatPage = () => {
   
   const { 
     artifactPanelOpen, 
+    isPanelMinimized,
     currentMessageArtifacts, 
     initialArtifactIndex, 
     handleViewArtifact, 
-    closeArtifactPanel 
+    closeArtifactPanel,
+    minimizeArtifactPanel,
+    maximizeArtifactPanel 
   } = useArtifacts(showContextPanel, setShowContextPanel);
 
   const isMobile = useIsMobile();
@@ -70,7 +74,7 @@ const ChatPage = () => {
             <div className={cn(
               "flex flex-col transition-all duration-300 overflow-hidden",
               isMobile ? "w-full" : 
-                artifactPanelOpen ? "w-[60%]" : 
+                artifactPanelOpen && !isPanelMinimized ? "w-[60%]" : 
                   showContextPanel ? "w-2/3 border-r" : "w-full"
             )}>
               <div 
@@ -97,7 +101,7 @@ const ChatPage = () => {
               </div>
             </div>
             
-            {showContextPanel && !(isMobile && artifactPanelOpen) && (
+            {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
               <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
                 <ChatContextPanel contextImages={contextImages} />
               </div>
@@ -115,7 +119,10 @@ const ChatPage = () => {
       
       <ArtifactPanel 
         isOpen={artifactPanelOpen}
+        isMinimized={isPanelMinimized}
         onClose={closeArtifactPanel}
+        onMinimize={minimizeArtifactPanel}
+        onMaximize={maximizeArtifactPanel}
         artifacts={currentMessageArtifacts}
         initialArtifactIndex={initialArtifactIndex}
       />
