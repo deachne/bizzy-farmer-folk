@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Artifact } from "@/types/chat";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -23,6 +22,7 @@ export function useArtifacts(showContextPanel: boolean, setShowContextPanel: (sh
   };
 
   const closeArtifactPanel = () => {
+    // Just close the panel but keep the artifacts in memory
     setArtifactPanelOpen(false);
   };
 

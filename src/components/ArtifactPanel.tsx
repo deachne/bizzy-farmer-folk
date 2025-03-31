@@ -26,10 +26,10 @@ const ArtifactPanel = ({
   const isMobile = useIsMobile();
   
   useEffect(() => {
-    if (artifacts.length > 0) {
-      setCurrentIndex(initialArtifactIndex);
+    if (artifacts.length > 0 && isOpen) {
+      setCurrentIndex(Math.min(initialArtifactIndex, artifacts.length - 1));
     }
-  }, [artifacts, initialArtifactIndex]);
+  }, [artifacts, initialArtifactIndex, isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -41,7 +41,9 @@ const ArtifactPanel = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (!isOpen) return;
+      
+      if (e.key === "Escape") {
         onClose();
       } else if (e.key === "ArrowLeft" && currentIndex > 0) {
         setCurrentIndex(currentIndex - 1);
