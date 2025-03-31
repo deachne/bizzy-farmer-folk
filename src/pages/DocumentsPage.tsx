@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
@@ -18,7 +17,6 @@ const DocumentsPage = () => {
   const [sortOrder, setSortOrder] = useState("Recent first");
   const [filterBy, setFilterBy] = useState("In Knowledge Base: All");
 
-  // Mock documents data
   const [documents, setDocuments] = useState<Document[]>([
     {
       id: "1",
@@ -88,6 +86,15 @@ const DocumentsPage = () => {
       doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       doc.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     );
+  };
+
+  const updateDocument = (updatedDocument: Document) => {
+    setDocuments(prevDocuments => 
+      prevDocuments.map(doc => 
+        doc.id === updatedDocument.id ? updatedDocument : doc
+      )
+    );
+    setSelectedDocument(updatedDocument);
   };
 
   const filteredDocuments = filterDocumentsBySearch(filterDocumentsByType());
@@ -176,7 +183,10 @@ const DocumentsPage = () => {
             
             <div className="w-1/3">
               {selectedDocument ? (
-                <DocumentPreview document={selectedDocument} />
+                <DocumentPreview 
+                  document={selectedDocument} 
+                  onUpdateDocument={updateDocument}
+                />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
                   <FileText className="h-16 w-16 text-gray-300 mb-4" />
