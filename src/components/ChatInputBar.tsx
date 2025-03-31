@@ -1,10 +1,11 @@
+
 import React from "react";
 import { Textarea } from "@/components/ui/textarea"; 
 import { cn } from "@/lib/utils";
-import { AttachmentPreview } from "./chat/AttachmentPreview";
-import { ConnectionStatusIndicator } from "./chat/ConnectionStatusIndicator";
-import { PasteMenu } from "./chat/PasteMenu";
-import { ChatInputControls } from "./chat/ChatInputControls";
+import AttachmentPreview from "./chat/AttachmentPreview";
+import ConnectionStatusIndicator from "./chat/ConnectionStatusIndicator";
+import PasteMenu from "./chat/PasteMenu";
+import ChatInputControls from "./chat/ChatInputControls";
 import { useChatInput } from "@/hooks/use-chat-input";
 import { ConnectionStatus } from "@/types/chat-input";
 
