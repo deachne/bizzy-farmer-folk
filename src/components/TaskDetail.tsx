@@ -1,10 +1,28 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Task } from "@/pages/TasksPage";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { 
   Flag, 
   Calendar, 
@@ -38,6 +56,11 @@ const TaskDetail = ({
   const [notes, setNotes] = useState(task.notes || "");
   const [tagInput, setTagInput] = useState("");
   const [isEditing, setIsEditing] = useState(task.title === "New Task");
+  const [priorityOpen, setPriorityOpen] = useState(false);
+  const [tagOptions] = useState([
+    "Equipment", "Urgent", "North Field", "East Field", "South Field", 
+    "Supplies", "Pricing", "Maintenance", "Planting", "Harvest"
+  ]);
   
   // Update state when task changes
   useEffect(() => {
@@ -147,6 +170,16 @@ const TaskDetail = ({
     }
   };
 
+  const addTagFromDropdown = (tag: string) => {
+    if (!task.tags.includes(tag)) {
+      const updatedTask = {
+        ...task,
+        tags: [...task.tags, tag],
+      };
+      onUpdateTask(updatedTask);
+    }
+  };
+
   const removeTag = (tagToRemove: string) => {
     const updatedTask = {
       ...task,
@@ -187,6 +220,8 @@ const TaskDetail = ({
 
   const handlePriorityChange = (newPriority: "high" | "medium" | "normal") => {
     setPriority(newPriority);
+    setPriorityOpen(false);
+    
     if (!isEditing) {
       const updatedTask = {
         ...task,
@@ -195,6 +230,9 @@ const TaskDetail = ({
       onUpdateTask(updatedTask);
     }
   };
+
+  // Filter tag options to only show tags that aren't already added
+  const availableTags = tagOptions.filter(tag => !task.tags.includes(tag));
 
   return (
     <div className="h-full flex flex-col overflow-y-auto p-6">
@@ -214,41 +252,43 @@ const TaskDetail = ({
             {statusConfig.label}
           </div>
           
-          <div className="relative">
-            <div 
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${priorityConfig.bg} ${priorityConfig.text}`}
-              onClick={() => !isEditing && setIsEditing(true)}
-            >
-              {priorityConfig.icon}
-              {priorityConfig.label}
-            </div>
-            
-            {isEditing && (
-              <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-md border z-10">
-                <div 
-                  className="flex items-center gap-1 px-3 py-2 hover:bg-gray-50 cursor-pointer border-b"
-                  onClick={() => handlePriorityChange("high")}
-                >
-                  <Flag className="h-4 w-4 text-red-500" fill="currentColor" />
-                  <span>High</span>
-                </div>
-                <div 
-                  className="flex items-center gap-1 px-3 py-2 hover:bg-gray-50 cursor-pointer border-b"
-                  onClick={() => handlePriorityChange("medium")}
-                >
-                  <Flag className="h-4 w-4 text-yellow-500" />
-                  <span>Medium</span>
-                </div>
-                <div 
-                  className="flex items-center gap-1 px-3 py-2 hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handlePriorityChange("normal")}
-                >
-                  <Flag className="h-4 w-4 text-green-500" />
-                  <span>Normal</span>
-                </div>
+          <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
+            <PopoverTrigger asChild>
+              <div 
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${priorityConfig.bg} ${priorityConfig.text}`}
+              >
+                {priorityConfig.icon}
+                {priorityConfig.label}
               </div>
+            </PopoverTrigger>
+            {isEditing && (
+              <PopoverContent className="p-0 w-auto" align="start">
+                <div className="py-1">
+                  <div 
+                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handlePriorityChange("high")}
+                  >
+                    <Flag className="h-4 w-4 text-red-500" fill="currentColor" />
+                    <span>High</span>
+                  </div>
+                  <div 
+                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handlePriorityChange("medium")}
+                  >
+                    <Flag className="h-4 w-4 text-yellow-500" />
+                    <span>Medium</span>
+                  </div>
+                  <div 
+                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handlePriorityChange("normal")}
+                  >
+                    <Flag className="h-4 w-4 text-green-500" />
+                    <span>Normal</span>
+                  </div>
+                </div>
+              </PopoverContent>
             )}
-          </div>
+          </Popover>
         </div>
         
         {isEditing ? (
@@ -326,21 +366,50 @@ const TaskDetail = ({
         
         {isEditing && (
           <div className="flex mt-2">
-            <Input
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Add tag..."
-              className="text-sm h-8 border-dashed border-gray-300"
-            />
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              className="ml-1 h-8"
-              onClick={addTag}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+            {availableTags.length > 0 ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-sm h-8 border-dashed border-gray-300"
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add tag
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-[200px]">
+                  {availableTags.map((tag) => (
+                    <DropdownMenuItem 
+                      key={tag}
+                      onClick={() => addTagFromDropdown(tag)}
+                    >
+                      {tag}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="text-sm text-gray-500">All available tags have been added</div>
+            )}
+            
+            <div className="flex ml-2">
+              <Input
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Custom tag..."
+                className="text-sm h-8 border-dashed border-gray-300"
+              />
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="ml-1 h-8"
+                onClick={addTag}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         )}
       </div>
