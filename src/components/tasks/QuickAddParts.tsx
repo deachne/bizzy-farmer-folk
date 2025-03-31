@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus } from "lucide-react";
-import { Part } from "@/pages/TasksPage";
+import { Part, Task } from "@/pages/TasksPage";
 import {
   Dialog,
   DialogContent,
@@ -18,17 +17,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
 
 interface QuickAddPartsProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddPart: (part: Part) => void;
+  onAddPart?: (part: Part) => void;
+  tasks?: Task[];
+  onUpdateTask?: (updatedTask: Task) => void;
 }
 
 // Define available categories for simple items
 const CATEGORIES = ["Shop", "Grocery", "Cabin", "Hardware", "General"];
 
-const QuickAddParts = ({ open, onOpenChange, onAddPart }: QuickAddPartsProps) => {
+const QuickAddParts = ({ open, onOpenChange, onAddPart, tasks, onUpdateTask }: QuickAddPartsProps) => {
   const [inputValue, setInputValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("General");
 
@@ -44,8 +46,22 @@ const QuickAddParts = ({ open, onOpenChange, onAddPart }: QuickAddPartsProps) =>
       category: selectedCategory
     };
     
-    onAddPart(newPart);
+    // If onAddPart callback is provided, use that
+    if (onAddPart) {
+      onAddPart(newPart);
+    }
+    // Otherwise, if tasks array and onUpdateTask callback are provided, add to first task
+    else if (tasks && tasks.length > 0 && onUpdateTask) {
+      const firstTask = tasks[0];
+      firstTask.parts = [...(firstTask.parts || []), newPart];
+      onUpdateTask(firstTask);
+    }
+    
     setInputValue("");
+    toast({
+      title: "Part Added",
+      description: `Added ${newPart.name} to ${selectedCategory} category`,
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
