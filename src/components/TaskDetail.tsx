@@ -57,6 +57,7 @@ const TaskDetail = ({
   const [tagInput, setTagInput] = useState("");
   const [isEditing, setIsEditing] = useState(task.title === "New Task");
   const [priorityOpen, setPriorityOpen] = useState(false);
+  const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const [tagOptions] = useState([
     "Equipment", "Urgent", "North Field", "East Field", "South Field", 
     "Supplies", "Pricing", "Maintenance", "Planting", "Harvest"
@@ -132,6 +133,7 @@ const TaskDetail = ({
     setTitle(newTitle);
     setIsTitleEmpty(newTitle === "");
     
+    // Update task in parent component
     const updatedTask = {
       ...task,
       title: newTitle,
@@ -153,10 +155,28 @@ const TaskDetail = ({
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
+    
+    if (isEditing) return; // Don't update parent if we're in edit mode
+    
+    // Update task in parent component
+    const updatedTask = {
+      ...task,
+      description: e.target.value,
+    };
+    onUpdateTask(updatedTask);
   };
 
   const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNotes(e.target.value);
+    
+    if (isEditing) return; // Don't update parent if we're in edit mode
+    
+    // Update task in parent component
+    const updatedTask = {
+      ...task,
+      notes: e.target.value,
+    };
+    onUpdateTask(updatedTask);
   };
 
   const addTag = () => {
@@ -178,6 +198,7 @@ const TaskDetail = ({
       };
       onUpdateTask(updatedTask);
     }
+    setTagDropdownOpen(false);
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -231,6 +252,19 @@ const TaskDetail = ({
     }
   };
 
+  const handleDueDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDueDate = e.target.value;
+    setDueDate(newDueDate);
+    
+    if (!isEditing) {
+      const updatedTask = {
+        ...task,
+        dueDate: newDueDate
+      };
+      onUpdateTask(updatedTask);
+    }
+  };
+
   // Filter tag options to only show tags that aren't already added
   const availableTags = tagOptions.filter(tag => !task.tags.includes(tag));
 
@@ -261,33 +295,31 @@ const TaskDetail = ({
                 {priorityConfig.label}
               </div>
             </PopoverTrigger>
-            {isEditing && (
-              <PopoverContent className="p-0 w-auto" align="start">
-                <div className="py-1">
-                  <div 
-                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handlePriorityChange("high")}
-                  >
-                    <Flag className="h-4 w-4 text-red-500" fill="currentColor" />
-                    <span>High</span>
-                  </div>
-                  <div 
-                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handlePriorityChange("medium")}
-                  >
-                    <Flag className="h-4 w-4 text-yellow-500" />
-                    <span>Medium</span>
-                  </div>
-                  <div 
-                    className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handlePriorityChange("normal")}
-                  >
-                    <Flag className="h-4 w-4 text-green-500" />
-                    <span>Normal</span>
-                  </div>
+            <PopoverContent className="p-0 w-auto" align="start">
+              <div className="py-1">
+                <div 
+                  className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handlePriorityChange("high")}
+                >
+                  <Flag className="h-4 w-4 text-red-500" fill="currentColor" />
+                  <span>High</span>
                 </div>
-              </PopoverContent>
-            )}
+                <div 
+                  className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handlePriorityChange("medium")}
+                >
+                  <Flag className="h-4 w-4 text-yellow-500" />
+                  <span>Medium</span>
+                </div>
+                <div 
+                  className="flex items-center gap-1 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handlePriorityChange("normal")}
+                >
+                  <Flag className="h-4 w-4 text-green-500" />
+                  <span>Normal</span>
+                </div>
+              </div>
+            </PopoverContent>
           </Popover>
         </div>
         
@@ -315,7 +347,7 @@ const TaskDetail = ({
               <Input
                 type="text"
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                onChange={handleDueDateChange}
                 className="mt-1"
               />
             ) : (
@@ -367,8 +399,8 @@ const TaskDetail = ({
         {isEditing && (
           <div className="flex mt-2">
             {availableTags.length > 0 ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+              <Popover open={tagDropdownOpen} onOpenChange={setTagDropdownOpen}>
+                <PopoverTrigger asChild>
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -377,18 +409,21 @@ const TaskDetail = ({
                     <Plus className="h-4 w-4 mr-1" />
                     Add tag
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-[200px]">
-                  {availableTags.map((tag) => (
-                    <DropdownMenuItem 
-                      key={tag}
-                      onClick={() => addTagFromDropdown(tag)}
-                    >
-                      {tag}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-auto" align="start">
+                  <div className="py-1">
+                    {availableTags.map((tag) => (
+                      <div
+                        key={tag}
+                        className="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                        onClick={() => addTagFromDropdown(tag)}
+                      >
+                        {tag}
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             ) : (
               <div className="text-sm text-gray-500">All available tags have been added</div>
             )}
