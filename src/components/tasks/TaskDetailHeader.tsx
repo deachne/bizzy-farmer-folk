@@ -26,7 +26,7 @@ const TaskDetailHeader = ({
   };
 
   return (
-    <div className="p-4 border-b bg-white sticky top-0 z-10 flex items-center justify-between">
+    <div className="p-4 border-b bg-white sticky top-0 z-10 flex items-center justify-between relative">
       <h2 className="text-lg font-semibold">Task Details</h2>
       <div className="flex items-center space-x-4">
         <Button 
@@ -47,17 +47,17 @@ const TaskDetailHeader = ({
           <Trash2 className="h-4 w-4 mr-1" />
           Delete
         </Button>
-
-        {onClose && (
-          <Button
-            variant="default"
-            className="bg-green-600 hover:bg-green-700 text-white w-12 h-12 p-0 rounded"
-            onClick={onClose}
-          >
-            <X className="h-6 w-6" />
-          </Button>
-        )}
       </div>
+
+      {onClose && (
+        <Button
+          variant="default"
+          className="absolute top-2 right-2 bg-green-600 hover:bg-green-700 text-white w-10 h-10 p-0 rounded-md"
+          onClick={onClose}
+        >
+          <X className="h-6 w-6" />
+        </Button>
+      )}
     </div>
   );
 };
