@@ -8,7 +8,8 @@ import {
   Check,
   FileText,
   Book,
-  Globe
+  Globe,
+  MessageSquare
 } from "lucide-react";
 import {
   Collapsible,
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import TokenCounter from "@/components/TokenCounter";
 
 interface KnowledgeSource {
   id: string;
@@ -30,7 +32,8 @@ const ChatContextPanel = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sections, setSections] = useState({
     knowledgeSources: true,
-    suggestedQuestions: true
+    suggestedQuestions: true,
+    tokenCounter: true
   });
   
   const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>([
@@ -111,7 +114,7 @@ const ChatContextPanel = () => {
   };
   
   return (
-    <div className="h-full border-l">
+    <div className="h-full border-l flex flex-col">
       <div className="p-4 border-b flex items-center justify-between">
         <h2 className="font-semibold text-gray-900">Context</h2>
         <Button 
@@ -128,7 +131,7 @@ const ChatContextPanel = () => {
         </Button>
       </div>
       
-      <div className="p-4 space-y-6 overflow-y-auto h-[calc(100%-56px)]">
+      <div className="p-4 space-y-6 overflow-y-auto flex-1">
         {/* Knowledge Sources */}
         <div>
           <Collapsible
@@ -282,6 +285,35 @@ const ChatContextPanel = () => {
             </CollapsibleContent>
           </Collapsible>
         </div>
+      </div>
+      
+      {/* Token Counter Panel */}
+      <div className="mt-auto border-t">
+        <Collapsible
+          open={sections.tokenCounter}
+          onOpenChange={() => toggleSection("tokenCounter")}
+        >
+          <div className="flex items-center justify-between p-3 hover:bg-gray-50">
+            <div className="flex items-center">
+              <MessageSquare className="h-4 w-4 text-gray-500 mr-2" />
+              <h3 className="text-sm font-medium">TOKEN USAGE</h3>
+            </div>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
+                <ChevronRight className={cn(
+                  "h-4 w-4 transition-transform",
+                  sections.tokenCounter && "rotate-90"
+                )} />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          
+          <CollapsibleContent>
+            <div className="px-3 pb-3">
+              <TokenCounter />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     </div>
   );
