@@ -1,10 +1,12 @@
+
 import React, { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import TasksList from "@/components/TasksList";
 import TasksBoard from "@/components/TasksBoard";
+import TasksPartsView from "@/components/TasksPartsView";
 import TaskDetail from "@/components/TaskDetail";
-import { Plus, Filter, Search, X, ChevronRight, ShoppingBag } from "lucide-react";
+import { Plus, Filter, Search, X, ChevronRight, ShoppingBag, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -276,9 +278,12 @@ const TasksPage = () => {
                 
                 <div className="flex items-center justify-between mb-4">
                   <Tabs defaultValue={activeTab} value={activeTab} className="w-full" onValueChange={setActiveTab}>
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
                       <TabsTrigger value="list">List</TabsTrigger>
                       <TabsTrigger value="board">Board</TabsTrigger>
+                      <TabsTrigger value="parts" className="flex items-center">
+                        <Package className="h-4 w-4 mr-1" /> Parts
+                      </TabsTrigger>
                     </TabsList>
                   </Tabs>
                   
@@ -371,13 +376,19 @@ const TasksPage = () => {
                       </div>
                     )}
                   </>
-                ) : (
+                ) : activeTab === "board" ? (
                   <TasksBoard
                     tasks={filteredTasks}
                     selectedTask={selectedTask}
                     onSelectTask={handleSelectTask}
                     onCompleteTask={completeTask}
                     createTask={createTask}
+                  />
+                ) : (
+                  <TasksPartsView
+                    tasks={filteredTasks}
+                    onSelectTask={handleSelectTask}
+                    onUpdateTask={updateTask}
                   />
                 )}
               </div>
