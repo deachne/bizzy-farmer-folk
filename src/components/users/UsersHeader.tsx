@@ -3,10 +3,16 @@ import React, { useState } from "react";
 import { Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AddUserDialog } from "./AddUserDialog";
+import { AddUserDialog, User } from "./AddUserDialog";
 
 const UsersHeader = () => {
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+  const [, setRefreshTrigger] = useState(0);
+
+  const handleUserAdded = () => {
+    // Force a re-render of child components by updating a state
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   return (
     <div className="flex items-center justify-between p-4 border-b">
@@ -29,7 +35,11 @@ const UsersHeader = () => {
         <Button variant="outline" onClick={() => setShowAddUserDialog(true)}>
           <UserPlus className="mr-2 h-4 w-4" /> Add User
         </Button>
-        <AddUserDialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog} />
+        <AddUserDialog 
+          open={showAddUserDialog} 
+          onOpenChange={setShowAddUserDialog} 
+          onUserAdded={handleUserAdded}
+        />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,14 +12,18 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { User } from "./AddUserDialog";
+import { toast } from "sonner";
 
-// Mock data for the users
-const users = [
+// Default users if no users in localStorage
+const defaultUsers = [
   {
     id: 1,
     displayName: "Admin User",
     username: "admin",
     email: "admin@example.com",
+    phoneNumber: "",
+    password: "password123",
     role: "admin",
     status: "active",
     created: "12/31/2022",
@@ -30,6 +34,8 @@ const users = [
     displayName: "Regular User",
     username: "user",
     email: "user@example.com",
+    phoneNumber: "",
+    password: "password123",
     role: "user",
     status: "active",
     created: "2/14/2023",
@@ -40,12 +46,14 @@ const users = [
     displayName: "Moderator User",
     username: "moderator",
     email: "moderator@example.com",
+    phoneNumber: "",
+    password: "password123",
     role: "moderator",
     status: "active",
     created: "3/19/2023",
     initial: "M"
   }
-];
+] as User[];
 
 const UserAvatar = ({ initial, role }: { initial: string; role: string }) => {
   const bgColor = role === 'admin' 
@@ -84,6 +92,36 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const UsersTable = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  
+  useEffect(() => {
+    // Load users from localStorage on component mount
+    const storedUsers = localStorage.getItem('users');
+    if (storedUsers) {
+      setUsers(JSON.parse(storedUsers));
+    } else {
+      // If no users in localStorage, use default users and save them
+      setUsers(defaultUsers);
+      localStorage.setItem('users', JSON.stringify(defaultUsers));
+    }
+  }, []);
+  
+  const handleDeleteUser = (userId: number) => {
+    const updatedUsers = users.filter(user => user.id !== userId);
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    toast.success("User deleted successfully");
+  };
+  
+  const handleDeactivateUser = (userId: number) => {
+    const updatedUsers = users.map(user => 
+      user.id === userId ? { ...user, status: "inactive" } : user
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    toast.success("User deactivated");
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -129,7 +167,18 @@ const UsersTable = () => {
                   <DropdownMenuItem>Change Role</DropdownMenuItem>
                   <DropdownMenuItem>Reset Password</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-600">Deactivate User</DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleDeactivateUser(user.id)}
+                    className="text-red-600"
+                  >
+                    Deactivate User
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="text-red-600"
+                  >
+                    Delete User
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
