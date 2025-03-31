@@ -19,21 +19,30 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { userFormSchema, UserFormValues } from "./userFormSchema";
+import { 
+  userFormSchema, 
+  userWithPasswordFormSchema, 
+  UserFormValues,
+  UserWithPasswordFormValues
+} from "./userFormSchema";
 
 interface UserFormProps {
-  defaultValues: UserFormValues;
-  onSubmit: (values: UserFormValues) => void;
+  defaultValues: UserFormValues | UserWithPasswordFormValues;
+  onSubmit: (values: UserFormValues | UserWithPasswordFormValues) => void;
   submitButtonText?: string;
+  showPasswordFields?: boolean;
 }
 
 const UserForm = ({ 
   defaultValues, 
   onSubmit, 
-  submitButtonText = "Save Changes" 
+  submitButtonText = "Save Changes",
+  showPasswordFields = false
 }: UserFormProps) => {
-  const form = useForm<UserFormValues>({
-    resolver: zodResolver(userFormSchema),
+  const schema = showPasswordFields ? userWithPasswordFormSchema : userFormSchema;
+  
+  const form = useForm({
+    resolver: zodResolver(schema),
     defaultValues,
   });
 
@@ -135,6 +144,39 @@ const UserForm = ({
             </FormItem>
           )}
         />
+        
+        {showPasswordFields && (
+          <>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
+        
         <div className="flex justify-end">
           <Button type="submit">{submitButtonText}</Button>
         </div>

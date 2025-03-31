@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import { Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AddUserDialog, User } from "./AddUserDialog";
+import { AddUserDialog } from "./dialogs/AddUserDialog";
 
 const UsersHeader = () => {
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
