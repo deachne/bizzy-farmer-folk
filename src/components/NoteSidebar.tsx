@@ -1,3 +1,4 @@
+
 import { 
   FileText, 
   FileIcon, 
@@ -21,7 +22,7 @@ const NoteSidebar = () => {
   // Define menu sections and items
   const coreItems = [
     { icon: FileText, label: "Notes", path: "/notes", active: currentPath.includes("/notes") },
-    { icon: FileIcon, label: "Documents", path: "/documents" },
+    { icon: FileIcon, label: "Documents", path: "/documents", active: currentPath.includes("/documents") },
     { icon: ClipboardList, label: "Tasks", path: "/tasks", active: currentPath.includes("/tasks") },
     { icon: MessageSquare, label: "Chat", path: "/chat", active: currentPath.includes("/chat") },
   ];
