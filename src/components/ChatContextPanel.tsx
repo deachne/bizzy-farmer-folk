@@ -1,35 +1,12 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { 
-  RefreshCw, 
-  ChevronRight, 
-  Check,
-  FileText,
-  Book,
-  Globe,
-  MessageSquare,
-  Image,
-  File,
-  ExternalLink
-} from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
-import { toast } from "@/components/ui/use-toast";
-import TokenCounter from "@/components/TokenCounter";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { ContextItem } from "@/types/chat";
 
-interface KnowledgeSource {
-  id: string;
-  type: "note" | "document" | "web";
-  title: string;
-  active: boolean;
-  source?: string;
-}
+import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
+import { ContextItem } from "@/types/chat";
+import ContextPanelContainer from "./context-panel/ContextPanelContainer";
+import ContextPanelHeader from "./context-panel/ContextPanelHeader";
+import KnowledgeSourcesPanel, { KnowledgeSource } from "./context-panel/KnowledgeSourcesPanel";
+import MediaGallery from "./context-panel/MediaGallery";
+import TokenUsagePanel from "./context-panel/TokenUsagePanel";
 
 interface ChatContextPanelProps {
   contextItems?: ContextItem[];
@@ -37,12 +14,6 @@ interface ChatContextPanelProps {
 
 const ChatContextPanel = ({ contextItems = [] }: ChatContextPanelProps) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [sections, setSections] = useState({
-    knowledgeSources: true,
-    mediaAndDocs: true,
-    tokenCounter: true
-  });
-  
   const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>([
     {
       id: "ks1",
@@ -64,13 +35,6 @@ const ChatContextPanel = ({ contextItems = [] }: ChatContextPanelProps) => {
       source: "extension.org"
     }
   ]);
-  
-  const toggleSection = (section: keyof typeof sections) => {
-    setSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
   
   const refreshContext = () => {
     setIsRefreshing(true);
@@ -118,241 +82,29 @@ const ChatContextPanel = ({ contextItems = [] }: ChatContextPanelProps) => {
   };
   
   return (
-    <div className="h-full border-l flex flex-col">
-      <div className="p-4 border-b flex items-center justify-between">
-        <h2 className="font-semibold text-gray-900">Context</h2>
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={refreshContext}
-          disabled={isRefreshing}
-        >
-          <RefreshCw className={cn(
-            "h-4 w-4 mr-1",
-            isRefreshing && "animate-spin"
-          )} />
-          {isRefreshing ? "Refreshing..." : "Refresh"}
-        </Button>
-      </div>
+    <ContextPanelContainer>
+      <ContextPanelHeader 
+        isRefreshing={isRefreshing} 
+        onRefresh={refreshContext} 
+      />
       
       <div className="p-4 space-y-6 overflow-y-auto flex-1">
-        {/* Knowledge Sources */}
-        <div>
-          <Collapsible
-            open={sections.knowledgeSources}
-            onOpenChange={() => toggleSection("knowledgeSources")}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-500">KNOWLEDGE SOURCES</h3>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
-                  <ChevronRight className={cn(
-                    "h-4 w-4 transition-transform",
-                    sections.knowledgeSources && "rotate-90"
-                  )} />
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            
-            <CollapsibleContent className="space-y-4">
-              {/* Notes */}
-              <div>
-                <h4 className="text-sm font-medium mb-2">Your Notes</h4>
-                {knowledgeSources
-                  .filter(source => source.type === "note")
-                  .map(source => (
-                    <div 
-                      key={source.id}
-                      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
-                    >
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 text-gray-500 mr-2" />
-                        <span className="text-sm">{source.title}</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "p-0 h-6 w-6",
-                          source.active ? "text-green-600" : "text-gray-400"
-                        )}
-                        onClick={() => toggleKnowledgeSource(source.id)}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-              </div>
-              
-              {/* Knowledge Base */}
-              <div>
-                <h4 className="text-sm font-medium mb-2">Crop Knowledge Base</h4>
-                {knowledgeSources
-                  .filter(source => source.type === "document")
-                  .map(source => (
-                    <div 
-                      key={source.id}
-                      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
-                    >
-                      <div className="flex items-center">
-                        <Book className="h-4 w-4 text-gray-500 mr-2" />
-                        <span className="text-sm">{source.title}</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "p-0 h-6 w-6",
-                          source.active ? "text-green-600" : "text-gray-400"
-                        )}
-                        onClick={() => toggleKnowledgeSource(source.id)}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-              </div>
-              
-              {/* Web Sources */}
-              <div>
-                <h4 className="text-sm font-medium mb-2">Web Sources</h4>
-                {knowledgeSources
-                  .filter(source => source.type === "web")
-                  .map(source => (
-                    <div 
-                      key={source.id}
-                      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
-                    >
-                      <div className="flex items-center">
-                        <Globe className="h-4 w-4 text-gray-500 mr-2" />
-                        <span className="text-sm">{source.title}</span>
-                        {source.source && (
-                          <span className="text-xs text-gray-500 ml-1">({source.source})</span>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="p-0 h-6 w-6 text-gray-400 hover:text-gray-700"
-                        >
-                          <Book className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "p-0 h-6 w-6",
-                            source.active ? "text-green-600" : "text-gray-400"
-                          )}
-                          onClick={() => toggleKnowledgeSource(source.id)}
-                        >
-                          <Check className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
+        {/* Knowledge Sources Panel */}
+        <KnowledgeSourcesPanel 
+          sources={knowledgeSources} 
+          onToggleSource={toggleKnowledgeSource} 
+        />
         
-        {/* Images and Documents Section */}
-        <div>
-          <Collapsible
-            open={sections.mediaAndDocs}
-            onOpenChange={() => toggleSection("mediaAndDocs")}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-semibold text-gray-500">IMAGES & DOCUMENTS</h3>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
-                  <ChevronRight className={cn(
-                    "h-4 w-4 transition-transform",
-                    sections.mediaAndDocs && "rotate-90"
-                  )} />
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            
-            <CollapsibleContent className="space-y-2">
-              {contextItems.length === 0 ? (
-                <div className="text-sm text-gray-500 italic">No media shared in this conversation</div>
-              ) : (
-                <div className="grid grid-cols-3 gap-2">
-                  {contextItems.map(item => (
-                    item.type === "image" ? (
-                      <Dialog key={item.id}>
-                        <DialogTrigger asChild>
-                          <div className="group relative cursor-pointer">
-                            <img 
-                              src={item.url} 
-                              alt={item.name}
-                              className="h-16 w-16 object-cover rounded border border-gray-200"
-                            />
-                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
-                              <Image className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                          </div>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-3xl p-1 bg-transparent border-0">
-                          <img 
-                            src={item.url} 
-                            alt={item.name}
-                            className="max-h-[80vh] max-w-full rounded"
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                      <div 
-                        key={item.id}
-                        className="group relative cursor-pointer border rounded p-2 bg-gray-50 flex flex-col items-center"
-                        onClick={() => handleViewDocument(item)}
-                      >
-                        <File className="h-10 w-10 text-blue-600 mb-1" />
-                        <div className="text-xs text-center truncate w-full">{item.name}</div>
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
-                          <ExternalLink className="h-4 w-4 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                      </div>
-                    )
-                  ))}
-                </div>
-              )}
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
+        {/* Media Gallery */}
+        <MediaGallery 
+          contextItems={contextItems} 
+          onViewDocument={handleViewDocument} 
+        />
       </div>
       
-      {/* Token Counter Panel */}
-      <div className="mt-auto border-t">
-        <Collapsible
-          open={sections.tokenCounter}
-          onOpenChange={() => toggleSection("tokenCounter")}
-        >
-          <div className="flex items-center justify-between p-3 hover:bg-gray-50">
-            <div className="flex items-center">
-              <MessageSquare className="h-4 w-4 text-gray-500 mr-2" />
-              <h3 className="text-sm font-medium">TOKEN USAGE</h3>
-            </div>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
-                <ChevronRight className={cn(
-                  "h-4 w-4 transition-transform",
-                  sections.tokenCounter && "rotate-90"
-                )} />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
-          
-          <CollapsibleContent>
-            <div className="px-3 pb-3">
-              <TokenCounter />
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
-    </div>
+      {/* Token Usage Panel */}
+      <TokenUsagePanel />
+    </ContextPanelContainer>
   );
 };
 
