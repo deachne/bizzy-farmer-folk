@@ -1,32 +1,34 @@
 
 import React, { useState } from "react";
-import { 
-  PencilLine, 
-  FileText, 
-  CheckSquare, 
-  MessageSquare, 
-  ChevronDown, 
-  Settings,
+import {
+  ChevronDown,
+  ChevronUp,
   Plus,
+  Menu,
+  Settings,
+  MessageSquare,
+  FileText,
+  CheckSquare,
+  Home,
+  CreditCard,
+  Folder,
+  MoreHorizontal,
   Paperclip,
   Image,
-  ChevronUp,
+  ArrowUp,
   X,
   Copy,
   Download,
-  BarChart
+  BarChart,
+  Maximize
 } from "lucide-react";
 
 const BizzyPersonChatMockup = () => {
-  const [activeTab, setActiveTab] = useState<"projects" | "history" | "sources">("projects");
-  
-  // Toggle tab content
-  const handleTabChange = (tab: "projects" | "history" | "sources") => {
-    setActiveTab(tab);
-  };
+  const [activeTab, setActiveTab] = useState("projects");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-50">
       {/* Left Sidebar - Main Navigation */}
       <div className="w-64 bg-gradient-to-b from-blue-800 to-blue-900 text-white p-4 flex flex-col shrink-0">
         {/* Header */}
@@ -43,20 +45,16 @@ const BizzyPersonChatMockup = () => {
           </div>
           <div className="space-y-1">
             <a href="#" className="flex items-center px-3 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50">
-              <PencilLine className="h-4 w-4 mr-3 text-blue-300" />
-              Notes
+              <FileText className="h-4 w-4 mr-3 text-blue-300" />Notes
             </a>
             <a href="#" className="flex items-center px-3 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50">
-              <FileText className="h-4 w-4 mr-3 text-blue-300" />
-              Documents
+              <FileText className="h-4 w-4 mr-3 text-blue-300" />Documents
             </a>
             <a href="#" className="flex items-center px-3 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50">
-              <CheckSquare className="h-4 w-4 mr-3 text-blue-300" />
-              Tasks
+              <CheckSquare className="h-4 w-4 mr-3 text-blue-300" />Tasks
             </a>
             <a href="#" className="flex items-center px-3 py-2 text-sm font-medium bg-blue-700 text-white rounded-md">
-              <MessageSquare className="h-4 w-4 mr-3 text-white" />
-              Chat
+              <MessageSquare className="h-4 w-4 mr-3 text-white" />Chat
             </a>
           </div>
         </div>
@@ -80,28 +78,27 @@ const BizzyPersonChatMockup = () => {
               </div>
               <div className="ml-6 mt-1 space-y-1 border-l border-blue-700 pl-3">
                 <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
-                  <FileText className="h-4 w-4 mr-2 text-blue-300" />
+                  <Folder className="h-4 w-4 mr-2 text-blue-300" />
                   <span>2024 Season</span>
                 </a>
                 <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
-                  <FileText className="h-4 w-4 mr-2 text-blue-300" />
+                  <Folder className="h-4 w-4 mr-2 text-blue-300" />
                   <span>2023 Season</span>
                 </a>
               </div>
             </div>
-            
             {/* BizzyBank Extension */}
             <div>
               <div className="flex items-center justify-between px-3 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50 cursor-pointer">
                 <div className="flex items-center">
-                  <ChevronDown className="h-4 w-4 mr-2 text-blue-300" />
+                  <CreditCard className="h-4 w-4 mr-2 text-blue-300" />
                   <span>🏦 BizzyBank</span>
                 </div>
                 <button className="text-blue-200 hover:text-white p-1">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-              {/* BizzyBank specific items would go here */}
+              {/* Add BizzyBank specific items here */}
             </div>
           </div>
         </div>
@@ -116,7 +113,7 @@ const BizzyPersonChatMockup = () => {
           </div>
           <div className="space-y-1">
             <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
-              <FileText className="h-4 w-4 mr-2 text-blue-300" />
+              <Home className="h-4 w-4 mr-2 text-blue-300" />
               <span>Home Renovation</span>
             </a>
             <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
@@ -126,7 +123,7 @@ const BizzyPersonChatMockup = () => {
           </div>
         </div>
 
-        {/* Admin Section */}
+        {/* Admin Section (Example) */}
         <div className="mb-4">
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold text-blue-200 uppercase">Admin</span>
@@ -153,25 +150,30 @@ const BizzyPersonChatMockup = () => {
         <div className="border-b border-gray-200 px-6 py-3 flex justify-between items-center shrink-0">
           <div className="flex items-center">
             {/* Extension Switcher Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center text-lg font-medium hover:bg-gray-100 p-1 rounded">
+            <div className="relative">
+              <button 
+                className="flex items-center text-lg font-medium hover:bg-gray-100 p-1 rounded"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
                 <span>🌾 Farm Management</span>
                 <ChevronDown className="w-4 h-4 ml-1 text-gray-500" />
               </button>
-              <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border hidden group-hover:block">
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🌾 Farm Management</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🏦 Bank Management</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🏠 Personal</a>
-              </div>
+              {dropdownOpen && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🌾 Farm Management</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🏦 Bank Management</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🏠 Personal</a>
+                </div>
+              )}
             </div>
-            {/* Active Project Indicator */}
+            {/* Active Project Indicator (Example) */}
             <span className="ml-4 text-sm text-gray-500">» Crop Planning</span>
           </div>
           <div className="flex space-x-2">
             {/* Header Actions */}
             <span className="text-sm text-gray-500">Model: Claude 3.7 Sonnet</span>
             <button className="p-2 rounded-full hover:bg-gray-100">
-              <Settings className="h-5 w-5 text-gray-500" />
+              <MoreHorizontal className="h-5 w-5 text-gray-500" />
             </button>
           </div>
         </div>
@@ -258,7 +260,7 @@ const BizzyPersonChatMockup = () => {
               </div>
             </div>
             <button className="bg-blue-600 text-white p-2.5 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              <ChevronUp className="h-5 w-5" />
+              <ArrowUp className="h-5 w-5" />
             </button>
           </div>
         </div>
@@ -276,20 +278,20 @@ const BizzyPersonChatMockup = () => {
         {/* Tabbed Interface */}
         <div className="flex border-b border-gray-200 bg-white text-sm font-medium text-center text-gray-500">
           <button 
-            onClick={() => handleTabChange("projects")}
-            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === "projects" ? "border-blue-600 text-blue-600" : "border-transparent hover:text-gray-700 hover:border-gray-300"}`}
+            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'projects' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+            onClick={() => setActiveTab('projects')}
           >
             Projects
           </button>
           <button 
-            onClick={() => handleTabChange("history")}
-            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === "history" ? "border-blue-600 text-blue-600" : "border-transparent hover:text-gray-700 hover:border-gray-300"}`}
+            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+            onClick={() => setActiveTab('history')}
           >
             History
           </button>
           <button 
-            onClick={() => handleTabChange("sources")}
-            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === "sources" ? "border-blue-600 text-blue-600" : "border-transparent hover:text-gray-700 hover:border-gray-300"}`}
+            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'sources' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+            onClick={() => setActiveTab('sources')}
           >
             Sources
           </button>
@@ -298,7 +300,7 @@ const BizzyPersonChatMockup = () => {
         {/* Tab Content Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           {/* Projects Tab Content */}
-          {activeTab === "projects" && (
+          {activeTab === 'projects' && (
             <>
               {/* BizzyFarmer Projects (Filtered by Header Dropdown) */}
               <div className="mb-5">
@@ -354,7 +356,7 @@ const BizzyPersonChatMockup = () => {
           )}
 
           {/* History Tab Content */}
-          {activeTab === "history" && (
+          {activeTab === 'history' && (
             <div className="space-y-3">
               <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Early blight treatment options discussion</a>
               <div className="text-xs text-gray-400">Today, 2:45 PM • Crop Planning</div>
@@ -371,7 +373,7 @@ const BizzyPersonChatMockup = () => {
           )}
 
           {/* Sources Tab Content */}
-          {activeTab === "sources" && (
+          {activeTab === 'sources' && (
             <>
               {/* Knowledge Sources */}
               <div className="mb-5">
@@ -379,19 +381,19 @@ const BizzyPersonChatMockup = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
                     <span>Your Notes</span>
-                    <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" defaultChecked />
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
                   </div>
                   <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
                     <span>Field Observation (Yesterday)</span>
-                    <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" defaultChecked />
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
                   </div>
                   <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
                     <span>Crop Knowledge Base</span>
-                    <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" defaultChecked />
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
                   </div>
                   <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
                     <span>Tomato Diseases PDF</span>
-                    <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" defaultChecked />
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
                   </div>
                 </div>
               </div>
@@ -401,7 +403,7 @@ const BizzyPersonChatMockup = () => {
                 <h4 className="text-sm font-semibold text-gray-800 mb-2">Web Sources</h4>
                 <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50 text-sm">
                   <span>University Extension Articles</span>
-                  <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" defaultChecked />
+                  <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
                 </div>
               </div>
 
