@@ -30,12 +30,12 @@ const BizzyPersonChatMockup = () => {
   
   // Sample data for the context panel
   const mockContextItems = [
-    { id: "1", name: "Your Notes", type: "document", url: "#" },
-    { id: "2", name: "Field Observation (Yesterday)", type: "document", url: "#" },
-    { id: "3", name: "Crop Knowledge Base", type: "document", url: "#" },
-    { id: "4", name: "Tomato Diseases PDF", type: "document", url: "#" },
-    { id: "5", name: "Field photo 1", type: "image", url: "https://images.unsplash.com/photo-1601410459457-fde3ae84c658?q=80&w=400" },
-    { id: "6", name: "Disease sample", type: "image", url: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=400" },
+    { id: "1", name: "Your Notes", type: "document", url: "#", addedAt: "2:45 PM" },
+    { id: "2", name: "Field Observation (Yesterday)", type: "document", url: "#", addedAt: "11:30 AM" },
+    { id: "3", name: "Crop Knowledge Base", type: "document", url: "#", addedAt: "Yesterday" },
+    { id: "4", name: "Tomato Diseases PDF", type: "document", url: "#", addedAt: "2 days ago" },
+    { id: "5", name: "Field photo 1", type: "image", url: "https://images.unsplash.com/photo-1601410459457-fde3ae84c658?q=80&w=400", addedAt: "Today" },
+    { id: "6", name: "Disease sample", type: "image", url: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=400", addedAt: "Yesterday" },
   ];
   
   const mockConversations = [
