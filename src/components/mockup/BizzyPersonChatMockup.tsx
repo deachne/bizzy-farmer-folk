@@ -22,27 +22,10 @@ import {
   BarChart,
   Maximize
 } from "lucide-react";
-import OrganizedContextPanel from "../context-panel/OrganizedContextPanel";
 
 const BizzyPersonChatMockup = () => {
   const [activeTab, setActiveTab] = useState("projects");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  
-  // Sample data for the context panel
-  const mockContextItems = [
-    { id: "1", name: "Your Notes", type: "document", url: "#" },
-    { id: "2", name: "Field Observation (Yesterday)", type: "document", url: "#" },
-    { id: "3", name: "Crop Knowledge Base", type: "document", url: "#" },
-    { id: "4", name: "Tomato Diseases PDF", type: "document", url: "#" },
-    { id: "5", name: "Field photo 1", type: "image", url: "https://images.unsplash.com/photo-1601410459457-fde3ae84c658?q=80&w=400" },
-    { id: "6", name: "Disease sample", type: "image", url: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=400" },
-  ];
-  
-  const mockConversations = [
-    { name: "Crop Planning", count: 3, active: true },
-    { name: "Pest Management", count: 5 },
-    { name: "Field Health Monitoring", count: 2 },
-  ];
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -89,7 +72,7 @@ const BizzyPersonChatMockup = () => {
                   <ChevronDown className="h-4 w-4 mr-2 text-blue-300" />
                   <span>🌾 BizzyFarmer</span>
                 </div>
-                <button className="text-blue-200 hover:text-white p-1 rounded-full hover:bg-blue-600/50">
+                <button className="text-blue-200 hover:text-white p-1">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -111,7 +94,7 @@ const BizzyPersonChatMockup = () => {
                   <CreditCard className="h-4 w-4 mr-2 text-blue-300" />
                   <span>🏦 BizzyBank</span>
                 </div>
-                <button className="text-blue-200 hover:text-white p-1 rounded-full hover:bg-blue-600/50">
+                <button className="text-blue-200 hover:text-white p-1">
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
@@ -124,7 +107,7 @@ const BizzyPersonChatMockup = () => {
         <div className="mb-4">
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold text-blue-200 uppercase">Personal</span>
-            <button className="text-blue-200 hover:text-white p-1 rounded-full hover:bg-blue-600/50">
+            <button className="text-blue-200 hover:text-white p-1">
               <Plus className="w-4 h-4" />
             </button>
           </div>
@@ -285,12 +268,155 @@ const BizzyPersonChatMockup = () => {
 
       {/* Right Context Panel */}
       <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col shrink-0">
-        <OrganizedContextPanel 
-          contextItems={mockContextItems}
-          conversations={mockConversations}
-          onAddSource={() => console.log('Adding source')}
-          onUploadMedia={() => console.log('Uploading media')}
-        />
+        <div className="p-4 flex justify-between items-center border-b border-gray-200">
+          <h3 className="font-medium text-lg">Context</h3>
+          <button className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Tabbed Interface */}
+        <div className="flex border-b border-gray-200 bg-white text-sm font-medium text-center text-gray-500">
+          <button 
+            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'projects' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+            onClick={() => setActiveTab('projects')}
+          >
+            Projects
+          </button>
+          <button 
+            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+            onClick={() => setActiveTab('history')}
+          >
+            History
+          </button>
+          <button 
+            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'sources' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+            onClick={() => setActiveTab('sources')}
+          >
+            Sources
+          </button>
+        </div>
+
+        {/* Tab Content Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Projects Tab Content */}
+          {activeTab === 'projects' && (
+            <>
+              {/* BizzyFarmer Projects (Filtered by Header Dropdown) */}
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>
+                  <button className="text-xs text-blue-600 font-medium hover:underline">+ New Season</button>
+                </div>
+                <div className="space-y-2">
+                  <div className="bg-blue-50 border border-blue-200 rounded-md p-3 cursor-pointer shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-blue-800">Crop Planning</span>
+                      <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
+                    </div>
+                    <div className="text-xs text-blue-600 mt-1">3 conversations</div>
+                  </div>
+                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Pest Management</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">5 conversations</div>
+                  </div>
+                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Field Health Monitoring</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">2 conversations</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Personal Projects */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>
+                  <button className="text-xs text-blue-600 font-medium hover:underline">+ New Project</button>
+                </div>
+                <div className="space-y-2">
+                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Home Renovation</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">8 conversations</div>
+                  </div>
+                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Vacation Planning</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">4 conversations</div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* History Tab Content */}
+          {activeTab === 'history' && (
+            <div className="space-y-3">
+              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Early blight treatment options discussion</a>
+              <div className="text-xs text-gray-400">Today, 2:45 PM • Crop Planning</div>
+              <hr />
+              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Reviewing soil test results for North Field</a>
+              <div className="text-xs text-gray-400">Yesterday, 11:10 AM • Field Health</div>
+              <hr />
+              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Follow up on irrigation scheduling</a>
+              <div className="text-xs text-gray-400">2 days ago • Crop Planning</div>
+              <hr />
+              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Identifying pest from scouting photo</a>
+              <div className="text-xs text-gray-400">3 days ago • Pest Management</div>
+            </div>
+          )}
+
+          {/* Sources Tab Content */}
+          {activeTab === 'sources' && (
+            <>
+              {/* Knowledge Sources */}
+              <div className="mb-5">
+                <h4 className="text-sm font-semibold text-gray-800 mb-2">Knowledge Sources</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
+                    <span>Your Notes</span>
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
+                    <span>Field Observation (Yesterday)</span>
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
+                    <span>Crop Knowledge Base</span>
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
+                    <span>Tomato Diseases PDF</span>
+                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
+                  </div>
+                </div>
+              </div>
+
+              {/* Web Sources */}
+              <div className="mb-5">
+                <h4 className="text-sm font-semibold text-gray-800 mb-2">Web Sources</h4>
+                <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50 text-sm">
+                  <span>University Extension Articles</span>
+                  <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
+                </div>
+              </div>
+
+              {/* Images & Documents */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-800 mb-2">Images & Documents</h4>
+                <div className="p-2 bg-white rounded border text-sm text-gray-400">
+                  No media shared in this conversation
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 export function useContextPanel() {
   const [showContextPanel, setShowContextPanel] = useState(true);
-  const [activeTab, setActiveTab] = useState<"knowledge" | "conversations" | "media">("knowledge");
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -23,8 +22,6 @@ export function useContextPanel() {
   return {
     showContextPanel,
     setShowContextPanel,
-    toggleContextPanel,
-    activeTab,
-    setActiveTab
+    toggleContextPanel
   };
 }
