@@ -55,6 +55,10 @@ const ChatPage = () => {
     handleViewArtifact(messageId, artifactIndex, messages);
   };
 
+  const handleCloseContextPanel = () => {
+    setShowContextPanel(false);
+  };
+
   return (
     <div className="flex min-h-screen max-h-screen overflow-hidden bg-white">
       <SidebarProvider>
@@ -103,7 +107,10 @@ const ChatPage = () => {
             
             {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
               <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
-                <ChatContextPanel contextItems={contextItems} />
+                <ChatContextPanel 
+                  contextItems={contextItems} 
+                  onClose={isMobile ? handleCloseContextPanel : undefined}
+                />
               </div>
             )}
           </div>

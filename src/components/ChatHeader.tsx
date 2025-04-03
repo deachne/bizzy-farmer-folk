@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu,
@@ -6,7 +7,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { ChatSession } from "@/types/chat";
-import { ChevronDown, PlusCircle, Sidebar } from "lucide-react";
+import { ChevronDown, PlusCircle, SidebarOpen, SidebarClose } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChatHeaderProps {
@@ -29,7 +30,7 @@ const ChatHeader = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex items-center justify-between p-4 border-b">
+    <div className="flex items-center justify-between p-4 border-b bg-white">
       <div className="flex items-center">
         <div className="bg-blue-600 text-white text-xl font-semibold px-4 py-2 rounded-md">
           BizzyPerson
@@ -73,14 +74,23 @@ const ChatHeader = ({
           </DropdownMenuContent>
         </DropdownMenu>
         
-        {/* Context Panel Toggle (Always visible) */}
+        {/* Context Panel Toggle */}
         <Button
-          variant="outline"
+          variant={showContextPanel ? "secondary" : "outline"}
           className="flex items-center gap-2 border-gray-300"
           onClick={onToggleContextPanel}
         >
-          <Sidebar className="h-4 w-4" />
-          {!isMobile && (showContextPanel ? "Hide Context" : "Show Context")}
+          {showContextPanel ? (
+            <>
+              <SidebarClose className="h-4 w-4" />
+              {!isMobile && "Hide Context"}
+            </>
+          ) : (
+            <>
+              <SidebarOpen className="h-4 w-4" />
+              {!isMobile && "Show Context"}
+            </>
+          )}
         </Button>
         
         {/* New Chat Button */}

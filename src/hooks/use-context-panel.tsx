@@ -7,6 +7,7 @@ export function useContextPanel() {
   const isMobile = useIsMobile();
 
   useEffect(() => {
+    // On mobile, start with panel closed
     if (isMobile) {
       setShowContextPanel(false);
     } else {
