@@ -13,7 +13,6 @@ const BizzyPersonChatMockup = () => {
     id: "crop-planning",
     name: "Crop Planning"
   });
-  const [showContextPanel, setShowContextPanel] = useState(true);
 
   const extensionProjects = {
     farm: [
@@ -69,15 +68,13 @@ const BizzyPersonChatMockup = () => {
         <ChatInput />
       </div>
 
-      {showContextPanel && (
-        <ContextPanel 
-          activeProject={activeProject}
-          extensionProjects={extensionProjects}
-          activeExtension={activeExtension}
-          expandedProject={expandedProject}
-          toggleProjectExpansion={toggleProjectExpansion}
-        />
-      )}
+      <ContextPanel 
+        activeProject={activeProject}
+        extensionProjects={extensionProjects}
+        activeExtension={activeExtension}
+        expandedProject={expandedProject}
+        toggleProjectExpansion={toggleProjectExpansion}
+      />
     </div>
   );
 };
