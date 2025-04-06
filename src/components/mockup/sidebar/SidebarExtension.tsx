@@ -28,7 +28,7 @@ const SidebarExtension = ({ title, icon, items = [] }: SidebarExtensionProps) =>
               href="#" 
               className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
             >
-              <Folder className="h-4 w-4 mr-2 text-blue-300" />
+              {item.icon || <Folder className="h-4 w-4 mr-2 text-blue-300" />}
               <span>{item.name}</span>
             </a>
           ))}

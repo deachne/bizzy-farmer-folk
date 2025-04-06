@@ -1,6 +1,6 @@
 
 import React from "react";
-import { FileText, CheckSquare, MessageSquare, Settings, Home } from "lucide-react";
+import { FileText, CheckSquare, MessageSquare, Settings, Home, Folder } from "lucide-react";
 import SidebarSection from "./SidebarSection";
 import SidebarExtension from "./SidebarExtension";
 
