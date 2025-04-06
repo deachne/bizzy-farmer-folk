@@ -416,12 +416,10 @@ const BizzyPersonChatMockup = () => {
         <div className="p-3 border-b border-gray-200 flex justify-between items-center">
           <div className="flex items-center justify-between w-full">
             <span className="font-medium text-sm text-gray-700">
-              {activeProject.name}
+              Crop Planning
               {activeTab === 'projects' && (
                 <span className="ml-1.5 text-xs text-gray-500">
-                  {activeExtension === "farm" && "🌾"}
-                  {activeExtension === "personal" && "🏠"}
-                  {activeExtension === "bank" && "🏦"}
+                  🌾
                 </span>
               )}
             </span>
