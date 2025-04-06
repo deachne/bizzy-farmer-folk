@@ -7,6 +7,15 @@ import ContextPanelTabs from "./context-panel/ContextPanelTabs";
 import KnowledgeTabContent from "./context-panel/KnowledgeTabContent";
 import ConversationsTabContent from "./context-panel/ConversationsTabContent";
 
+// Add type definition for KnowledgeSource
+type KnowledgeSource = {
+  id: string;
+  type: string;
+  title: string;
+  active: boolean;
+  source?: string;
+};
+
 interface ChatContextPanelProps {
   contextItems?: ContextItem[];
   onClose?: () => void;

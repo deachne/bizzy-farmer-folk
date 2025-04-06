@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import NoteSidebar from "@/components/NoteSidebar";
 import ChatMessages from "@/components/ChatMessages";
@@ -49,28 +48,33 @@ const ChatPage = () => {
   }
 
   const [activeProject, setActiveProject] = useState({
-    id: "crop-planning",
-    name: "Crop Planning"
+    id: "personal-notes",
+    name: "Personal Notes"
   });
 
   useEffect(() => {
-    if (activeChatSession.extension === "farm") {
-      setActiveProject({
-        id: "crop-planning",
-        name: "Crop Planning"
-      });
-    } else if (activeChatSession.extension === "bank") {
-      setActiveProject({
-        id: "financial",
-        name: "Financial Planning"
-      });
-    } else {
-      setActiveProject({
-        id: "personal",
-        name: "Personal Notes"
-      });
+    switch (activeChatSession.name) {
+      case "Travel Planning":
+        setActiveProject({
+          id: "travel-planning",
+          name: "Travel Planning"
+        });
+        break;
+      case "Home Renovation":
+        setActiveProject({
+          id: "home-renovation",
+          name: "Home Renovation"
+        });
+        break;
+      case "Personal Notes":
+      default:
+        setActiveProject({
+          id: "personal-notes",
+          name: "Personal Notes"
+        });
+        break;
     }
-  }, [activeChatSession.extension]);
+  }, [activeChatSession.name]);
 
   const { showContextPanel, setShowContextPanel, toggleContextPanel } = useContextPanel();
   
