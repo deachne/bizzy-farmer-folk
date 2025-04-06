@@ -415,10 +415,10 @@ const BizzyPersonChatMockup = () => {
 
         <div className="p-3 border-b border-gray-200 flex justify-between items-center">
           <div className="flex items-center justify-between w-full">
-            <span className="font-medium text-gray-700">
+            <span className="font-medium text-sm text-gray-700">
               {activeProject.name}
               {activeTab === 'projects' && (
-                <span className="ml-2 text-xs text-gray-500">
+                <span className="ml-1.5 text-xs text-gray-500">
                   {activeExtension === "farm" && "🌾"}
                   {activeExtension === "personal" && "🏠"}
                   {activeExtension === "bank" && "🏦"}
@@ -429,20 +429,20 @@ const BizzyPersonChatMockup = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="h-8 text-xs"
+                className="h-7 text-xs"
                 onClick={() => console.log("Create new project")}
               >
-                <Plus className="h-4 w-4 mr-1" />
+                <Plus className="h-3 w-3 mr-1" />
                 New Project
               </Button>
             ) : (
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="h-8 text-xs"
+                className="h-7 text-xs"
                 onClick={createNewChat}
               >
-                <MessageSquare className="h-4 w-4 mr-1" />
+                <MessageSquare className="h-3 w-3 mr-1" />
                 New Chat
               </Button>
             )}
