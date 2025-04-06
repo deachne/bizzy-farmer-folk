@@ -119,7 +119,7 @@ const MessageItem = ({
                 size="icon"
                 className={cn(
                   "h-8 w-8", 
-                  message.sender === "user" ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-white text-gray-700 hover:bg-gray-100"
+                  message.sender === "ai" ? "bg-white text-gray-700 hover:bg-gray-100" : "bg-blue-600 text-white hover:bg-blue-700"
                 )}
                 onClick={() => onSaveAsNote(message.id)}
                 title="Save as note"
