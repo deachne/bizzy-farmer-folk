@@ -414,13 +414,18 @@ const BizzyPersonChatMockup = () => {
         </div>
 
         <div className="p-3 border-b border-gray-200 flex justify-between items-center">
-          {activeTab === 'projects' ? (
-            <div className="flex items-center justify-between w-full">
-              <span className="font-medium text-gray-700">
-                {activeExtension === "farm" && "🌾 BizzyFarmer"}
-                {activeExtension === "personal" && "🏠 Personal"}
-                {activeExtension === "bank" && "🏦 BizzyBank"}
-              </span>
+          <div className="flex items-center justify-between w-full">
+            <span className="font-medium text-gray-700">
+              {activeProject.name}
+              {activeTab === 'projects' && (
+                <span className="ml-2 text-xs text-gray-500">
+                  ({activeExtension === "farm" && "🌾 BizzyFarmer"}
+                  {activeExtension === "personal" && "🏠 Personal"}
+                  {activeExtension === "bank" && "🏦 BizzyBank"})
+                </span>
+              )}
+            </span>
+            {activeTab === 'projects' ? (
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -430,10 +435,7 @@ const BizzyPersonChatMockup = () => {
                 <Plus className="h-4 w-4 mr-1" />
                 New Project
               </Button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between w-full">
-              <span className="font-medium text-gray-700">{activeProject.name}</span>
+            ) : (
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -443,8 +445,8 @@ const BizzyPersonChatMockup = () => {
                 <MessageSquare className="h-4 w-4 mr-1" />
                 New Chat
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
