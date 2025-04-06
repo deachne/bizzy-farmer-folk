@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { ContextItem } from "@/types/chat";
@@ -6,15 +7,7 @@ import { X } from "lucide-react";
 import ContextPanelTabs from "./context-panel/ContextPanelTabs";
 import KnowledgeTabContent from "./context-panel/KnowledgeTabContent";
 import ConversationsTabContent from "./context-panel/ConversationsTabContent";
-
-// Add type definition for KnowledgeSource
-type KnowledgeSource = {
-  id: string;
-  type: string;
-  title: string;
-  active: boolean;
-  source?: string;
-};
+import { KnowledgeSource } from "./context-panel/KnowledgeSourceItem";
 
 interface ChatContextPanelProps {
   contextItems?: ContextItem[];
