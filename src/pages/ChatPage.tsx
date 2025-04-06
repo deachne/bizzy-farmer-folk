@@ -9,7 +9,7 @@ import ChatContextPanel from "@/components/ChatContextPanel";
 import ArtifactPanel from "@/components/ArtifactPanel";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useChat } from "@/hooks/chat"; // Updated import
+import { useChat } from "@/hooks/chat"; 
 import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { useArtifacts } from "@/hooks/use-artifacts";
 import { useContextPanel } from "@/hooks/use-context-panel";
@@ -78,12 +78,12 @@ const ChatPage = () => {
             <div className={cn(
               "flex flex-col transition-all duration-300 overflow-hidden",
               isMobile ? "w-full" : 
-                artifactPanelOpen && !isPanelMinimized ? "w-[60%]" : 
-                  showContextPanel ? "w-2/3 border-r" : "w-full"
+                artifactPanelOpen && !isPanelMinimized ? "w-[65%]" : // Wider chat cards
+                  showContextPanel ? "w-[70%] border-r" : "w-full" // Adjusted ratio for context panel
             )}>
               <div 
                 ref={messagesContainerRef}
-                className="flex-1 overflow-y-auto p-4 pb-20 scroll-smooth"
+                className="flex-1 overflow-y-auto p-6 pb-20 scroll-smooth" // Increased padding
                 onWheel={handleWheel}
               >
                 <ChatMessages 
@@ -106,20 +106,13 @@ const ChatPage = () => {
             </div>
             
             {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
-              <div className="hidden md:block md:w-1/3 h-full overflow-hidden transition-all duration-300">
+              <div className="hidden md:block md:w-[30%] h-full overflow-hidden transition-all duration-300 bg-gray-50"> {/* Changed background to match mockup */}
                 <ChatContextPanel 
                   contextItems={contextItems} 
                   onClose={isMobile ? handleCloseContextPanel : undefined}
                 />
               </div>
             )}
-          </div>
-          
-          <div className="border-t p-2 text-sm text-gray-500 flex justify-end">
-            <div>
-              <span className="font-medium">Action Log:</span> 
-              <span className="ml-2">Chat session active</span>
-            </div>
           </div>
         </div>
       </SidebarProvider>

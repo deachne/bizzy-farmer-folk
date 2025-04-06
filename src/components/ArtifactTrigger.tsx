@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { FileBox, ChevronDown, ChevronUp } from "lucide-react";
+import { FileBox, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Artifact } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
@@ -63,9 +64,10 @@ const ArtifactTrigger = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="h-7 px-2"
+                  className="h-7 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                   onClick={(e) => handleViewArtifact(index, e)}
                 >
+                  <Eye className="h-4 w-4 mr-1" />
                   View
                 </Button>
               </div>

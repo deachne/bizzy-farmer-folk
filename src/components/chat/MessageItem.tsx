@@ -7,7 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -39,7 +39,7 @@ const MessageItem = ({
   return (
     <div 
       className={cn(
-        "rounded-lg p-4 animate-fade-in",
+        "rounded-lg p-5 animate-fade-in", // Increased padding
         message.sender === "user" 
           ? "bg-gray-100" 
           : "bg-white border border-blue-100",
@@ -71,7 +71,7 @@ const MessageItem = ({
             open={isExpanded}
             className="mt-2"
           >
-            <div className="text-gray-700 whitespace-pre-wrap">
+            <div className="text-gray-700 whitespace-pre-wrap font-inter">
               {message.content}
             </div>
             
