@@ -12,6 +12,10 @@ interface KnowledgeTabContentProps {
   onRefresh: () => void;
   onToggleKnowledgeSource: (id: string) => void;
   onAddDocument: () => void;
+  activeProject: {
+    id: string;
+    name: string;
+  };
 }
 
 const KnowledgeTabContent = ({
@@ -19,7 +23,8 @@ const KnowledgeTabContent = ({
   knowledgeSources,
   onRefresh,
   onToggleKnowledgeSource,
-  onAddDocument
+  onAddDocument,
+  activeProject
 }: KnowledgeTabContentProps) => {
   // Group knowledge sources by type
   const notesSources = knowledgeSources.filter(source => source.type === "note");
@@ -31,7 +36,7 @@ const KnowledgeTabContent = ({
       {/* Knowledge Sources Section */}
       <Collapsible defaultOpen={true}>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-gray-500">CROP PLANNING KNOWLEDGE</h3>
+          <h3 className="text-sm font-semibold text-gray-500">{activeProject.name.toUpperCase()} KNOWLEDGE</h3>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
               <ChevronDown className="h-4 w-4 transition-transform" />
@@ -73,10 +78,10 @@ const KnowledgeTabContent = ({
             </div>
           )}
           
-          {/* Crop Knowledge Base */}
+          {/* Knowledge Base */}
           {documentSources.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium mb-2">Crop Knowledge Base</h4>
+              <h4 className="text-sm font-medium mb-2">{activeProject.name} Documents</h4>
               {documentSources.map(source => (
                 <div 
                   key={source.id}

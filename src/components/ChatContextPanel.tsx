@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { ContextItem } from "@/types/chat";
@@ -24,27 +25,88 @@ const ChatContextPanel = ({
 }: ChatContextPanelProps) => {
   const [activeTab, setActiveTab] = useState<'knowledge' | 'projects'>('knowledge');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>([
-    {
-      id: "ks1",
-      type: "note",
-      title: "Field Observation (Yesterday)",
-      active: true
-    },
-    {
-      id: "ks2",
-      type: "document",
-      title: "Tomato Diseases PDF",
-      active: true
-    },
-    {
-      id: "ks3",
-      type: "web",
-      title: "University Extension Articles",
-      active: true,
-      source: "extension.org"
+  
+  // Update knowledge sources based on active project
+  const getProjectKnowledgeSources = (projectId: string): KnowledgeSource[] => {
+    switch (projectId) {
+      case "home-renovation":
+        return [
+          {
+            id: "hr1",
+            type: "note",
+            title: "Kitchen Measurements",
+            active: true
+          },
+          {
+            id: "hr2",
+            type: "document",
+            title: "Contractor Quotes PDF",
+            active: true
+          },
+          {
+            id: "hr3",
+            type: "web",
+            title: "Home Improvement Articles",
+            active: true,
+            source: "homedepot.com"
+          }
+        ];
+      case "travel-planning":
+        return [
+          {
+            id: "tp1",
+            type: "note",
+            title: "Trip Itinerary",
+            active: true
+          },
+          {
+            id: "tp2",
+            type: "document",
+            title: "Flight Confirmations",
+            active: true
+          },
+          {
+            id: "tp3",
+            type: "web",
+            title: "Travel Guides",
+            active: true,
+            source: "tripadvisor.com"
+          }
+        ];
+      case "personal-notes":
+      default:
+        return [
+          {
+            id: "pn1",
+            type: "note",
+            title: "Meeting Notes",
+            active: true
+          },
+          {
+            id: "pn2",
+            type: "document",
+            title: "Reference Documents",
+            active: true
+          },
+          {
+            id: "pn3",
+            type: "web",
+            title: "Research Articles",
+            active: true,
+            source: "scholar.google.com"
+          }
+        ];
     }
-  ]);
+  };
+  
+  const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>(
+    getProjectKnowledgeSources(activeProject.id)
+  );
+  
+  // Update knowledge sources when active project changes
+  useState(() => {
+    setKnowledgeSources(getProjectKnowledgeSources(activeProject.id));
+  });
   
   const refreshContext = () => {
     setIsRefreshing(true);
@@ -52,9 +114,10 @@ const ChatContextPanel = ({
     // Simulate refreshing context
     setTimeout(() => {
       setIsRefreshing(false);
+      setKnowledgeSources(getProjectKnowledgeSources(activeProject.id));
       toast({
         title: "Context refreshed",
-        description: "Knowledge sources have been updated",
+        description: `Knowledge sources for ${activeProject.name} have been updated`,
         duration: 3000,
       });
     }, 1500);
@@ -73,7 +136,7 @@ const ChatContextPanel = ({
   const addDocument = () => {
     toast({
       title: "Add document to context",
-      description: "You can upload documents to enhance the conversation context",
+      description: `You can upload documents to enhance the ${activeProject.name} context`,
       duration: 3000,
     });
   };
@@ -127,6 +190,7 @@ const ChatContextPanel = ({
             onRefresh={refreshContext}
             onToggleKnowledgeSource={toggleKnowledgeSource}
             onAddDocument={addDocument}
+            activeProject={activeProject}
           />
         )}
         
