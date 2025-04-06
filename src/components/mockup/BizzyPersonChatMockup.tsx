@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   ChevronDown,
@@ -22,7 +21,8 @@ import {
   Folder,
   Check,
   RefreshCw,
-  ChevronRight
+  ChevronRight,
+  PlusCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -37,6 +37,10 @@ const BizzyPersonChatMockup = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeExtension, setActiveExtension] = useState("farm");
   const [expandedProject, setExpandedProject] = useState<string | null>("crop-planning");
+  const [activeProject, setActiveProject] = useState({
+    id: "crop-planning",
+    name: "Crop Planning"
+  });
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [knowledgeSources, setKnowledgeSources] = useState([
     {
@@ -86,6 +90,17 @@ const BizzyPersonChatMockup = () => {
       setExpandedProject(null);
     } else {
       setExpandedProject(projectId);
+      
+      const project = extensionProjects[activeExtension as keyof typeof extensionProjects].find(
+        p => p.id === projectId
+      );
+      
+      if (project) {
+        setActiveProject({
+          id: project.id,
+          name: project.name
+        });
+      }
     }
   };
   
@@ -99,13 +114,8 @@ const BizzyPersonChatMockup = () => {
     );
   };
   
-  const refreshContext = () => {
-    setIsRefreshing(true);
-    
-    // Simulate refreshing context
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 1500);
+  const createNewChat = () => {
+    console.log("Creating new chat in project:", activeProject.name);
   };
 
   return (
@@ -366,15 +376,11 @@ const BizzyPersonChatMockup = () => {
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={refreshContext}
-              disabled={isRefreshing}
               className="h-8 text-xs"
+              onClick={() => console.log("Create new project")}
             >
-              <RefreshCw className={cn(
-                "h-4 w-4 mr-1",
-                isRefreshing && "animate-spin"
-              )} />
-              {isRefreshing ? "Refreshing..." : "Refresh"}
+              <Plus className="h-4 w-4 mr-1" />
+              New Project
             </Button>
             <button className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100">
               <X className="h-5 w-5" />
@@ -407,11 +413,38 @@ const BizzyPersonChatMockup = () => {
           </button>
         </div>
 
-        <div className="p-4 border-b border-gray-200">
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center">
-            <Plus className="h-5 w-5 mr-2" />
-            New Project
-          </button>
+        <div className="p-3 border-b border-gray-200 flex justify-between items-center">
+          {activeTab === 'projects' ? (
+            <div className="flex items-center justify-between w-full">
+              <span className="font-medium text-gray-700">
+                {activeExtension === "farm" && "🌾 BizzyFarmer"}
+                {activeExtension === "personal" && "🏠 Personal"}
+                {activeExtension === "bank" && "🏦 BizzyBank"}
+              </span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 text-xs"
+                onClick={() => console.log("Create new project")}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                New Project
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between w-full">
+              <span className="font-medium text-gray-700">{activeProject.name}</span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-8 text-xs"
+                onClick={createNewChat}
+              >
+                <MessageSquare className="h-4 w-4 mr-1" />
+                New Chat
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
@@ -461,10 +494,10 @@ const BizzyPersonChatMockup = () => {
           {/* Knowledge Tab Content */}
           {activeTab === 'knowledge' && (
             <div className="space-y-6">
-              {/* Knowledge Sources Section */}
+              {/* Knowledge Sources Section for the active project */}
               <Collapsible defaultOpen={true}>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-gray-500">KNOWLEDGE SOURCES</h3>
+                  <h3 className="text-sm font-semibold text-gray-500">{activeProject.name.toUpperCase()} KNOWLEDGE</h3>
                   <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
                       <ChevronRight className={cn("h-4 w-4 transition-transform rotate-90")} />
