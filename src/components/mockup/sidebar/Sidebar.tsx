@@ -28,6 +28,17 @@ const Sidebar = () => {
         </a>
       </SidebarSection>
 
+      <SidebarSection title="Personal" showAddButton={true}>
+        <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
+          <Home className="h-4 w-4 mr-2 text-blue-300" />
+          <span>Home Renovation</span>
+        </a>
+        <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
+          <FileText className="h-4 w-4 mr-2 text-blue-300" />
+          <span>Work Projects</span>
+        </a>
+      </SidebarSection>
+
       <SidebarSection title="Extensions">
         <SidebarExtension 
           title="BizzyFarmer" 
@@ -41,17 +52,6 @@ const Sidebar = () => {
           title="BizzyBank" 
           icon="🏦"
         />
-      </SidebarSection>
-
-      <SidebarSection title="Personal" showAddButton={true}>
-        <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
-          <Home className="h-4 w-4 mr-2 text-blue-300" />
-          <span>Home Renovation</span>
-        </a>
-        <a href="#" className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40">
-          <FileText className="h-4 w-4 mr-2 text-blue-300" />
-          <span>Work Projects</span>
-        </a>
       </SidebarSection>
 
       <SidebarSection title="Admin">

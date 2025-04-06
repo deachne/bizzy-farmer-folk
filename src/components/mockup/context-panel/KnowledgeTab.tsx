@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ChevronRight, FileText } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import CustomInstructions from "./CustomInstructions";
 
 interface KnowledgeTabProps {
   activeProject: {
@@ -108,6 +109,9 @@ const KnowledgeTab = ({ activeProject, createNewChat }: KnowledgeTabProps) => {
           </div>
         </CollapsibleContent>
       </Collapsible>
+
+      {/* Custom Instructions */}
+      <CustomInstructions />
     </div>
   );
 };
