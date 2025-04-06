@@ -13,6 +13,7 @@ import ConfigurationPage from "./pages/ConfigurationPage";
 import UsersPage from "./pages/UsersPage";
 import SystemPage from "./pages/SystemPage";
 import ExtensionsPage from "./pages/ExtensionsPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import MockupPage from "./pages/MockupPage";
 import UpdatedMockupPage from "./pages/UpdatedMockupPage";
 import React from "react"; 
@@ -39,6 +40,7 @@ const App = () => {
               <Route path="/users" element={<UsersPage />} />
               <Route path="/system" element={<SystemPage />} />
               <Route path="/extensions" element={<ExtensionsPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/mockup" element={<MockupPage />} />
               <Route path="/updated-mockup" element={<UpdatedMockupPage />} />
             </Routes>

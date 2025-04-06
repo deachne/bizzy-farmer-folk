@@ -7,7 +7,11 @@ import {
   Package, 
   Settings,
   ChevronDown,
-  Plus
+  Plus,
+  LayoutDashboard,
+  Users,
+  Activity,
+  BarChart2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
@@ -196,11 +200,81 @@ const NoteSidebar = () => {
         </div>
         <div className="space-y-1 mt-1">
           <Link 
-            to="/extensions"
-            className="flex items-center px-5 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
+            to="/dashboard"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/dashboard") 
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
           >
-            <Package className="h-4 w-4 mr-2 text-blue-300" />
-            <span>Manage Extensions</span>
+            <LayoutDashboard className="h-4 w-4 mr-3 text-blue-300" />
+            Dashboard
+          </Link>
+          
+          <Link 
+            to="/users"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/users") 
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <Users className="h-4 w-4 mr-3 text-blue-300" />
+            Users
+          </Link>
+          
+          <Link 
+            to="/extensions"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/extensions") 
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <Package className="h-4 w-4 mr-3 text-blue-300" />
+            Extensions
+          </Link>
+          
+          <Link 
+            to="/system"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/system") 
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <Activity className="h-4 w-4 mr-3 text-blue-300" />
+            System
+          </Link>
+          
+          <Link 
+            to="/configuration"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/configuration") 
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <Settings className="h-4 w-4 mr-3 text-blue-300" />
+            Configuration
+          </Link>
+          
+          <Link 
+            to="/analytics"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/analytics") 
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <BarChart2 className="h-4 w-4 mr-3 text-blue-300" />
+            Analytics
           </Link>
         </div>
       </div>
