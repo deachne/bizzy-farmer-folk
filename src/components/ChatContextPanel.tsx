@@ -24,7 +24,7 @@ interface ChatContextPanelProps {
 const ChatContextPanel = ({ 
   contextItems = [], 
   onClose,
-  activeProject = { id: "crop-planning", name: "Crop Planning" }
+  activeProject = { id: "personal-notes", name: "Personal Notes" }
 }: ChatContextPanelProps) => {
   const [activeTab, setActiveTab] = useState<'knowledge' | 'projects'>('knowledge');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -143,3 +143,4 @@ const ChatContextPanel = ({
 };
 
 export default ChatContextPanel;
+
