@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ChatHeaderProps {
   activeChatSession: ChatSession;
@@ -38,6 +38,13 @@ const ChatHeader = ({
   const isMobile = useIsMobile();
   const [selectedModel, setSelectedModel] = useState(activeChatSession.model || "Claude 3.7 Sonnet");
   
+  // Update selectedModel when activeChatSession changes
+  useEffect(() => {
+    if (activeChatSession.model) {
+      setSelectedModel(activeChatSession.model);
+    }
+  }, [activeChatSession]);
+  
   const getExtensionEmoji = (extension?: string) => {
     switch(extension) {
       case "farm": return "🌾";
@@ -57,12 +64,23 @@ const ChatHeader = ({
   };
   
   const handleExtensionSelect = (extension: string) => {
+    console.log("Selecting extension:", extension);
     // Find a session with the requested extension or create one
     const session = availableSessions.find(s => s.extension === extension);
     if (session) {
+      console.log("Found existing session:", session);
       onSwitchSession(session.id);
     } else {
-      // This would create a new session if needed
+      // This would create a new session with the selected extension
+      console.log("Creating new session for extension:", extension);
+      // Create a temporary session ID to prevent race conditions
+      const tempSession: ChatSession = {
+        id: `new-${Date.now()}`,
+        name: getExtensionName(extension),
+        model: selectedModel,
+        extension: extension
+      };
+      // Call onCreateNewChat which should handle creating a new session
       onCreateNewChat();
     }
   };
