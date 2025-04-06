@@ -1,6 +1,13 @@
 
 import React, { useState } from "react";
 import { ChevronDown, MoreHorizontal } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ChatHeaderProps {
   activeExtension: string;
@@ -9,6 +16,7 @@ interface ChatHeaderProps {
 
 const ChatHeader = ({ activeExtension, handleExtensionChange }: ChatHeaderProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("Claude 3.7 Sonnet");
 
   return (
     <div className="border-b border-gray-200 px-6 py-3 flex justify-between items-center shrink-0">
@@ -60,8 +68,18 @@ const ChatHeader = ({ activeExtension, handleExtensionChange }: ChatHeaderProps)
         <span className="ml-4 text-sm text-gray-500">» Crop Planning</span>
         <span className="ml-4 text-sm text-gray-500">» Early blight treatment options</span>
       </div>
-      <div className="flex space-x-2">
-        <span className="text-sm text-gray-500">Model: Claude 3.7 Sonnet</span>
+      <div className="flex space-x-2 items-center">
+        <Select value={selectedModel} onValueChange={setSelectedModel}>
+          <SelectTrigger className="w-[180px] h-8 text-sm">
+            <SelectValue placeholder="Select model" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Claude 3.7 Sonnet">Claude 3.7 Sonnet</SelectItem>
+            <SelectItem value="Claude 3.5 Sonnet">Claude 3.5 Sonnet</SelectItem>
+            <SelectItem value="GPT-4o">GPT-4o</SelectItem>
+            <SelectItem value="GPT-4o Mini">GPT-4o Mini</SelectItem>
+          </SelectContent>
+        </Select>
         <button className="p-2 rounded-full hover:bg-gray-100">
           <MoreHorizontal className="h-5 w-5 text-gray-500" />
         </button>
