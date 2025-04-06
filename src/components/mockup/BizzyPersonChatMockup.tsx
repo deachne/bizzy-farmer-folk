@@ -28,7 +28,6 @@ const BizzyPersonChatMockup = () => {
   const [activeExtension, setActiveExtension] = useState("farm");
   const [expandedProject, setExpandedProject] = useState<string | null>("crop-planning");
 
-  // Mock data for different extensions and their projects
   const extensionProjects = {
     farm: [
       { id: "crop-planning", name: "Crop Planning", active: true, conversations: 3, conversations_list: ["Early blight treatment options", "Irrigation scheduling", "Crop rotation planning"] },
@@ -49,9 +48,8 @@ const BizzyPersonChatMockup = () => {
     setActiveExtension(extension);
     setDropdownOpen(false);
     
-    // Update the header text based on selection
     const extensionDisplayNames = {
-      farm: "🌾 Farm Management",
+      farm: "🌾 BizzyFarmer",
       personal: "🏠 Personal",
       bank: "🏦 Bank Management"
     };
@@ -67,16 +65,13 @@ const BizzyPersonChatMockup = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Left Sidebar - Main Navigation */}
       <div className="w-64 bg-gradient-to-b from-blue-800 to-blue-900 text-white p-4 flex flex-col shrink-0">
-        {/* Header */}
         <div className="mb-6">
           <div className="flex items-center">
             <span className="text-xl font-bold">BizzyPerson</span>
           </div>
         </div>
 
-        {/* Core Features Section */}
         <div className="mb-4">
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold text-blue-200 uppercase">Core Features</span>
@@ -97,13 +92,11 @@ const BizzyPersonChatMockup = () => {
           </div>
         </div>
 
-        {/* Extensions Section */}
         <div className="mb-4">
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold text-blue-200 uppercase">Extensions</span>
           </div>
           <div className="space-y-1">
-            {/* BizzyFarmer Extension */}
             <div>
               <div className="flex items-center justify-between px-3 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50 cursor-pointer">
                 <div className="flex items-center">
@@ -125,7 +118,6 @@ const BizzyPersonChatMockup = () => {
                 </a>
               </div>
             </div>
-            {/* BizzyBank Extension */}
             <div>
               <div className="flex items-center justify-between px-3 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50 cursor-pointer">
                 <div className="flex items-center">
@@ -136,12 +128,13 @@ const BizzyPersonChatMockup = () => {
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-              {/* Add BizzyBank specific items here */}
+              <div className="ml-6 mt-1 space-y-1 border-l border-blue-700 pl-3">
+                {/* Add BizzyBank specific items here */}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Personal Section */}
         <div className="mb-4">
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold text-blue-200 uppercase">Personal</span>
@@ -161,7 +154,6 @@ const BizzyPersonChatMockup = () => {
           </div>
         </div>
 
-        {/* Admin Section (Example) */}
         <div className="mb-4">
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs font-semibold text-blue-200 uppercase">Admin</span>
@@ -182,19 +174,16 @@ const BizzyPersonChatMockup = () => {
         </div>
       </div>
 
-      {/* Main Chat Area */}
       <div className="flex-1 flex flex-col bg-white">
-        {/* Header */}
         <div className="border-b border-gray-200 px-6 py-3 flex justify-between items-center shrink-0">
           <div className="flex items-center">
-            {/* Extension Switcher Dropdown */}
             <div className="relative">
               <button 
                 className="flex items-center text-lg font-medium hover:bg-gray-100 p-1 rounded"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <span>
-                  {activeExtension === "farm" && "🌾 Farm Management"}
+                  {activeExtension === "farm" && "🌾 BizzyFarmer"}
                   {activeExtension === "personal" && "🏠 Personal"}
                   {activeExtension === "bank" && "🏦 Bank Management"}
                 </span>
@@ -208,7 +197,7 @@ const BizzyPersonChatMockup = () => {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => handleExtensionChange("farm")}
                     >
-                      🌾 Farm Management
+                      🌾 BizzyFarmer
                     </a>
                   )}
                   {activeExtension !== "bank" && (
@@ -232,14 +221,10 @@ const BizzyPersonChatMockup = () => {
                 </div>
               )}
             </div>
-            {/* Active Project Indicator (Example) */}
             <span className="ml-4 text-sm text-gray-500">» Crop Planning</span>
-            
-            {/* Chat Title - New Addition */}
             <span className="ml-4 text-sm text-gray-500">» Early blight treatment options</span>
           </div>
           <div className="flex space-x-2">
-            {/* Header Actions */}
             <span className="text-sm text-gray-500">Model: Claude 3.7 Sonnet</span>
             <button className="p-2 rounded-full hover:bg-gray-100">
               <MoreHorizontal className="h-5 w-5 text-gray-500" />
@@ -247,9 +232,7 @@ const BizzyPersonChatMockup = () => {
           </div>
         </div>
 
-        {/* Chat Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* User Message */}
           <div className="flex items-start space-x-3 justify-end">
             <div className="bg-blue-500 text-white rounded-lg p-3 max-w-lg">
               <p className="text-sm">What's the expected crop yield loss from early blight if I treat it promptly?</p>
@@ -259,7 +242,6 @@ const BizzyPersonChatMockup = () => {
             </div>
           </div>
 
-          {/* AI Message */}
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0 bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center">
               <span className="text-sm font-medium text-white">AI</span>
@@ -276,7 +258,6 @@ const BizzyPersonChatMockup = () => {
             </div>
           </div>
 
-          {/* AI Message with Artifact */}
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0 bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center">
               <span className="text-sm font-medium text-white">AI</span>
@@ -301,7 +282,6 @@ const BizzyPersonChatMockup = () => {
                   </div>
                 </div>
                 <div className="p-4">
-                  {/* Chart placeholder */}
                   <div className="h-40 bg-gradient-to-br from-blue-50 to-indigo-100 rounded flex items-center justify-center text-indigo-600 font-medium">
                     [Interactive Yield Chart Placeholder]
                   </div>
@@ -311,7 +291,6 @@ const BizzyPersonChatMockup = () => {
           </div>
         </div>
 
-        {/* Chat Input */}
         <div className="border-t border-gray-200 p-4 bg-white shrink-0">
           <div className="flex items-end space-x-3">
             <div className="flex-1 border rounded-lg px-3 py-2 focus-within:ring-1 focus-within:ring-blue-500 focus-within:border-blue-500 flex flex-col">
@@ -335,7 +314,6 @@ const BizzyPersonChatMockup = () => {
         </div>
       </div>
 
-      {/* Right Context Panel */}
       <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col shrink-0">
         <div className="p-4 flex justify-between items-center border-b border-gray-200">
           <h3 className="font-medium text-lg">Context</h3>
@@ -344,7 +322,6 @@ const BizzyPersonChatMockup = () => {
           </button>
         </div>
 
-        {/* New Project Button */}
         <div className="p-4 border-b border-gray-200">
           <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center">
             <Plus className="h-5 w-5 mr-2" />
@@ -352,7 +329,6 @@ const BizzyPersonChatMockup = () => {
           </button>
         </div>
 
-        {/* Projects Tab Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           <div className="mb-5">
             <div className="flex items-center justify-between mb-2">
