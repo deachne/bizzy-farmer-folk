@@ -1,16 +1,11 @@
-
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { ContextItem } from "@/types/chat";
-import ContextPanelContainer from "./context-panel/ContextPanelContainer";
+import { Button } from "./ui/button";
+import { X } from "lucide-react";
 import ContextPanelTabs from "./context-panel/ContextPanelTabs";
 import KnowledgeTabContent from "./context-panel/KnowledgeTabContent";
 import ConversationsTabContent from "./context-panel/ConversationsTabContent";
-import MediaTabContent from "./context-panel/MediaTabContent";
-import ContextTokenUsage from "./context-panel/ContextTokenUsage";
-import { KnowledgeSource } from "./context-panel/KnowledgeSourceItem";
-import { X } from "lucide-react";
-import { Button } from "./ui/button";
 
 interface ChatContextPanelProps {
   contextItems?: ContextItem[];
@@ -143,4 +138,3 @@ const ChatContextPanel = ({
 };
 
 export default ChatContextPanel;
-
