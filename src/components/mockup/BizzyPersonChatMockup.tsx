@@ -1,9 +1,17 @@
-
 import React, { useState } from "react";
 import {
   ChevronDown,
-  ChevronUp,
   Plus,
+  MoreHorizontal,
+  ArrowUp,
+  Paperclip,
+  Image,
+  X,
+  Copy,
+  Download,
+  BarChart,
+  Maximize,
+  ChevronUp,
   Menu,
   Settings,
   MessageSquare,
@@ -12,15 +20,6 @@ import {
   Home,
   CreditCard,
   Folder,
-  MoreHorizontal,
-  Paperclip,
-  Image,
-  ArrowUp,
-  X,
-  Copy,
-  Download,
-  BarChart,
-  Maximize
 } from "lucide-react";
 
 const BizzyPersonChatMockup = () => {
@@ -194,32 +193,42 @@ const BizzyPersonChatMockup = () => {
                 className="flex items-center text-lg font-medium hover:bg-gray-100 p-1 rounded"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <span>🌾 Farm Management</span>
+                <span>
+                  {activeExtension === "farm" && "🌾 Farm Management"}
+                  {activeExtension === "personal" && "🏠 Personal"}
+                  {activeExtension === "bank" && "🏦 Bank Management"}
+                </span>
                 <ChevronDown className="w-4 h-4 ml-1 text-gray-500" />
               </button>
               {dropdownOpen && (
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
-                  <a 
-                    href="#" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => handleExtensionChange("farm")}
-                  >
-                    🌾 Farm Management
-                  </a>
-                  <a 
-                    href="#" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => handleExtensionChange("bank")}
-                  >
-                    🏦 Bank Management
-                  </a>
-                  <a 
-                    href="#" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => handleExtensionChange("personal")}
-                  >
-                    🏠 Personal
-                  </a>
+                  {activeExtension !== "farm" && (
+                    <a 
+                      href="#" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => handleExtensionChange("farm")}
+                    >
+                      🌾 Farm Management
+                    </a>
+                  )}
+                  {activeExtension !== "bank" && (
+                    <a 
+                      href="#" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => handleExtensionChange("bank")}
+                    >
+                      🏦 Bank Management
+                    </a>
+                  )}
+                  {activeExtension !== "personal" && (
+                    <a 
+                      href="#" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => handleExtensionChange("personal")}
+                    >
+                      🏠 Personal
+                    </a>
+                  )}
                 </div>
               )}
             </div>
@@ -335,141 +344,53 @@ const BizzyPersonChatMockup = () => {
           </button>
         </div>
 
-        {/* Tabbed Interface */}
-        <div className="flex border-b border-gray-200 bg-white text-sm font-medium text-center text-gray-500">
-          <button 
-            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'projects' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
-            onClick={() => setActiveTab('projects')}
-          >
-            Projects
-          </button>
-          <button 
-            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
-            onClick={() => setActiveTab('history')}
-          >
-            History
-          </button>
-          <button 
-            className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'sources' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
-            onClick={() => setActiveTab('sources')}
-          >
-            Sources
+        {/* New Project Button */}
+        <div className="p-4 border-b border-gray-200">
+          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center">
+            <Plus className="h-5 w-5 mr-2" />
+            New Project
           </button>
         </div>
 
-        {/* Tab Content Area */}
+        {/* Projects Tab Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
-          {/* Projects Tab Content */}
-          {activeTab === 'projects' && (
-            <>
-              {/* Extension-specific Projects */}
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-2">
-                  {activeExtension === "farm" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>}
-                  {activeExtension === "personal" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>}
-                  {activeExtension === "bank" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏦 BizzyBank</h4>}
-                </div>
-                
-                {/* New Project Button - More Prominent */}
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center mb-4">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Project
-                </button>
-                
-                <div className="space-y-2">
-                  {extensionProjects[activeExtension as keyof typeof extensionProjects].map((project) => (
-                    <div key={project.id}>
-                      <div 
-                        className={`${project.active ? 'bg-blue-50 border-blue-200' : 'bg-white hover:border-blue-400 hover:bg-blue-50/30'} border rounded-md p-3 cursor-pointer`}
-                        onClick={() => toggleProjectExpansion(project.id)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className={`text-sm font-medium ${project.active ? 'text-blue-800' : 'text-gray-700'}`}>{project.name}</span>
-                          {project.active && (
-                            <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
-                          )}
-                        </div>
-                        <div className={`text-xs ${project.active ? 'text-blue-600' : 'text-gray-500'} mt-1`}>{project.conversations} conversations</div>
-                      </div>
-                      
-                      {/* Expanded Conversations List */}
-                      {expandedProject === project.id && (
-                        <div className="ml-4 mt-2 space-y-1.5 mb-2">
-                          {project.conversations_list.map((conversation, idx) => (
-                            <div key={idx} className="p-2 bg-white border rounded-md text-sm hover:bg-blue-50 cursor-pointer">
-                              {conversation}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* History Tab Content */}
-          {activeTab === 'history' && (
-            <div className="space-y-3">
-              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Early blight treatment options discussion</a>
-              <div className="text-xs text-gray-400">Today, 2:45 PM • Crop Planning</div>
-              <hr />
-              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Reviewing soil test results for North Field</a>
-              <div className="text-xs text-gray-400">Yesterday, 11:10 AM • Field Health</div>
-              <hr />
-              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Follow up on irrigation scheduling</a>
-              <div className="text-xs text-gray-400">2 days ago • Crop Planning</div>
-              <hr />
-              <a href="#" className="block text-sm text-gray-700 hover:text-blue-600 truncate">Identifying pest from scouting photo</a>
-              <div className="text-xs text-gray-400">3 days ago • Pest Management</div>
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-2">
+              {activeExtension === "farm" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>}
+              {activeExtension === "personal" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>}
+              {activeExtension === "bank" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏦 BizzyBank</h4>}
             </div>
-          )}
-
-          {/* Sources Tab Content */}
-          {activeTab === 'sources' && (
-            <>
-              {/* Knowledge Sources */}
-              <div className="mb-5">
-                <h4 className="text-sm font-semibold text-gray-800 mb-2">Knowledge Sources</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
-                    <span>Your Notes</span>
-                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
+            
+            <div className="space-y-2">
+              {extensionProjects[activeExtension as keyof typeof extensionProjects].map((project) => (
+                <div 
+                  key={project.id} 
+                  className={`${project.active ? 'bg-blue-50 border-blue-200' : 'bg-white hover:border-blue-400 hover:bg-blue-50/30'} border rounded-md p-3 cursor-pointer`}
+                  onClick={() => toggleProjectExpansion(project.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm font-medium ${project.active ? 'text-blue-800' : 'text-gray-700'}`}>{project.name}</span>
+                    {project.active && (
+                      <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
-                    <span>Field Observation (Yesterday)</span>
-                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
-                    <span>Crop Knowledge Base</span>
-                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50">
-                    <span>Tomato Diseases PDF</span>
-                    <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
-                  </div>
+                  <div className={`text-xs ${project.active ? 'text-blue-600' : 'text-gray-500'} mt-1`}>{project.conversations} conversations</div>
+                  {expandedProject === project.id && (
+                    <div className="ml-4 mt-2 space-y-1.5">
+                      {project.conversations_list.map((conversation, idx) => (
+                        <div 
+                          key={idx} 
+                          className="p-2 bg-white border rounded-md text-sm hover:bg-blue-50 cursor-pointer"
+                        >
+                          {conversation}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              {/* Web Sources */}
-              <div className="mb-5">
-                <h4 className="text-sm font-semibold text-gray-800 mb-2">Web Sources</h4>
-                <div className="flex items-center justify-between p-2 bg-white rounded border hover:bg-gray-50 text-sm">
-                  <span>University Extension Articles</span>
-                  <input type="checkbox" className="h-4 w-4 text-blue-600" defaultChecked />
-                </div>
-              </div>
-
-              {/* Images & Documents */}
-              <div>
-                <h4 className="text-sm font-semibold text-gray-800 mb-2">Images & Documents</h4>
-                <div className="p-2 bg-white rounded border text-sm text-gray-400">
-                  No media shared in this conversation
-                </div>
-              </div>
-            </>
-          )}
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
