@@ -78,12 +78,12 @@ const ChatPage = () => {
             <div className={cn(
               "flex flex-col transition-all duration-300 overflow-hidden",
               isMobile ? "w-full" : 
-                artifactPanelOpen && !isPanelMinimized ? "w-[65%]" : // Wider chat cards
-                  showContextPanel ? "w-[70%] border-r" : "w-full" // Adjusted ratio for context panel
+                artifactPanelOpen && !isPanelMinimized ? "w-[65%]" : 
+                  showContextPanel ? "w-[70%]" : "w-full"
             )}>
               <div 
                 ref={messagesContainerRef}
-                className="flex-1 overflow-y-auto p-6 pb-20 scroll-smooth" // Increased padding
+                className="flex-1 overflow-y-auto p-6 pb-20 scroll-smooth"
                 onWheel={handleWheel}
               >
                 <ChatMessages 
@@ -106,7 +106,7 @@ const ChatPage = () => {
             </div>
             
             {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
-              <div className="hidden md:block md:w-[30%] h-full overflow-hidden transition-all duration-300 bg-gray-50"> {/* Changed background to match mockup */}
+              <div className="hidden md:block md:w-[30%] h-full overflow-hidden transition-all duration-300 bg-gray-50">
                 <ChatContextPanel 
                   contextItems={contextItems} 
                   onClose={isMobile ? handleCloseContextPanel : undefined}
