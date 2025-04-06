@@ -419,9 +419,9 @@ const BizzyPersonChatMockup = () => {
               {activeProject.name}
               {activeTab === 'projects' && (
                 <span className="ml-2 text-xs text-gray-500">
-                  ({activeExtension === "farm" && "🌾 BizzyFarmer"}
-                  {activeExtension === "personal" && "🏠 Personal"}
-                  {activeExtension === "bank" && "🏦 BizzyBank"})
+                  {activeExtension === "farm" && "🌾"}
+                  {activeExtension === "personal" && "🏠"}
+                  {activeExtension === "bank" && "🏦"}
                 </span>
               )}
             </span>
