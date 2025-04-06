@@ -46,10 +46,10 @@ const MessageItem = ({
   return (
     <div 
       className={cn(
-        "rounded-lg p-5 bg-white", 
+        "rounded-lg p-5", 
         message.sender === "user" 
-          ? "bg-gray-100" 
-          : "bg-white",
+          ? "bg-blue-500 text-white self-end max-w-3xl" 
+          : "bg-white border border-gray-200 self-start max-w-3xl shadow-sm",
         message.isNew && "animate-fade-in-up"
       )}
       onMouseEnter={() => setShowActions(true)}
@@ -58,13 +58,24 @@ const MessageItem = ({
       <div className="flex items-start">
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
-            <div className="font-semibold text-gray-900">
+            <div className={cn(
+              "font-semibold",
+              message.sender === "user" ? "text-white" : "text-gray-900"
+            )}>
               {message.sender === "user" ? "You" : "Claude"}
             </div>
-            <div className="text-sm text-gray-500">{formatTime(message.timestamp)}</div>
+            <div className={cn(
+              "text-sm",
+              message.sender === "user" ? "text-blue-100" : "text-gray-500"
+            )}>
+              {formatTime(message.timestamp)}
+            </div>
           </div>
           
-          <div className="text-gray-700 whitespace-pre-wrap">
+          <div className={cn(
+            "whitespace-pre-wrap",
+            message.sender === "user" ? "text-white" : "text-gray-700"
+          )}>
             {message.content}
           </div>
             
@@ -106,7 +117,10 @@ const MessageItem = ({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8"
+                className={cn(
+                  "h-8 w-8", 
+                  message.sender === "user" ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-white text-gray-700 hover:bg-gray-100"
+                )}
                 onClick={() => onSaveAsNote(message.id)}
                 title="Save as note"
               >
@@ -121,7 +135,10 @@ const MessageItem = ({
         <Button 
           variant="ghost" 
           size="sm" 
-          className="mt-2"
+          className={cn(
+            "mt-2",
+            message.sender === "user" ? "text-blue-100 hover:text-white hover:bg-blue-600" : "text-gray-700 hover:bg-gray-100"
+          )}
           onClick={toggleMessageExpansion}
         >
           {isExpanded ? (

@@ -26,7 +26,7 @@ const ChatMessages = ({
 }: ChatMessagesProps) => {
   return (
     <ScrollArea className="h-full">
-      <div className="space-y-6 pb-6 px-4 max-w-5xl mx-auto">
+      <div className="flex flex-col space-y-6 pb-6 px-4 max-w-4xl mx-auto">
         {messages.map(message => (
           <MessageItem
             key={message.id}

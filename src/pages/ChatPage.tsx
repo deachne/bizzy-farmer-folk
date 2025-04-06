@@ -91,7 +91,7 @@ const ChatPage = () => {
           showContextPanel={showContextPanel}
         />
         
-        <div className="flex flex-1 overflow-hidden relative">
+        <div className="flex flex-1 overflow-hidden relative bg-gray-100">
           <div className={cn(
             "flex flex-col transition-all duration-300 overflow-hidden",
             isMobile ? "w-full" : 
