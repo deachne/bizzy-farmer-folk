@@ -26,6 +26,45 @@ import {
 const BizzyPersonChatMockup = () => {
   const [activeTab, setActiveTab] = useState("projects");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeExtension, setActiveExtension] = useState("farm");
+  const [expandedProject, setExpandedProject] = useState<string | null>("crop-planning");
+
+  // Mock data for different extensions and their projects
+  const extensionProjects = {
+    farm: [
+      { id: "crop-planning", name: "Crop Planning", active: true, conversations: 3, conversations_list: ["Early blight treatment options", "Irrigation scheduling", "Crop rotation planning"] },
+      { id: "pest-management", name: "Pest Management", active: false, conversations: 5, conversations_list: ["Aphid control methods", "Integrated pest management", "Beneficial insects", "Organic treatments", "Prevention strategies"] },
+      { id: "field-health", name: "Field Health Monitoring", active: false, conversations: 2, conversations_list: ["Soil test results for North Field", "Nutrient deficiency signs"] }
+    ],
+    personal: [
+      { id: "home-renovation", name: "Home Renovation", active: false, conversations: 8, conversations_list: ["Kitchen design ideas", "Bathroom contractors", "Flooring options"] },
+      { id: "vacation", name: "Vacation Planning", active: false, conversations: 4, conversations_list: ["Hotel bookings", "Flight options", "Local attractions", "Packing list"] }
+    ],
+    bank: [
+      { id: "budgeting", name: "Budgeting", active: false, conversations: 2, conversations_list: ["Monthly expense tracking", "Savings goals"] },
+      { id: "investments", name: "Investments", active: false, conversations: 3, conversations_list: ["Portfolio diversification", "Retirement planning", "Tax strategies"] }
+    ]
+  };
+
+  const handleExtensionChange = (extension: "farm" | "personal" | "bank") => {
+    setActiveExtension(extension);
+    setDropdownOpen(false);
+    
+    // Update the header text based on selection
+    const extensionDisplayNames = {
+      farm: "🌾 Farm Management",
+      personal: "🏠 Personal",
+      bank: "🏦 Bank Management"
+    };
+  };
+
+  const toggleProjectExpansion = (projectId: string) => {
+    if (expandedProject === projectId) {
+      setExpandedProject(null);
+    } else {
+      setExpandedProject(projectId);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -160,14 +199,35 @@ const BizzyPersonChatMockup = () => {
               </button>
               {dropdownOpen && (
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🌾 Farm Management</a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🏦 Bank Management</a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">🏠 Personal</a>
+                  <a 
+                    href="#" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => handleExtensionChange("farm")}
+                  >
+                    🌾 Farm Management
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => handleExtensionChange("bank")}
+                  >
+                    🏦 Bank Management
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => handleExtensionChange("personal")}
+                  >
+                    🏠 Personal
+                  </a>
                 </div>
               )}
             </div>
             {/* Active Project Indicator (Example) */}
             <span className="ml-4 text-sm text-gray-500">» Crop Planning</span>
+            
+            {/* Chat Title - New Addition */}
+            <span className="ml-4 text-sm text-gray-500">» Early blight treatment options</span>
           </div>
           <div className="flex space-x-2">
             {/* Header Actions */}
@@ -302,54 +362,48 @@ const BizzyPersonChatMockup = () => {
           {/* Projects Tab Content */}
           {activeTab === 'projects' && (
             <>
-              {/* BizzyFarmer Projects (Filtered by Header Dropdown) */}
+              {/* Extension-specific Projects */}
               <div className="mb-5">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>
-                  <button className="text-xs text-blue-600 font-medium hover:underline">+ New Season</button>
+                  {activeExtension === "farm" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>}
+                  {activeExtension === "personal" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>}
+                  {activeExtension === "bank" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏦 BizzyBank</h4>}
                 </div>
+                
+                {/* New Project Button - More Prominent */}
+                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center justify-center mb-4">
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Project
+                </button>
+                
                 <div className="space-y-2">
-                  <div className="bg-blue-50 border border-blue-200 rounded-md p-3 cursor-pointer shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-blue-800">Crop Planning</span>
-                      <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
+                  {extensionProjects[activeExtension as keyof typeof extensionProjects].map((project) => (
+                    <div key={project.id}>
+                      <div 
+                        className={`${project.active ? 'bg-blue-50 border-blue-200' : 'bg-white hover:border-blue-400 hover:bg-blue-50/30'} border rounded-md p-3 cursor-pointer`}
+                        onClick={() => toggleProjectExpansion(project.id)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className={`text-sm font-medium ${project.active ? 'text-blue-800' : 'text-gray-700'}`}>{project.name}</span>
+                          {project.active && (
+                            <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
+                          )}
+                        </div>
+                        <div className={`text-xs ${project.active ? 'text-blue-600' : 'text-gray-500'} mt-1`}>{project.conversations} conversations</div>
+                      </div>
+                      
+                      {/* Expanded Conversations List */}
+                      {expandedProject === project.id && (
+                        <div className="ml-4 mt-2 space-y-1.5 mb-2">
+                          {project.conversations_list.map((conversation, idx) => (
+                            <div key={idx} className="p-2 bg-white border rounded-md text-sm hover:bg-blue-50 cursor-pointer">
+                              {conversation}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div className="text-xs text-blue-600 mt-1">3 conversations</div>
-                  </div>
-                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">Pest Management</span>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">5 conversations</div>
-                  </div>
-                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">Field Health Monitoring</span>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">2 conversations</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Personal Projects */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>
-                  <button className="text-xs text-blue-600 font-medium hover:underline">+ New Project</button>
-                </div>
-                <div className="space-y-2">
-                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">Home Renovation</span>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">8 conversations</div>
-                  </div>
-                  <div className="bg-white border rounded-md p-3 hover:border-blue-400 cursor-pointer hover:bg-blue-50/30">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">Vacation Planning</span>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">4 conversations</div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </>

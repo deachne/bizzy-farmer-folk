@@ -14,6 +14,7 @@ import UsersPage from "./pages/UsersPage";
 import SystemPage from "./pages/SystemPage";
 import ExtensionsPage from "./pages/ExtensionsPage";
 import MockupPage from "./pages/MockupPage";
+import UpdatedMockupPage from "./pages/UpdatedMockupPage";
 import React from "react"; 
 
 // Create the query client outside of the component
@@ -39,6 +40,7 @@ const App = () => {
               <Route path="/system" element={<SystemPage />} />
               <Route path="/extensions" element={<ExtensionsPage />} />
               <Route path="/mockup" element={<MockupPage />} />
+              <Route path="/updated-mockup" element={<UpdatedMockupPage />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
