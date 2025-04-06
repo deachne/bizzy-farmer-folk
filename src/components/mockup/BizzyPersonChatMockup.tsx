@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   ChevronDown,
@@ -12,7 +13,6 @@ import {
   BarChart,
   Maximize,
   ChevronUp,
-  Menu,
   Settings,
   MessageSquare,
   FileText,
@@ -20,13 +20,45 @@ import {
   Home,
   CreditCard,
   Folder,
+  Check,
+  RefreshCw,
+  ChevronRight
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const BizzyPersonChatMockup = () => {
   const [activeTab, setActiveTab] = useState("projects");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeExtension, setActiveExtension] = useState("farm");
   const [expandedProject, setExpandedProject] = useState<string | null>("crop-planning");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [knowledgeSources, setKnowledgeSources] = useState([
+    {
+      id: "ks1",
+      type: "note",
+      title: "Field Observation (Yesterday)",
+      active: true
+    },
+    {
+      id: "ks2",
+      type: "document",
+      title: "Tomato Diseases PDF",
+      active: true
+    },
+    {
+      id: "ks3",
+      type: "web",
+      title: "University Extension Articles",
+      active: true,
+      source: "extension.org"
+    }
+  ]);
 
   const extensionProjects = {
     farm: [
@@ -47,12 +79,6 @@ const BizzyPersonChatMockup = () => {
   const handleExtensionChange = (extension: "farm" | "personal" | "bank") => {
     setActiveExtension(extension);
     setDropdownOpen(false);
-    
-    const extensionDisplayNames = {
-      farm: "🌾 BizzyFarmer",
-      personal: "🏠 Personal",
-      bank: "🏦 Bank Management"
-    };
   };
 
   const toggleProjectExpansion = (projectId: string) => {
@@ -61,6 +87,25 @@ const BizzyPersonChatMockup = () => {
     } else {
       setExpandedProject(projectId);
     }
+  };
+  
+  const toggleKnowledgeSource = (id: string) => {
+    setKnowledgeSources(prev => 
+      prev.map(source => 
+        source.id === id
+          ? { ...source, active: !source.active }
+          : source
+      )
+    );
+  };
+  
+  const refreshContext = () => {
+    setIsRefreshing(true);
+    
+    // Simulate refreshing context
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1500);
   };
 
   return (
@@ -317,8 +362,59 @@ const BizzyPersonChatMockup = () => {
       <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col shrink-0">
         <div className="p-4 flex justify-between items-center border-b border-gray-200">
           <h3 className="font-medium text-lg">Context</h3>
-          <button className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100">
-            <X className="h-5 w-5" />
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refreshContext}
+              disabled={isRefreshing}
+              className="h-8 text-xs"
+            >
+              <RefreshCw className={cn(
+                "h-4 w-4 mr-1",
+                isRefreshing && "animate-spin"
+              )} />
+              {isRefreshing ? "Refreshing..." : "Refresh"}
+            </Button>
+            <button className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex border-b border-gray-200 bg-white text-sm font-medium text-center text-gray-500">
+          <button 
+            className={cn(
+              "flex-1 py-2.5 px-1 border-b-2",
+              activeTab === 'projects' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent hover:text-gray-700 hover:border-gray-300'
+            )}
+            onClick={() => setActiveTab('projects')}
+          >
+            Projects
+          </button>
+          <button 
+            className={cn(
+              "flex-1 py-2.5 px-1 border-b-2",
+              activeTab === 'knowledge' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent hover:text-gray-700 hover:border-gray-300'
+            )}
+            onClick={() => setActiveTab('knowledge')}
+          >
+            Knowledge
+          </button>
+          <button 
+            className={cn(
+              "flex-1 py-2.5 px-1 border-b-2",
+              activeTab === 'media' 
+                ? 'border-blue-600 text-blue-600' 
+                : 'border-transparent hover:text-gray-700 hover:border-gray-300'
+            )}
+            onClick={() => setActiveTab('media')}
+          >
+            Media
           </button>
         </div>
 
@@ -329,44 +425,178 @@ const BizzyPersonChatMockup = () => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
-          <div className="mb-5">
-            <div className="flex items-center justify-between mb-2">
-              {activeExtension === "farm" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>}
-              {activeExtension === "personal" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>}
-              {activeExtension === "bank" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏦 BizzyBank</h4>}
-            </div>
-            
-            <div className="space-y-2">
-              {extensionProjects[activeExtension as keyof typeof extensionProjects].map((project) => (
-                <div 
-                  key={project.id} 
-                  className={`${project.active ? 'bg-blue-50 border-blue-200' : 'bg-white hover:border-blue-400 hover:bg-blue-50/30'} border rounded-md p-3 cursor-pointer`}
-                  onClick={() => toggleProjectExpansion(project.id)}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className={`text-sm font-medium ${project.active ? 'text-blue-800' : 'text-gray-700'}`}>{project.name}</span>
-                    {project.active && (
-                      <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
-                    )}
-                  </div>
-                  <div className={`text-xs ${project.active ? 'text-blue-600' : 'text-gray-500'} mt-1`}>{project.conversations} conversations</div>
-                  {expandedProject === project.id && (
-                    <div className="ml-4 mt-2 space-y-1.5">
-                      {project.conversations_list.map((conversation, idx) => (
-                        <div 
-                          key={idx} 
-                          className="p-2 bg-white border rounded-md text-sm hover:bg-blue-50 cursor-pointer"
-                        >
-                          {conversation}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* Projects Tab Content */}
+          {activeTab === 'projects' && (
+            <div className="space-y-6">
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-2">
+                  {activeExtension === "farm" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🌾 BizzyFarmer</h4>}
+                  {activeExtension === "personal" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏠 Personal</h4>}
+                  {activeExtension === "bank" && <h4 className="text-sm font-semibold text-gray-800 flex items-center">🏦 BizzyBank</h4>}
                 </div>
-              ))}
+                
+                <div className="space-y-2">
+                  {extensionProjects[activeExtension as keyof typeof extensionProjects].map((project) => (
+                    <div 
+                      key={project.id} 
+                      className={`${project.active ? 'bg-blue-50 border-blue-200' : 'bg-white hover:border-blue-400 hover:bg-blue-50/30'} border rounded-md p-3 cursor-pointer`}
+                      onClick={() => toggleProjectExpansion(project.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-sm font-medium ${project.active ? 'text-blue-800' : 'text-gray-700'}`}>{project.name}</span>
+                        {project.active && (
+                          <span className="text-xs text-green-700 px-2 py-0.5 bg-green-100 rounded-full font-medium">Active</span>
+                        )}
+                      </div>
+                      <div className={`text-xs ${project.active ? 'text-blue-600' : 'text-gray-500'} mt-1`}>{project.conversations} conversations</div>
+                      {expandedProject === project.id && (
+                        <div className="ml-4 mt-2 space-y-1.5">
+                          {project.conversations_list.map((conversation, idx) => (
+                            <div 
+                              key={idx} 
+                              className="p-2 bg-white border rounded-md text-sm hover:bg-blue-50 cursor-pointer"
+                            >
+                              {conversation}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Knowledge Tab Content */}
+          {activeTab === 'knowledge' && (
+            <div className="space-y-4">
+              <Collapsible defaultOpen={true}>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-500">KNOWLEDGE SOURCES</h3>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
+                      <ChevronRight className={cn("h-4 w-4 transition-transform rotate-90")} />
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent className="space-y-4">
+                  {/* Your Notes */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Your Notes</h4>
+                    <div 
+                      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+                    >
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 text-gray-500 mr-2" />
+                        <span className="text-sm">Field Observation (Yesterday)</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-0 h-6 w-6 text-green-600"
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Crop Knowledge Base */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Crop Knowledge Base</h4>
+                    <div 
+                      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+                    >
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 text-gray-500 mr-2" />
+                        <span className="text-sm">Tomato Diseases PDF</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-0 h-6 w-6 text-green-600"
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Web Sources */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-2">Web Sources</h4>
+                    <div 
+                      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+                    >
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 text-gray-500 mr-2" />
+                        <span className="text-sm">University Extension Articles</span>
+                        <span className="text-xs text-gray-500 ml-1">(extension.org)</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-0 h-6 w-6 text-green-600"
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          )}
+
+          {/* Media Tab Content */}
+          {activeTab === 'media' && (
+            <div className="space-y-4">
+              <Collapsible defaultOpen={true}>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-500">IMAGES & DOCUMENTS</h3>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-0 h-7 w-7">
+                      <ChevronRight className={cn("h-4 w-4 transition-transform rotate-90")} />
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent>
+                  <div className="p-4 text-center text-gray-500 text-sm border rounded bg-white">
+                    No media shared in this conversation
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          )}
+        </div>
+        
+        {/* Token Usage Panel */}
+        <div className="border-t border-gray-200 p-4">
+          <Collapsible>
+            <CollapsibleTrigger className="flex items-center justify-between w-full">
+              <h3 className="text-sm font-semibold text-gray-500">TOKEN USAGE</h3>
+              <ChevronDown className="h-4 w-4 text-gray-400" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 space-y-2">
+              <div className="flex items-center justify-between text-xs text-gray-600">
+                <span>Model:</span>
+                <span>Claude 3.7 Sonnet</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-600">
+                <span>Est. Cost:</span>
+                <span>$0.0250</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-600">
+                <span>Input Tokens:</span>
+                <span>3,250</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-600">
+                <span>Output Tokens:</span>
+                <span>2,860</span>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </div>
     </div>
