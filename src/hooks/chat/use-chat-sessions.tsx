@@ -9,24 +9,32 @@ export function useChatSessions(
   const [activeChatSession, setActiveChatSession] = useState<ChatSession>({
     id: "cs1",
     name: "Farm Management",
-    model: "Claude 3.7 Sonnet"
+    model: "Claude 3.7 Sonnet",
+    extension: "farm",
+    path: "Early Blight"
   });
 
   const [availableSessions, setAvailableSessions] = useState<ChatSession[]>([
     {
       id: "cs1",
       name: "Farm Management",
-      model: "Claude 3.7 Sonnet"
+      model: "Claude 3.7 Sonnet",
+      extension: "farm",
+      path: "Early Blight"
     },
     {
       id: "cs2",
       name: "Crop Planning",
-      model: "Claude 3.7 Sonnet"
+      model: "Claude 3.7 Sonnet",
+      extension: "farm",
+      path: "Crop Planning"
     },
     {
       id: "cs3",
       name: "Equipment Maintenance",
-      model: "Claude 3.7 Sonnet"
+      model: "Claude 3.7 Sonnet",
+      extension: "farm",
+      path: "Equipment"
     }
   ]);
 

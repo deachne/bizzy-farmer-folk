@@ -26,6 +26,8 @@ export interface ChatSession {
   id: string;
   name: string;
   model: string;
+  extension?: "farm" | "personal" | "bank" | string;
+  path?: string;
 }
 
 export interface ContextItem {
