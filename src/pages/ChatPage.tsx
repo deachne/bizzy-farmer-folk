@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import NoteSidebar from "@/components/NoteSidebar";
 import ChatMessages from "@/components/ChatMessages";
 import ChatInputBar from "@/components/ChatInputBar";
@@ -80,61 +79,59 @@ const ChatPage = () => {
 
   return (
     <div className="flex min-h-screen max-h-screen overflow-hidden bg-gray-50">
-      <SidebarProvider>
-        <NoteSidebar />
+      <NoteSidebar />
+      
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <ChatHeader 
+          activeChatSession={activeChatSession}
+          availableSessions={availableSessions}
+          onCreateNewChat={createNewChat}
+          onSwitchSession={switchChatSession}
+          onToggleContextPanel={toggleContextPanel}
+          showContextPanel={showContextPanel}
+        />
         
-        <div className="flex-1 flex flex-col h-screen overflow-hidden">
-          <ChatHeader 
-            activeChatSession={activeChatSession}
-            availableSessions={availableSessions}
-            onCreateNewChat={createNewChat}
-            onSwitchSession={switchChatSession}
-            onToggleContextPanel={toggleContextPanel}
-            showContextPanel={showContextPanel}
-          />
-          
-          <div className="flex flex-1 overflow-hidden relative">
-            <div className={cn(
-              "flex flex-col transition-all duration-300 overflow-hidden",
-              isMobile ? "w-full" : 
-                artifactPanelOpen && !isPanelMinimized ? "w-[65%]" : 
-                  showContextPanel ? "w-[70%]" : "w-full"
-            )}>
-              <div 
-                ref={messagesContainerRef}
-                className="flex-1 overflow-y-auto p-6 pb-20 scroll-smooth"
-                onWheel={handleWheel}
-              >
-                <ChatMessages 
-                  messages={messages}
-                  isAiTyping={isAiTyping}
-                  onSaveAsNote={saveMessageAsNote}
-                  messagesEndRef={messagesEndRef}
-                  uploadProgress={uploadProgress}
-                  onViewArtifact={viewArtifact}
-                  onAddImageToContext={(imageUrl, imageName) => addItemToContext(imageUrl, imageName, "image")}
-                />
-              </div>
-              
-              <div className="sticky bottom-0 left-0 right-0 border-t p-4 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-10">
-                <ChatInputBar 
-                  onSendMessage={sendMessage}
-                  connectionStatus={connectionStatus}
-                />
-              </div>
+        <div className="flex flex-1 overflow-hidden relative">
+          <div className={cn(
+            "flex flex-col transition-all duration-300 overflow-hidden",
+            isMobile ? "w-full" : 
+              artifactPanelOpen && !isPanelMinimized ? "w-[65%]" : 
+                showContextPanel ? "w-[70%]" : "w-full"
+          )}>
+            <div 
+              ref={messagesContainerRef}
+              className="flex-1 overflow-y-auto p-6 pb-20 scroll-smooth"
+              onWheel={handleWheel}
+            >
+              <ChatMessages 
+                messages={messages}
+                isAiTyping={isAiTyping}
+                onSaveAsNote={saveMessageAsNote}
+                messagesEndRef={messagesEndRef}
+                uploadProgress={uploadProgress}
+                onViewArtifact={viewArtifact}
+                onAddImageToContext={(imageUrl, imageName) => addItemToContext(imageUrl, imageName, "image")}
+              />
             </div>
             
-            {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
-              <div className="hidden md:block md:w-[30%] h-full overflow-hidden transition-all duration-300 bg-gray-50">
-                <ChatContextPanel 
-                  contextItems={contextItems} 
-                  onClose={isMobile ? handleCloseContextPanel : undefined}
-                />
-              </div>
-            )}
+            <div className="sticky bottom-0 left-0 right-0 border-t p-4 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-10">
+              <ChatInputBar 
+                onSendMessage={sendMessage}
+                connectionStatus={connectionStatus}
+              />
+            </div>
           </div>
+          
+          {showContextPanel && !(isMobile && artifactPanelOpen && !isPanelMinimized) && (
+            <div className="hidden md:block md:w-[30%] h-full overflow-hidden transition-all duration-300 bg-gray-50">
+              <ChatContextPanel 
+                contextItems={contextItems} 
+                onClose={isMobile ? handleCloseContextPanel : undefined}
+              />
+            </div>
+          )}
         </div>
-      </SidebarProvider>
+      </div>
       
       <ArtifactPanel 
         isOpen={artifactPanelOpen}

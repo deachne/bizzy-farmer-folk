@@ -2,108 +2,218 @@
 import { 
   FileText, 
   FileIcon, 
-  ClipboardList, 
+  CheckSquare, 
   MessageSquare, 
-  LayoutDashboard, 
-  Users, 
   Package, 
-  Settings, 
-  BarChart,
-  Plus,
-  Gauge
+  Settings,
+  ChevronDown,
+  Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 const NoteSidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   
-  // Define menu sections and items
-  const coreItems = [
-    { icon: FileText, label: "Notes", path: "/notes", active: currentPath.includes("/notes") },
-    { icon: FileIcon, label: "Documents", path: "/documents", active: currentPath.includes("/documents") },
-    { icon: ClipboardList, label: "Tasks", path: "/tasks", active: currentPath.includes("/tasks") },
-    { icon: MessageSquare, label: "Chat", path: "/chat", active: currentPath.includes("/chat") },
-  ];
+  // Extension states
+  const [expandedExtensions, setExpandedExtensions] = useState({
+    farmer: true,
+    bank: false
+  });
   
-  const adminItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: currentPath.includes("/dashboard") },
-    { icon: Users, label: "Users", path: "/users", active: currentPath.includes("/users") },
-    { icon: Package, label: "Extensions", path: "/extensions", active: currentPath.includes("/extensions") },
-    { icon: Gauge, label: "System", path: "/system", active: currentPath.includes("/system") },
-    { icon: Settings, label: "Configuration", path: "/configuration", active: currentPath.includes("/configuration") },
-    { icon: BarChart, label: "Analytics", path: "/analytics", active: currentPath.includes("/analytics") },
-  ];
-
-  const renderMenuItem = (item: { icon: any, label: string, path: string, active?: boolean }) => {
-    const Icon = item.icon;
-    return (
-      <Link 
-        key={item.label}
-        to={item.path}
-        className={cn(
-          "flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors",
-          item.active 
-            ? "bg-blue-700 text-white" 
-            : "text-white/80 hover:bg-blue-700/50 hover:text-white"
-        )}
-      >
-        <Icon className="h-5 w-5 mr-3" />
-        {item.label}
-      </Link>
-    );
+  // Toggle extension expansion
+  const toggleExtension = (extension: 'farmer' | 'bank') => {
+    setExpandedExtensions(prev => ({
+      ...prev,
+      [extension]: !prev[extension]
+    }));
   };
-
+  
   return (
-    <div className="w-64 bg-blue-600 text-white flex flex-col h-screen">
+    <div className="w-64 bg-blue-800 text-white flex flex-col h-screen overflow-hidden">
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-blue-500 flex items-center">
-        <div className="h-8 w-8 bg-white text-blue-600 rounded-md flex items-center justify-center font-bold mr-2">
-          BP
+      <div className="p-5">
+        <h1 className="text-xl font-bold">BizzyPerson</h1>
+      </div>
+      
+      {/* Core Features */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between px-5 py-1">
+          <span className="text-xs font-semibold text-blue-200 uppercase">Core Features</span>
         </div>
-        <h1 className="text-lg font-semibold">BizzyPerson</h1>
+        <div className="space-y-1 mt-1">
+          <Link 
+            to="/notes"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/notes") 
+                ? "text-blue-100" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <FileText className="h-4 w-4 mr-3 text-blue-300" />
+            Notes
+          </Link>
+          
+          <Link 
+            to="/documents"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/documents") 
+                ? "text-blue-100" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <FileIcon className="h-4 w-4 mr-3 text-blue-300" />
+            Documents
+          </Link>
+          
+          <Link 
+            to="/tasks"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/tasks") 
+                ? "text-blue-100" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <CheckSquare className="h-4 w-4 mr-3 text-blue-300" />
+            Tasks
+          </Link>
+          
+          <Link 
+            to="/chat"
+            className={cn(
+              "flex items-center px-5 py-2 text-sm font-medium rounded-md transition-colors",
+              currentPath.includes("/chat") || currentPath.includes("mockup")
+                ? "bg-blue-700 text-white" 
+                : "text-blue-100 hover:bg-blue-700/50"
+            )}
+          >
+            <MessageSquare className="h-4 w-4 mr-3 text-white" />
+            Chat
+          </Link>
+        </div>
       </div>
       
-      {/* New Workspace Button */}
-      <div className="p-3">
-        <Button 
-          className="w-full bg-blue-500 hover:bg-blue-400 text-white border border-blue-400"
-        >
-          <Plus className="h-4 w-4 mr-2" /> New Workspace
-        </Button>
+      {/* Personal Section */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between px-5 py-1">
+          <span className="text-xs font-semibold text-blue-200 uppercase">Personal</span>
+          <button className="text-blue-200 hover:text-white p-1">
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="space-y-1 mt-1">
+          <Link 
+            to="#"
+            className="flex items-center px-5 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
+          >
+            <FileText className="h-4 w-4 mr-2 text-blue-300" />
+            <span>Home Renovation</span>
+          </Link>
+          
+          <Link 
+            to="#"
+            className="flex items-center px-5 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
+          >
+            <FileText className="h-4 w-4 mr-2 text-blue-300" />
+            <span>Work Projects</span>
+          </Link>
+        </div>
       </div>
       
-      {/* Menu Sections */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="pt-4">
-          <div className="px-4 mb-1 flex items-center justify-between">
-            <h2 className="uppercase text-xs font-semibold text-blue-200">Core</h2>
-            <button className="text-blue-300 hover:text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </button>
-          </div>
-          <div className="space-y-1 px-2">
-            {coreItems.map(renderMenuItem)}
-          </div>
+      {/* Extensions */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between px-5 py-1">
+          <span className="text-xs font-semibold text-blue-200 uppercase">Extensions</span>
         </div>
         
-        <div className="pt-4">
-          <div className="px-4 mb-1 flex items-center justify-between">
-            <h2 className="uppercase text-xs font-semibold text-blue-200">Admin</h2>
-            <button className="text-blue-300 hover:text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </button>
-          </div>
-          <div className="space-y-1 px-2">
-            {adminItems.map(renderMenuItem)}
-          </div>
+        {/* BizzyFarmer */}
+        <div className="mt-1">
+          <button 
+            className="flex items-center justify-between w-full px-5 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50"
+            onClick={() => toggleExtension('farmer')}
+          >
+            <div className="flex items-center">
+              <ChevronDown className={cn("h-4 w-4 mr-2 text-blue-300 transition-transform", 
+                expandedExtensions.farmer ? "" : "-rotate-90")} 
+              />
+              <span>🌾 BizzyFarmer</span>
+            </div>
+            <Plus className="w-4 h-4 text-blue-200 hover:text-white" />
+          </button>
+          
+          {expandedExtensions.farmer && (
+            <div className="ml-6 mt-1 space-y-1 border-l border-blue-700 pl-3">
+              <Link 
+                to="#"
+                className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
+              >
+                <FileText className="h-4 w-4 mr-2 text-blue-300" />
+                <span>2024 Season</span>
+              </Link>
+              <Link 
+                to="#"
+                className="flex items-center px-3 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
+              >
+                <FileText className="h-4 w-4 mr-2 text-blue-300" />
+                <span>2023 Season</span>
+              </Link>
+            </div>
+          )}
         </div>
+        
+        {/* BizzyBank */}
+        <div className="mt-1">
+          <button 
+            className="flex items-center justify-between w-full px-5 py-2 text-sm font-medium text-blue-100 rounded-md hover:bg-blue-700/50"
+            onClick={() => toggleExtension('bank')}
+          >
+            <div className="flex items-center">
+              <ChevronDown className={cn("h-4 w-4 mr-2 text-blue-300 transition-transform", 
+                expandedExtensions.bank ? "" : "-rotate-90")} 
+              />
+              <span>🏦 BizzyBank</span>
+            </div>
+            <Plus className="w-4 h-4 text-blue-200 hover:text-white" />
+          </button>
+          
+          {expandedExtensions.bank && (
+            <div className="ml-6 mt-1 space-y-1 border-l border-blue-700 pl-3">
+              {/* Bank items would go here */}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Admin */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between px-5 py-1">
+          <span className="text-xs font-semibold text-blue-200 uppercase">Admin</span>
+        </div>
+        <div className="space-y-1 mt-1">
+          <Link 
+            to="/extensions"
+            className="flex items-center px-5 py-1.5 text-sm text-blue-100 rounded-md hover:bg-blue-700/40"
+          >
+            <Package className="h-4 w-4 mr-2 text-blue-300" />
+            <span>Manage Extensions</span>
+          </Link>
+        </div>
+      </div>
+      
+      {/* Settings at bottom */}
+      <div className="mt-auto p-4 border-t border-blue-700/50">
+        <Link 
+          to="/configuration"
+          className="flex items-center text-sm text-blue-200 hover:text-white"
+        >
+          <Settings className="h-5 w-5 mr-2" />
+          Settings
+        </Link>
       </div>
     </div>
   );

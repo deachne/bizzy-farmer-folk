@@ -9,7 +9,7 @@ const ContextTokenUsage = () => {
           <span>TOKEN USAGE</span>
           <ChevronDown className="h-4 w-4 ml-1" />
         </button>
-        <span className="text-xs text-gray-500">Est. Cost: $55.7050</span>
+        <span className="text-xs text-gray-500">Est. Cost: $0.0312</span>
       </div>
       
       <div className="text-xs text-gray-500 flex items-center justify-between">
@@ -17,7 +17,7 @@ const ContextTokenUsage = () => {
           <div className="h-2 w-20 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full bg-blue-500 rounded-full" style={{ width: "30%" }}></div>
           </div>
-          <span className="ml-2">6,110 / 200,000 tokens</span>
+          <span className="ml-2">6,110 / 32,000 tokens</span>
         </div>
         
         <div className="flex items-center space-x-4">
