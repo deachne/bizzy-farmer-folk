@@ -37,7 +37,6 @@ const ChatHeader = ({
 }: ChatHeaderProps) => {
   const isMobile = useIsMobile();
   const [selectedModel, setSelectedModel] = useState(activeChatSession.model || "Claude 3.7 Sonnet");
-  const [extensionDropdownOpen, setExtensionDropdownOpen] = useState(false);
   
   const getExtensionEmoji = (extension?: string) => {
     switch(extension) {
@@ -57,75 +56,47 @@ const ChatHeader = ({
     }
   };
   
+  const handleExtensionSelect = (extension: string) => {
+    // Find a session with the requested extension or create one
+    const session = availableSessions.find(s => s.extension === extension);
+    if (session) {
+      onSwitchSession(session.id);
+    } else {
+      // This would create a new session if needed
+      onCreateNewChat();
+    }
+  };
+  
   return (
     <div className="flex items-center justify-between px-6 py-3 border-b bg-white">
       <div className="flex items-center">
-        <div className="relative">
-          <button 
-            className="flex items-center text-lg font-medium hover:bg-gray-100 p-1 rounded"
-            onClick={() => setExtensionDropdownOpen(!extensionDropdownOpen)}
-          >
-            <span>
-              {getExtensionEmoji(activeChatSession.extension)} {getExtensionName(activeChatSession.extension)}
-            </span>
-            <ChevronDown className="w-4 h-4 ml-1 text-gray-500" />
-          </button>
-          
-          {extensionDropdownOpen && (
-            <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
-              {activeChatSession.extension !== "farm" && (
-                <button 
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => {
-                    // Find a farm session or create one
-                    const farmSession = availableSessions.find(s => s.extension === "farm");
-                    if (farmSession) {
-                      onSwitchSession(farmSession.id);
-                    } else {
-                      // This would create a new session if needed
-                      onCreateNewChat();
-                    }
-                    setExtensionDropdownOpen(false);
-                  }}
-                >
-                  🌾 BizzyFarmer
-                </button>
-              )}
-              {activeChatSession.extension !== "bank" && (
-                <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => {
-                    const bankSession = availableSessions.find(s => s.extension === "bank");
-                    if (bankSession) {
-                      onSwitchSession(bankSession.id);
-                    } else {
-                      onCreateNewChat();
-                    }
-                    setExtensionDropdownOpen(false);
-                  }}
-                >
-                  🏦 Bank Management
-                </button>
-              )}
-              {activeChatSession.extension !== "personal" && (
-                <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => {
-                    const personalSession = availableSessions.find(s => s.extension === "personal");
-                    if (personalSession) {
-                      onSwitchSession(personalSession.id);
-                    } else {
-                      onCreateNewChat();
-                    }
-                    setExtensionDropdownOpen(false);
-                  }}
-                >
-                  🏠 Personal
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center text-lg font-medium hover:bg-gray-100 p-1 rounded">
+              <span>
+                {getExtensionEmoji(activeChatSession.extension)} {getExtensionName(activeChatSession.extension)}
+              </span>
+              <ChevronDown className="w-4 h-4 ml-1 text-gray-500" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48 bg-white border shadow-md rounded-md z-50">
+            {activeChatSession.extension !== "farm" && (
+              <DropdownMenuItem onClick={() => handleExtensionSelect("farm")}>
+                🌾 BizzyFarmer
+              </DropdownMenuItem>
+            )}
+            {activeChatSession.extension !== "bank" && (
+              <DropdownMenuItem onClick={() => handleExtensionSelect("bank")}>
+                🏦 Bank Management
+              </DropdownMenuItem>
+            )}
+            {activeChatSession.extension !== "personal" && (
+              <DropdownMenuItem onClick={() => handleExtensionSelect("personal")}>
+                🏠 Personal
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
         
         {activeChatSession.path && (
           <>
