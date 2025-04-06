@@ -46,10 +46,10 @@ const MessageItem = ({
   return (
     <div 
       className={cn(
-        "rounded-lg p-5", 
+        "rounded-lg p-5 text-sm", // Added text-sm to match mockup
         message.sender === "user" 
-          ? "bg-blue-500 text-white self-end max-w-3xl" 
-          : "bg-white border border-gray-200 self-start max-w-3xl shadow-sm",
+          ? "bg-blue-500 text-white self-end max-w-4xl" // Increased max-w from max-w-3xl to max-w-4xl
+          : "bg-white border border-gray-200 self-start max-w-4xl shadow-sm", // Same max-w change
         message.isNew && "animate-fade-in-up"
       )}
       onMouseEnter={() => setShowActions(true)}
