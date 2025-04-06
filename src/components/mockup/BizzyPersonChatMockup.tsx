@@ -430,10 +430,10 @@ const BizzyPersonChatMockup = () => {
                 variant="outline" 
                 size="sm" 
                 className="h-7 text-xs"
-                onClick={() => console.log("Create new project")}
+                onClick={() => console.log("Create new chat in project:", activeProject.name)}
               >
-                <Plus className="h-3 w-3 mr-1" />
-                New Project
+                <MessageSquare className="h-3 w-3 mr-1" />
+                New Chat
               </Button>
             ) : (
               <Button 
@@ -442,8 +442,8 @@ const BizzyPersonChatMockup = () => {
                 className="h-7 text-xs"
                 onClick={createNewChat}
               >
-                <MessageSquare className="h-3 w-3 mr-1" />
-                New Chat
+                <Plus className="h-3 w-3 mr-1" />
+                New Project
               </Button>
             )}
           </div>
