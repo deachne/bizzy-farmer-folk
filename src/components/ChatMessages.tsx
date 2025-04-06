@@ -25,8 +25,8 @@ const ChatMessages = ({
   onAddImageToContext
 }: ChatMessagesProps) => {
   return (
-    <ScrollArea className="h-full pr-4">
-      <div className="space-y-6 pb-6 max-w-5xl mx-auto">
+    <ScrollArea className="h-full">
+      <div className="space-y-6 pb-6 px-4 max-w-5xl mx-auto">
         {messages.map(message => (
           <MessageItem
             key={message.id}

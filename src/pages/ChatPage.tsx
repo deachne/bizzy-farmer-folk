@@ -30,6 +30,25 @@ const ChatPage = () => {
     addItemToContext
   } = useChat();
 
+  // Ensure activeChatSession has the extension field for the mockup
+  if (!activeChatSession.extension && activeChatSession.name?.includes("Farm")) {
+    activeChatSession.extension = "farm";
+  } else if (!activeChatSession.extension) {
+    activeChatSession.extension = "personal";
+  }
+  
+  // Add a path field for the breadcrumb navigation if not present
+  if (!activeChatSession.path && activeChatSession.name) {
+    // Extract a path from the name for the breadcrumb
+    if (activeChatSession.extension === "farm") {
+      activeChatSession.path = "Farm Management";
+    } else if (activeChatSession.extension === "bank") {
+      activeChatSession.path = "Financial Management";
+    } else {
+      activeChatSession.path = "Personal Management";
+    }
+  }
+
   const { showContextPanel, setShowContextPanel, toggleContextPanel } = useContextPanel();
   
   const { 
@@ -60,7 +79,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen max-h-screen overflow-hidden bg-white">
+    <div className="flex min-h-screen max-h-screen overflow-hidden bg-gray-50">
       <SidebarProvider>
         <NoteSidebar />
         
