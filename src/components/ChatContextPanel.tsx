@@ -9,16 +9,24 @@ import ConversationsTabContent from "./context-panel/ConversationsTabContent";
 import MediaTabContent from "./context-panel/MediaTabContent";
 import ContextTokenUsage from "./context-panel/ContextTokenUsage";
 import { KnowledgeSource } from "./context-panel/KnowledgeSourceItem";
+import { X } from "lucide-react";
 import { Button } from "./ui/button";
-import { ChevronDown } from "lucide-react";
 
 interface ChatContextPanelProps {
   contextItems?: ContextItem[];
   onClose?: () => void;
+  activeProject?: {
+    id: string;
+    name: string;
+  };
 }
 
-const ChatContextPanel = ({ contextItems = [], onClose }: ChatContextPanelProps) => {
-  const [activeTab, setActiveTab] = useState<'knowledge' | 'conversations' | 'media'>('knowledge');
+const ChatContextPanel = ({ 
+  contextItems = [], 
+  onClose,
+  activeProject = { id: "crop-planning", name: "Crop Planning" }
+}: ChatContextPanelProps) => {
+  const [activeTab, setActiveTab] = useState<'knowledge' | 'projects'>('knowledge');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>([
     {
@@ -80,20 +88,42 @@ const ChatContextPanel = ({ contextItems = [], onClose }: ChatContextPanelProps)
         <h3 className="font-medium text-lg">Context</h3>
         {onClose && (
           <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
-            <span className="sr-only">Close</span>
-            <ChevronDown className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </Button>
         )}
       </div>
       
       {/* Tabbed Navigation */}
-      <ContextPanelTabs 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      <div className="flex border-b border-gray-200 bg-white text-sm font-medium text-center text-gray-500">
+        <button 
+          className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'projects' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+          onClick={() => setActiveTab('projects')}
+        >
+          Projects
+        </button>
+        <button 
+          className={`flex-1 py-2.5 px-1 border-b-2 ${activeTab === 'knowledge' ? 'border-blue-600 text-blue-600' : 'border-transparent hover:text-gray-700 hover:border-gray-300'}`}
+          onClick={() => setActiveTab('knowledge')}
+        >
+          Knowledge
+        </button>
+      </div>
       
-      <div className="flex-1 overflow-y-auto">
-        {/* Knowledge Tab */}
+      {/* Project Title Bar */}
+      <div className="p-3 border-b border-gray-200 flex justify-between items-center">
+        <span className="font-medium text-sm text-gray-700">
+          {activeProject.name}
+        </span>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="h-7 text-xs"
+        >
+          + New Project
+        </Button>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto p-4">
         {activeTab === 'knowledge' && (
           <KnowledgeTabContent
             isRefreshing={isRefreshing}
@@ -104,22 +134,10 @@ const ChatContextPanel = ({ contextItems = [], onClose }: ChatContextPanelProps)
           />
         )}
         
-        {/* Conversations Tab */}
-        {activeTab === 'conversations' && (
+        {activeTab === 'projects' && (
           <ConversationsTabContent />
         )}
-        
-        {/* Media Tab */}
-        {activeTab === 'media' && (
-          <MediaTabContent 
-            contextItems={contextItems}
-            onAddDocument={addDocument}
-          />
-        )}
       </div>
-      
-      {/* Token Usage Panel */}
-      <ContextTokenUsage />
     </div>
   );
 };

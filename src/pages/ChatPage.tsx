@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NoteSidebar from "@/components/NoteSidebar";
 import ChatMessages from "@/components/ChatMessages";
 import ChatInputBar from "@/components/ChatInputBar";
@@ -40,13 +40,37 @@ const ChatPage = () => {
   if (!activeChatSession.path && activeChatSession.name) {
     // Extract a path from the name for the breadcrumb
     if (activeChatSession.extension === "farm") {
-      activeChatSession.path = "Farm Management";
+      activeChatSession.path = "Crop Planning";
     } else if (activeChatSession.extension === "bank") {
       activeChatSession.path = "Financial Management";
     } else {
       activeChatSession.path = "Personal Management";
     }
   }
+
+  const [activeProject, setActiveProject] = useState({
+    id: "crop-planning",
+    name: "Crop Planning"
+  });
+
+  useEffect(() => {
+    if (activeChatSession.extension === "farm") {
+      setActiveProject({
+        id: "crop-planning",
+        name: "Crop Planning"
+      });
+    } else if (activeChatSession.extension === "bank") {
+      setActiveProject({
+        id: "financial",
+        name: "Financial Planning"
+      });
+    } else {
+      setActiveProject({
+        id: "personal",
+        name: "Personal Notes"
+      });
+    }
+  }, [activeChatSession.extension]);
 
   const { showContextPanel, setShowContextPanel, toggleContextPanel } = useContextPanel();
   
@@ -127,6 +151,7 @@ const ChatPage = () => {
               <ChatContextPanel 
                 contextItems={contextItems} 
                 onClose={isMobile ? handleCloseContextPanel : undefined}
+                activeProject={activeProject}
               />
             </div>
           )}

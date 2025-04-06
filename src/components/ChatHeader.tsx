@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { ChatSession } from "@/types/chat";
-import { ChevronDown, PlusCircle, SidebarOpen, SidebarClose, MoreHorizontal } from "lucide-react";
+import { ChevronDown, PlusCircle, MoreHorizontal } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Select,
@@ -86,7 +86,7 @@ const ChatHeader = ({
   };
   
   return (
-    <div className="flex items-center justify-between px-6 py-3 border-b bg-white">
+    <div className="border-b border-gray-200 px-6 py-3 flex justify-between items-center bg-white">
       <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -117,12 +117,10 @@ const ChatHeader = ({
         </DropdownMenu>
         
         {activeChatSession.path && (
-          <>
-            <span className="ml-4 text-sm text-gray-500">» {activeChatSession.path}</span>
-          </>
+          <span className="ml-4 text-sm text-gray-500">» {activeChatSession.path}</span>
         )}
         
-        {activeChatSession.name && (
+        {activeChatSession.name && activeChatSession.name !== getExtensionName(activeChatSession.extension) && (
           <span className="ml-4 text-sm text-gray-500">» {activeChatSession.name}</span>
         )}
       </div>
@@ -140,25 +138,6 @@ const ChatHeader = ({
             <SelectItem value="GPT-4o Mini">GPT-4o Mini</SelectItem>
           </SelectContent>
         </Select>
-        
-        {/* Hide/Show Context Panel Button */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-2 border-gray-300 h-8"
-          onClick={onToggleContextPanel}
-        >
-          {showContextPanel ? "Hide Context" : "Show Context"}
-        </Button>
-        
-        {/* New Chat Button */}
-        <Button 
-          className="bg-blue-600 hover:bg-blue-700 text-white h-8"
-          onClick={onCreateNewChat}
-        >
-          <PlusCircle className="h-4 w-4 mr-2" />
-          New Chat
-        </Button>
         
         {/* More Options */}
         <button className="p-2 rounded-full hover:bg-gray-100">
